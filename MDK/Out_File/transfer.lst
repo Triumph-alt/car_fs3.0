@@ -1,0 +1,110 @@
+C251 COMPILER V5.60.0,  transfer                                                           06/07/25  11:17:03  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE transfer
+OBJECT MODULE PLACED IN .\Out_File\transfer.obj
+COMPILER INVOKED BY: D:\keil5\C251\BIN\C251.EXE ..\USER\src\transfer.c LARGE INTR2 WARNINGLEVEL(3) OPTIMIZE(0,SPEED) BRO
+                    -WSE INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral) DEBUG PRINT(.\Out_File\tra
+                    -nsfer.lst) OBJECT(.\Out_File\transfer.obj) 
+
+stmt  level    source
+
+    1          #include "transfer.h"
+    2          #include "OLED.h"
+    3          
+    4          Key_t key[4] = {0, 0, 0};
+    5          enum state car_state; 
+    6          
+    7          void key_task(void)
+    8          {
+    9   1              if (key[0].flag == 1)
+   10   1              {
+   11   2              if (car_state < RUNNING)
+   12   2              {
+   13   3                  car_state++;
+   14   3                  oled_clear();
+   15   3              }
+   16   2                      
+   17   2                      key[0].flag = 0;
+   18   2              }
+   19   1      
+   20   1              if (key[1].flag == 1)
+   21   1              {
+   22   2      
+   23   2                      
+   24   2                      key[1].flag = 0;
+   25   2              }
+   26   1      
+   27   1              if (key[2].flag == 1)
+   28   1              {
+   29   2      
+   30   2                      
+   31   2                      key[2].flag = 0;
+   32   2              }
+   33   1      
+   34   1              if (key[3].flag == 1)
+   35   1              {
+   36   2      
+   37   2                      
+   38   2                      key[3].flag = 0;
+   39   2              }
+   40   1      }
+   41          
+   42          void display_task(void)
+   43          {
+   44   1          switch (car_state)
+   45   1          {
+   46   2              case ELECT_PARA:
+   47   2                  {
+   48   3                      oled_show_string(1, 1, "electpara");
+   49   3                  }
+   50   2                  break;
+   51   2      
+   52   2              case PID_PARA:
+   53   2                  {
+   54   3                      oled_show_string(1, 1, "pidpara");
+   55   3                  }
+   56   2                  break;
+   57   2      
+C251 COMPILER V5.60.0,  transfer                                                           06/07/25  11:17:03  PAGE 2   
+
+   58   2              case CHARGE:
+   59   2                  {
+   60   3                      oled_show_string(1, 1, "charge");
+   61   3                  }
+   62   2                  break;
+   63   2      
+   64   2              case RUNNING:
+   65   2                  {
+   66   3                      oled_show_string(1, 1, "running");
+   67   3                  }
+   68   2                  break;
+   69   2              
+   70   2              default:
+   71   2                  break;
+   72   2          }
+   73   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       184     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =        14     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =        50     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

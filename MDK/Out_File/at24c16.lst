@@ -1,0 +1,92 @@
+C251 COMPILER V5.60.0,  at24c16                                                            06/07/25  11:17:03  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE at24c16
+OBJECT MODULE PLACED IN .\Out_File\at24c16.obj
+COMPILER INVOKED BY: D:\keil5\C251\BIN\C251.EXE ..\USER\src\at24c16.c LARGE INTR2 WARNINGLEVEL(3) OPTIMIZE(0,SPEED) BROW
+                    -SE INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral) DEBUG PRINT(.\Out_File\at24
+                    -c16.lst) OBJECT(.\Out_File\at24c16.obj) 
+
+stmt  level    source
+
+    1          #include "at24c16.h"
+    2          
+    3          void at24c16_write_byte(uint8_t page, uint8_t addr, uint8_t w_data)
+    4          {
+    5   1              uint8_t ret = 1;
+    6   1              uint8_t device_addr = 0x00, data_addr = 0x00;
+    7   1              
+    8   1              /* 计算设备地址和字节地址 */
+    9   1              device_addr = ((0x0A << 3) | ((page >> 4) & (0x07)));
+   10   1              data_addr = (((page & 0x0F) << 4) | (addr & 0x0F));
+   11   1              
+   12   1              ret = iic_write_reg(device_addr, data_addr, w_data);
+   13   1      
+   14   1              delay_ms(5);
+   15   1      }
+   16          
+   17          uint8_t at24c16_read_byte(uint8_t page, uint8_t addr)
+   18          {
+   19   1              uint8_t ret = 1;
+   20   1              uint8_t device_addr = 0x00, data_addr = 0x00;
+   21   1              uint8_t r_data = 0;
+   22   1              
+   23   1              /* 计算设备地址和字节地址 */
+   24   1              device_addr = ((0x0A << 3) | ((page >> 4) & (0x07)));
+   25   1              data_addr = (((page & 0x0F) << 4) | (addr & 0x0F));
+   26   1              
+   27   1              ret = iic_read_reg(device_addr, data_addr, &r_data);
+   28   1              
+   29   1              return r_data;
+   30   1      }
+   31          
+   32          void at24c16_write_twobytes(uint8_t page, uint8_t addr, uint16_t w_data)
+   33          {
+   34   1              uint8_t h_data = 0, l_data = 0;
+   35   1              
+   36   1              /* 拆成高低8位分别写入 */
+   37   1              h_data = w_data >> 8;
+   38   1              l_data = w_data & 0xff;
+   39   1              
+   40   1              at24c16_write_byte(page, addr, h_data);
+   41   1              at24c16_write_byte(page, (uint8_t)(addr + 1), l_data);
+   42   1      }
+   43          
+   44          uint16_t at24c16_read_twobytes(uint8_t page, uint8_t addr)
+   45          {
+   46   1              uint8_t h_data = 0, l_data = 0;
+   47   1              uint16_t r_data = 0;
+   48   1              
+   49   1              h_data = at24c16_read_byte(page, addr);
+   50   1              l_data = at24c16_read_byte(page, (uint8_t)(addr + 1));
+   51   1              
+   52   1              r_data = ((h_data << 8) | l_data);
+   53   1              
+   54   1              return r_data;
+   55   1      }
+
+
+C251 COMPILER V5.60.0,  at24c16                                                            06/07/25  11:17:03  PAGE 2   
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       428     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =        24     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

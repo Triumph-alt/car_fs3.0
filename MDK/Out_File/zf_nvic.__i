@@ -1,0 +1,1 @@
+"..\seekfree_libraries\zf_nvic.c" LARGE INTR2 WARNINGLEVEL (3) OPTIMIZE (0,SPEED) BROWSE INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral) DEBUG PRINT(.\Out_File\zf_nvic.lst) OBJECT(.\Out_File\zf_nvic.obj)

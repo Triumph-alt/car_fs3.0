@@ -1,0 +1,115 @@
+C251 COMPILER V5.60.0,  maths                                                              06/07/25  11:17:05  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE maths
+OBJECT MODULE PLACED IN .\Out_File\maths.obj
+COMPILER INVOKED BY: D:\keil5\C251\BIN\C251.EXE ..\USER\src\maths.c LARGE INTR2 WARNINGLEVEL(3) OPTIMIZE(0,SPEED) BROWSE
+                    - INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral) DEBUG PRINT(.\Out_File\maths.
+                    -lst) OBJECT(.\Out_File\maths.obj) 
+
+stmt  level    source
+
+    1          #include "maths.h"
+    2          
+    3          int myabs(int num)
+    4          {
+    5   1              return (num > 0) ? num : -num;
+    6   1      }
+    7          
+    8          float myfabs(float num)
+    9          {
+   10   1              return (num > 0) ? num : -num;
+   11   1      }
+   12          
+   13          ///**
+   14          //  * @brief  矩阵乘法函数
+   15          //  * @param  A: 第一个矩阵，rowsA x colsA
+   16          //  * @param  rowsA: 第一个矩阵的行数
+   17          //  * @param  colsA: 第一个矩阵的列数
+   18          //  * @param  B: 第二个矩阵，rowsB x colsB
+   19          //  * @param  rowsB: 第二个矩阵的行数
+   20          //  * @param  colsB: 第二个矩阵的列数
+   21          //  * @param  C: 结果矩阵，rowsA x colsB
+   22          //  * @retval 无
+   23          //  */
+   24          //void Matrix_Mult(float* A, uint8_t rowsA, uint8_t colsA,
+   25          //                 float* B, uint8_t rowsB, uint8_t colsB,
+   26          //                 float* C) 
+   27          //{
+   28          //      uint8_t i = 0, j = 0, k = 0;
+   29          //      
+   30          //    if (colsA != rowsB) // 错误：矩阵维度不匹配
+   31          //      {
+   32          //        return;
+   33          //    }
+   34          
+   35          //    for (i = 0; i < rowsA; i++)
+   36          //      {
+   37          //        for (j = 0; j < colsB; j++) 
+   38          //              {
+   39          //            float sum = 0.0f;
+   40          
+   41          //            for (k = 0; k < colsA; k++) 
+   42          //                      {
+   43          //                sum += A[i * colsA + k] * B[k * colsB + j];
+   44          //            }
+   45          
+   46          //            C[i * colsB + j] = sum;
+   47          //        }
+   48          //    }
+   49          //}
+   50          
+   51          ///**
+   52          //  * @brief  矩阵缩放函数
+   53          //  * @param  A: 输入矩阵，rowsA x colsA
+   54          //  * @param  rowsA: 矩阵的行数
+   55          //  * @param  colsA: 矩阵的列数
+   56          //  * @param  scalar: 缩放因子
+   57          //  * @param  C: 输出矩阵，rowsA x colsA
+C251 COMPILER V5.60.0,  maths                                                              06/07/25  11:17:05  PAGE 2   
+
+   58          //  * @retval 无
+   59          //  */
+   60          //void Matrix_Scale(float* A, uint8_t rowsA, uint8_t colsA, float scalar, float* C) 
+   61          //{
+   62          //      uint16_t i = 0;
+   63          //      
+   64          //    for (i = 0; i < rowsA * colsA; i++) 
+   65          //      {
+   66          //        C[i] = A[i] * scalar;
+   67          //    }
+   68          //}
+   69          
+   70          //void Matrix_Negate(float* A, uint8_t rowsA, uint8_t colsA, float* C)
+   71          //{
+   72          //      uint16_t i = 0;
+   73          //      
+   74          //    for (i = 0; i < rowsA * colsA; i++) 
+   75          //      {
+   76          //        C[i] = -A[i];
+   77          //    }
+   78          //}
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =        92     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =         6     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

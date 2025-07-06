@@ -1,0 +1,152 @@
+C251 COMPILER V5.60.0,  lqr                                                                05/07/25  21:43:08  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE lqr
+OBJECT MODULE PLACED IN .\Out_File\lqr.obj
+COMPILER INVOKED BY: D:\keil5\C251\BIN\C251.EXE ..\USER\src\lqr.c LARGE INTR2 WARNINGLEVEL(3) OPTIMIZE(0,SPEED) BROWSE I
+                    -NCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral) DEBUG PRINT(.\Out_File\lqr.lst)
+                    - OBJECT(.\Out_File\lqr.obj) 
+
+stmt  level    source
+
+    1          #include "lqr.h"
+    2          
+    3          LQR_Controller_TypeDef lqr_controller;
+    4          
+    5          const float LQR_K[LQR_NUM_INPUTS * LQR_NUM_STATES] = 
+    6          {
+    7              0.1f,  0.05f, 0.8f,  0.02f, // 第一行
+    8              0.02f, 0.5f,  0.01f, 0.005f // 第二行
+    9          };
+   10          
+   11          void lqr_init(LQR_Controller_TypeDef* pLQR, const float* K, float wheel_distance, float ctrl_period, floa
+             -t speed_point)
+   12          {
+   13   1              uint8_t i = 0, j = 0;
+   14   1              
+   15   1          /* 复制K矩阵数据 */ 
+   16   1              for (i = 0; i < LQR_NUM_INPUTS; i++)
+   17   1              {
+   18   2                      for (j < 0; j < LQR_NUM_STATES; j++)
+   19   2                      {
+   20   3                              pLQR->K_matrix[i][j] = K[i * LQR_NUM_STATES + j];
+   21   3                      }
+   22   2              }
+   23   1              
+   24   1              /* 初始化其它参数 */
+   25   1          pLQR->wheel_distance = wheel_distance;
+   26   1          pLQR->control_period = ctrl_period;
+   27   1          pLQR->target_linear_speed = speed_point;
+   28   1      
+   29   1          /* 初始化所有状态量和输出 */
+   30   1          pLQR->position = 0.0f;
+   31   1          pLQR->gyroz = 0.0f;
+   32   1          pLQR->left_speed = 0.0f;
+   33   1          pLQR->right_speed = 0.0f;
+   34   1      
+   35   1          for (i = 0; i < LQR_NUM_STATES; i++)
+   36   1          {
+   37   2              pLQR->state_vector[i] = 0.0f;
+   38   2          }
+   39   1          pLQR->last_linear_speed = 0.0f;
+   40   1      
+   41   1          pLQR->u_linear_speed = 0.0f;
+   42   1          pLQR->u_angular_speed = 0.0f;
+   43   1      
+   44   1          pLQR->u_left_speed = 0.0f;
+   45   1          pLQR->u_right_speed = 0.0f;
+   46   1      }
+   47          
+   48          void lqr_update(LQR_Controller_TypeDef* pLQR, float position, float gyro_z, float left_speed, float right
+             -_speed)
+   49          {
+   50   1          pLQR->position = position;
+   51   1          pLQR->gyroz = gyro_z;
+   52   1          pLQR->left_speed = left_speed;
+   53   1          pLQR->right_speed = right_speed;
+   54   1      }
+   55          
+C251 COMPILER V5.60.0,  lqr                                                                05/07/25  21:43:08  PAGE 2   
+
+   56          void lqr_control(LQR_Controller_TypeDef* pLQR)
+   57          {
+   58   1              uint8_t i = 0, j = 0;
+   59   1              
+   60   1          // 临时变量用于矩阵运算
+   61   1          float current_speed;                           // 当前线速度
+   62   1          float speed_error;                             // 线速度误差
+   63   1          float acceleration;                            // 实际线加速度
+   64   1          
+   65   1          float K_flat[LQR_NUM_INPUTS * LQR_NUM_STATES]; // K矩阵的扁平化表示
+   66   1          float state_vec_col[LQR_NUM_STATES];           // 状态向量的列表示
+   67   1          float control_vec_col[LQR_NUM_INPUTS];         // 控制向量的列表示
+   68   1      
+   69   1          // 1. 计算当前线速度
+   70   1          current_speed = (pLQR->left_speed + pLQR->right_speed) / 2.0f;
+   71   1      
+   72   1          // 2. 准备状态向量
+   73   1          pLQR->state_vector[0] = pLQR->position;        // 横向偏差 position
+   74   1          pLQR->state_vector[1] = pLQR->gyroz;           // 角速度 gyroz
+   75   1      
+   76   1          speed_error = current_speed - pLQR->target_linear_speed;
+   77   1          pLQR->state_vector[2] = speed_error;           // 线速度误差 speed_error
+   78   1      
+   79   1          acceleration = (current_speed - pLQR->last_linear_speed) / pLQR->control_period;
+   80   1          pLQR->state_vector[3] = acceleration;          // 实际线加速度
+   81   1      
+   82   1          pLQR->last_linear_speed = current_speed;       // 更新上一次的线速度
+   83   1      
+   84   1          // 将K矩阵和状态向量转换为Matrix_Mult函数所需的格式
+   85   1          // K_matrix 是二维数组 K[rows][cols] -> 展平为一维数组 K_flat[row*cols+col]
+   86   1          for(i = 0; i < LQR_NUM_INPUTS; i++) 
+   87   1          {
+   88   2              for(j = 0; j < LQR_NUM_STATES; j++) 
+   89   2              {
+   90   3                  K_flat[i * LQR_NUM_STATES + j] = pLQR->K_matrix[i][j];
+   91   3              }
+   92   2          }
+   93   1      
+   94   1          // 状态向量直接使用 state_vector 数组，因为它已经是列向量形式 (LQR_NUM_STATES x 1)
+   95   1          for(i = 0; i < LQR_NUM_STATES; i++) 
+   96   1          {
+   97   2              state_vec_col[i] = pLQR->state_vector[i];
+   98   2          }
+   99   1      
+  100   1          // 3. 计算控制输入 u = -K * x
+  101   1          Matrix_Mult(K_flat, LQR_NUM_INPUTS, LQR_NUM_STATES, state_vec_col, LQR_NUM_STATES, 1, control_vec_col
+             -);
+  102   1          Matrix_Negate(control_vec_col, LQR_NUM_INPUTS, 1, control_vec_col);
+  103   1      
+  104   1          pLQR->u_linear_speed = control_vec_col[0];  // 期望线速度
+  105   1          pLQR->u_angular_speed = control_vec_col[1]; // 期望角速度
+  106   1      
+  107   1          // 4. 根据期望线速度和期望角速度计算左右轮的期望线速度
+  108   1          pLQR->u_left_speed = pLQR->u_linear_speed - pLQR->u_angular_speed * pLQR->wheel_distance / 2.0f;
+  109   1          pLQR->u_right_speed = pLQR->u_linear_speed + pLQR->u_angular_speed * pLQR->wheel_distance / 2.0f;
+  110   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =      1654     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =       212     ------
+  xdata-const size     =    ------     ------
+C251 COMPILER V5.60.0,  lqr                                                                05/07/25  21:43:08  PAGE 3   
+
+  edata size           =    ------     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =        32     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
