@@ -19,8 +19,8 @@ typedef struct
 	float d_out;
 	float output;
 	
-	float i_limit;//积分限幅
-	float o_limit;//输出限幅
+	float i_limit;//绉垎闄愬箙
+	float o_limit;//杈撳嚭闄愬箙
 } PID_t;
 
 extern PID_t SpeedPID, TurnPID;

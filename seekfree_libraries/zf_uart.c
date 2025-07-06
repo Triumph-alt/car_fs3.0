@@ -1,16 +1,16 @@
 /*********************************************************************************************************************
  * COPYRIGHT NOTICE
- * Copyright (c) 2020,Öð·É¿Æ¼¼
+ * Copyright (c) 2020,é€é£žç§‘æŠ€
  * All rights reserved.
- * ¼¼ÊõÌÖÂÛQQÈº£ºÒ»Èº£º179029047(ÒÑÂú)  ¶þÈº£º244861897(ÒÑÂú)  ÈýÈº£º824575535
+ * æŠ€æœ¯è®¨è®ºQQç¾¤ï¼šä¸€ç¾¤ï¼š179029047(å·²æ»¡)  äºŒç¾¤ï¼š244861897(å·²æ»¡)  ä¸‰ç¾¤ï¼š824575535
  *
- * ÒÔÏÂËùÓÐÄÚÈÝ°æÈ¨¾ùÊôÖð·É¿Æ¼¼ËùÓÐ£¬Î´¾­ÔÊÐí²»µÃÓÃÓÚÉÌÒµÓÃÍ¾£¬
- * »¶Ó­¸÷Î»Ê¹ÓÃ²¢´«²¥±¾³ÌÐò£¬ÐÞ¸ÄÄÚÈÝÊ±±ØÐë±£ÁôÖð·É¿Æ¼¼µÄ°æÈ¨ÉùÃ÷¡£
+ * ä»¥ä¸‹æ‰€æœ‰å†…å®¹ç‰ˆæƒå‡å±žé€é£žç§‘æŠ€æ‰€æœ‰ï¼Œæœªç»å…è®¸ä¸å¾—ç”¨äºŽå•†ä¸šç”¨é€”ï¼Œ
+ * æ¬¢è¿Žå„ä½ä½¿ç”¨å¹¶ä¼ æ’­æœ¬ç¨‹åºï¼Œä¿®æ”¹å†…å®¹æ—¶å¿…é¡»ä¿ç•™é€é£žç§‘æŠ€çš„ç‰ˆæƒå£°æ˜Žã€‚
  *
  * @file       		uart
- * @company	   		³É¶¼Öð·É¿Æ¼¼ÓÐÏÞ¹«Ë¾
- * @author     		Öð·É¿Æ¼¼(QQ790875685)
- * @version    		²é¿´docÄÚversionÎÄ¼þ °æ±¾ËµÃ÷
+ * @company	   		æˆéƒ½é€é£žç§‘æŠ€æœ‰é™å…¬å¸
+ * @author     		é€é£žç§‘æŠ€(QQ790875685)
+ * @version    		æŸ¥çœ‹docå†…versionæ–‡ä»¶ ç‰ˆæœ¬è¯´æ˜Ž
  * @Software 		MDK FOR C251 V5.60
  * @Target core		STC32G12K128
  * @Taobao   		https://seekfree.taobao.com/
@@ -20,24 +20,24 @@
 #include "zf_uart.h"
 #include "board.h"
    
-uint8 busy[5];				 //½ÓÊÕÃ¦±êÖ¾Î»
+uint8 busy[5];				 //æŽ¥æ”¶å¿™æ ‡å¿—ä½
 
 //-------------------------------------------------------------------------------------------------------------------
-//  @brief      ´®¿Ú³õÊ¼»¯
-//  @param      uart_n          ´®¿ÚÄ£¿éºÅ(USART_1,USART_2,USART_3,USART_4)
-//  @param      uart_rx_pin     ´®¿Ú½ÓÊÕÒý½Å
-//  @param      uart_tx_pin     ´®¿Ú·¢ËÍÒý½Å
-//  @param      baud      		´®¿Ú²¨ÌØÂÊ
-//  @param      tim_n      		Ê¹ÓÃtim_n×÷Îª´®¿Ú²¨ÌØÂÊ·¢ÉúÆ÷(TIM1-TIM4)
+//  @brief      ä¸²å£åˆå§‹åŒ–
+//  @param      uart_n          ä¸²å£æ¨¡å—å·(USART_1,USART_2,USART_3,USART_4)
+//  @param      uart_rx_pin     ä¸²å£æŽ¥æ”¶å¼•è„š
+//  @param      uart_tx_pin     ä¸²å£å‘é€å¼•è„š
+//  @param      baud      		ä¸²å£æ³¢ç‰¹çŽ‡
+//  @param      tim_n      		ä½¿ç”¨tim_nä½œä¸ºä¸²å£æ³¢ç‰¹çŽ‡å‘ç”Ÿå™¨(TIM1-TIM4)
 //  @return     NULL          	
-//  Sample usage:               uart_init(UART_1, UART1_RX_P30, UART1_TX_P31, 115200, TIM_2);        //³õÊ¼»¯´®¿Ú1 ²¨ÌØÂÊ115200 ·¢ËÍÒý½ÅÊ¹ÓÃP31 ½ÓÊÕÒý½ÅÊ¹ÓÃP30 ,Ê¹ÓÃ¶¨Ê±Æ÷2×÷Îª²¨ÌØÂÊ·¢ÉúÆ÷
-//  @note                       ´®¿Ú1Ê¹ÓÃ ¶¨Ê±Æ÷1»òÕß¶¨Ê±Æ÷2 ×÷Îª²¨ÌØÂÊ·¢ÉúÆ÷¡£
-//								´®¿Ú2Ê¹ÓÃ ¶¨Ê±Æ÷2 			 ×÷Îª²¨ÌØÂÊ·¢ÉúÆ÷¡£
-//								´®¿Ú3Ê¹ÓÃ ¶¨Ê±Æ÷3»òÕß¶¨Ê±Æ÷2 ×÷Îª²¨ÌØÂÊ·¢ÉúÆ÷¡£
-//								´®¿Ú4Ê¹ÓÃ ¶¨Ê±Æ÷4»òÕß¶¨Ê±Æ÷2 ×÷Îª²¨ÌØÂÊ·¢ÉúÆ÷¡£
-//                              STC32G½öÓÐ ¶¨Ê±Æ÷0-¶¨Ê±Æ÷4£¬Õâ5¸ö¶¨Ê±Æ÷¡£
-//								±àÂëÆ÷²É¼¯Êý¾ÝÒ²ÐèÒª¶¨Ê±Æ÷×÷ÎªÍâ²¿¼ÆÊý¡£
-//								Èç¹û²»Í¬µÄ´®¿Ú£¬Ê¹ÓÃÍ¬Ò»¸ö¶¨Ê±Æ÷£¬´®¿ÚµÄ²¨ÌØÂÊÒÔ×îºóÒ»¸ö³õÊ¼»¯Îª×¼
+//  Sample usage:               uart_init(UART_1, UART1_RX_P30, UART1_TX_P31, 115200, TIM_2);        //åˆå§‹åŒ–ä¸²å£1 æ³¢ç‰¹çŽ‡115200 å‘é€å¼•è„šä½¿ç”¨P31 æŽ¥æ”¶å¼•è„šä½¿ç”¨P30 ,ä½¿ç”¨å®šæ—¶å™¨2ä½œä¸ºæ³¢ç‰¹çŽ‡å‘ç”Ÿå™¨
+//  @note                       ä¸²å£1ä½¿ç”¨ å®šæ—¶å™¨1æˆ–è€…å®šæ—¶å™¨2 ä½œä¸ºæ³¢ç‰¹çŽ‡å‘ç”Ÿå™¨ã€‚
+//								ä¸²å£2ä½¿ç”¨ å®šæ—¶å™¨2 			 ä½œä¸ºæ³¢ç‰¹çŽ‡å‘ç”Ÿå™¨ã€‚
+//								ä¸²å£3ä½¿ç”¨ å®šæ—¶å™¨3æˆ–è€…å®šæ—¶å™¨2 ä½œä¸ºæ³¢ç‰¹çŽ‡å‘ç”Ÿå™¨ã€‚
+//								ä¸²å£4ä½¿ç”¨ å®šæ—¶å™¨4æˆ–è€…å®šæ—¶å™¨2 ä½œä¸ºæ³¢ç‰¹çŽ‡å‘ç”Ÿå™¨ã€‚
+//                              STC32Gä»…æœ‰ å®šæ—¶å™¨0-å®šæ—¶å™¨4ï¼Œè¿™5ä¸ªå®šæ—¶å™¨ã€‚
+//								ç¼–ç å™¨é‡‡é›†æ•°æ®ä¹Ÿéœ€è¦å®šæ—¶å™¨ä½œä¸ºå¤–éƒ¨è®¡æ•°ã€‚
+//								å¦‚æžœä¸åŒçš„ä¸²å£ï¼Œä½¿ç”¨åŒä¸€ä¸ªå®šæ—¶å™¨ï¼Œä¸²å£çš„æ³¢ç‰¹çŽ‡ä»¥æœ€åŽä¸€ä¸ªåˆå§‹åŒ–ä¸ºå‡†
 //-------------------------------------------------------------------------------------------------------------------
 void uart_init(UARTN_enum uart_n, UARTPIN_enum uart_rx_pin, UARTPIN_enum uart_tx_pin, uint32 baud, TIMN_enum tim_n)
 {
@@ -109,7 +109,7 @@ void uart_init(UARTN_enum uart_n, UARTPIN_enum uart_rx_pin, UARTPIN_enum uart_tx
 				P_SW2 |= 0x01;
 			}
 			
-			IE2 |= 0x01 << 0;	//ÔÊÐí´®ÐÐ¿Ú2ÖÐ¶Ï
+			IE2 |= 0x01 << 0;	//å…è®¸ä¸²è¡Œå£2ä¸­æ–­
 			busy[2] = 0;
 			break;
 		}
@@ -141,7 +141,7 @@ void uart_init(UARTN_enum uart_n, UARTPIN_enum uart_rx_pin, UARTPIN_enum uart_tx
 				P_SW2 |= 0x02;
 			}
 			
-			IE2 |= 0x01<<3;	//ÔÊÐí´®ÐÐ¿Ú3ÖÐ¶Ï
+			IE2 |= 0x01<<3;	//å…è®¸ä¸²è¡Œå£3ä¸­æ–­
 			busy[3] = 0;
 			break;
 		}
@@ -171,10 +171,10 @@ void uart_init(UARTN_enum uart_n, UARTPIN_enum uart_rx_pin, UARTPIN_enum uart_tx
 			else if((UART4_RX_P52 == uart_rx_pin) && (UART4_TX_P53 == uart_tx_pin))
 			{
 				P5M0 = 0x00;
-				P5M1 = 0x01<<2;//P5.2 ÐèÒªÉèÖÃÎª¸ß×è
+				P5M1 = 0x01<<2;//P5.2 éœ€è¦è®¾ç½®ä¸ºé«˜é˜»
 				P_SW2 |= 0x04;
 			}
-			IE2 |= 0x01<<4;	//ÔÊÐí´®ÐÐ¿Ú4ÖÐ¶Ï
+			IE2 |= 0x01<<4;	//å…è®¸ä¸²è¡Œå£4ä¸­æ–­
 			busy[4] = 0;
 			break;
 		}
@@ -184,11 +184,11 @@ void uart_init(UARTN_enum uart_n, UARTPIN_enum uart_rx_pin, UARTPIN_enum uart_tx
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-//  @brief      ´®¿Ú×Ö½ÚÊä³ö
-//  @param      uart_n          ´®¿ÚÄ£¿éºÅ(USART_1,USART_2,USART_3,USART_4)
-//  @param      dat             ÐèÒª·¢ËÍµÄ×Ö½Ú
+//  @brief      ä¸²å£å­—èŠ‚è¾“å‡º
+//  @param      uart_n          ä¸²å£æ¨¡å—å·(USART_1,USART_2,USART_3,USART_4)
+//  @param      dat             éœ€è¦å‘é€çš„å­—èŠ‚
 //  @return     void        
-//  Sample usage:               uart_putchar(UART_1,0xA5);       // ´®¿Ú1·¢ËÍ0xA5
+//  Sample usage:               uart_putchar(UART_1,0xA5);       // ä¸²å£1å‘é€0xA5
 //-------------------------------------------------------------------------------------------------------------------
 void uart_putchar(UARTN_enum uart_n,uint8 dat)
 {
@@ -219,10 +219,10 @@ void uart_putchar(UARTN_enum uart_n,uint8 dat)
 
 
 //-------------------------------------------------------------------------------------------------------------------
-//  @brief      ´®¿Ú·¢ËÍÊý×é
-//  @param      uart_n          ´®¿ÚÄ£¿éºÅ(USART_1,USART_2,USART_3,USART_4)
-//  @param      *buff           Òª·¢ËÍµÄÊý×éµØÖ·
-//  @param      len             ·¢ËÍ³¤¶È
+//  @brief      ä¸²å£å‘é€æ•°ç»„
+//  @param      uart_n          ä¸²å£æ¨¡å—å·(USART_1,USART_2,USART_3,USART_4)
+//  @param      *buff           è¦å‘é€çš„æ•°ç»„åœ°å€
+//  @param      len             å‘é€é•¿åº¦
 //  @return     void
 //  Sample usage:               uart_putbuff(UART_1,&a[0],5);
 //-------------------------------------------------------------------------------------------------------------------
@@ -234,9 +234,9 @@ void uart_putbuff(UARTN_enum uart_n,uint8 *p,uint32 len)
 
 
 //-------------------------------------------------------------------------------------------------------------------
-//  @brief      ´®¿Ú·¢ËÍ×Ö·û´®
-//  @param      uart_n          ´®¿ÚÄ£¿éºÅ(USART_1,USART_2,USART_3,USART_4)
-//  @param      *str            Òª·¢ËÍµÄ×Ö·û´®µØÖ·
+//  @brief      ä¸²å£å‘é€å­—ç¬¦ä¸²
+//  @param      uart_n          ä¸²å£æ¨¡å—å·(USART_1,USART_2,USART_3,USART_4)
+//  @param      *str            è¦å‘é€çš„å­—ç¬¦ä¸²åœ°å€
 //  @return     void
 //  Sample usage:               uart_putstr(UART_1,"i lvoe you"); 
 //-------------------------------------------------------------------------------------------------------------------

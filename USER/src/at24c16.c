@@ -5,7 +5,7 @@ void at24c16_write_byte(uint8_t page, uint8_t addr, uint8_t w_data)
 	uint8_t ret = 1;
 	uint8_t device_addr = 0x00, data_addr = 0x00;
 	
-	/* ¼ÆËãÉè±¸µØÖ·ºÍ×Ö½ÚµØÖ· */
+	/* è®¡ç®—è®¾å¤‡åœ°å€å’Œå­—èŠ‚åœ°å€ */
 	device_addr = ((0x0A << 3) | ((page >> 4) & (0x07)));
 	data_addr = (((page & 0x0F) << 4) | (addr & 0x0F));
 	
@@ -20,7 +20,7 @@ uint8_t at24c16_read_byte(uint8_t page, uint8_t addr)
 	uint8_t device_addr = 0x00, data_addr = 0x00;
 	uint8_t r_data = 0;
 	
-	/* ¼ÆËãÉè±¸µØÖ·ºÍ×Ö½ÚµØÖ· */
+	/* è®¡ç®—è®¾å¤‡åœ°å€å’Œå­—èŠ‚åœ°å€ */
 	device_addr = ((0x0A << 3) | ((page >> 4) & (0x07)));
 	data_addr = (((page & 0x0F) << 4) | (addr & 0x0F));
 	
@@ -33,7 +33,7 @@ void at24c16_write_twobytes(uint8_t page, uint8_t addr, uint16_t w_data)
 {
 	uint8_t h_data = 0, l_data = 0;
 	
-	/* ²ğ³É¸ßµÍ8Î»·Ö±ğĞ´Èë */
+	/* æ‹†æˆé«˜ä½8ä½åˆ†åˆ«å†™å…¥ */
 	h_data = w_data >> 8;
 	l_data = w_data & 0xff;
 	

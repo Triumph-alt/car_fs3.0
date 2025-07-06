@@ -14,7 +14,7 @@ void kalman_init(KalmanFilter* kf, float F, float B, float Q, float R, float ini
     kf->B = B;
     kf->Q = Q;
     kf->R = R;
-    kf->P = 1.0;       // ³õÊ¼Ğ­·½²î
+    kf->P = 1.0;       // åˆå§‹åæ–¹å·®
     kf->x = initial_x;
 }
 
@@ -41,10 +41,10 @@ void lowpass_init(LowPassFilter* instance, float alpha)
 
 float lowpass_filter(LowPassFilter* instance, float input) 
 {
-    // ÊµÏÖÒ»½×µÍÍ¨ÂË²¨µÄºËĞÄËã·¨
+    // å®ç°ä¸€é˜¶ä½é€šæ»¤æ³¢çš„æ ¸å¿ƒç®—æ³•
     instance->output = instance->alpha * input + (1 - instance->alpha) * instance->lastoutput;
     
-    // ¸üĞÂÉÏÒ»Ê±¿ÌµÄÊäÈëÖµ
+    // æ›´æ–°ä¸Šä¸€æ—¶åˆ»çš„è¾“å…¥å€¼
     instance->lastoutput = instance->output;
     
     return instance->output;

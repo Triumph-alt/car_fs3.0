@@ -1,20 +1,20 @@
 #include "headfile.h"
 
 /*
- * ÏµÍ³ÆµÂÊ£¬¿É²é¿´board.hÖĞµÄ FOSC ºê¶¨ÒåĞŞ¸Ä¡£
- * board.hÎÄ¼şÖĞFOSCµÄÖµÉèÖÃÎª0,Ôò³ÌĞò×Ô¶¯ÉèÖÃÏµÍ³ÆµÂÊÎª33.1776MHZ
- * ÔÚboard_initÖĞ,ÒÑ¾­½«P54Òı½ÅÉèÖÃÎª¸´Î»
- * Èç¹ûĞèÒªÊ¹ÓÃP54Òı½Å,¿ÉÒÔÔÚboard.cÎÄ¼şÖĞµÄboard_init()º¯ÊıÖĞÉ¾³ıSET_P54_RESRT¼´¿É
+ * ç³»ç»Ÿé¢‘ç‡ï¼Œå¯æŸ¥çœ‹board.hä¸­çš„ FOSC å®å®šä¹‰ä¿®æ”¹ã€‚
+ * board.hæ–‡ä»¶ä¸­FOSCçš„å€¼è®¾ç½®ä¸º0,åˆ™ç¨‹åºè‡ªåŠ¨è®¾ç½®ç³»ç»Ÿé¢‘ç‡ä¸º33.1776MHZ
+ * åœ¨board_initä¸­,å·²ç»å°†P54å¼•è„šè®¾ç½®ä¸ºå¤ä½
+ * å¦‚æœéœ€è¦ä½¿ç”¨P54å¼•è„š,å¯ä»¥åœ¨board.cæ–‡ä»¶ä¸­çš„board_init()å‡½æ•°ä¸­åˆ é™¤SET_P54_RESRTå³å¯
  */
 void main(void)
 {
 	int state = 5;
 	uint16 sum_value = 0;    
-	uint16 value[7] = {0};   //µ÷ÊÔÓÃÊı×é
+	uint16 value[7] = {0};   //è°ƒè¯•ç”¨æ•°ç»„
 	
-	board_init();			 // ³õÊ¼»¯¼Ä´æÆ÷,ÎğÉ¾³ı´Ë¾ä´úÂë
+	board_init();			 // åˆå§‹åŒ–å¯„å­˜å™¨,å‹¿åˆ é™¤æ­¤å¥ä»£ç 
 	
-	electromagnetic_init();  //³õÊ¼»¯µç´Å´«¸ĞÆ÷
+	electromagnetic_init();  //åˆå§‹åŒ–ç”µç£ä¼ æ„Ÿå™¨
 	
 	iic_init(IIC_2, IIC2_SCL_P25, IIC2_SDA_P24, 0);
 	uart_init(UART_4, UART4_RX_P02, UART4_TX_P03, 115200, TIM_4);
@@ -25,10 +25,10 @@ void main(void)
 	imu963ra_init();
 	oled_init();
 
-	pid_init(&SpeedPID, 0.0f, 0.0f, 0.0f, 5000.0f, 6000.0f); //³õÊ¼»¯ËÙ¶ÈPID
-	pid_init(&TurnPID, 0.0f, 0.0f, 0.0f, 0.0f, 6000.0f);  //³õÊ¼»¯Î»ÖÃPID
+	pid_init(&SpeedPID, 0.0f, 0.0f, 0.0f, 5000.0f, 6000.0f); //åˆå§‹åŒ–é€Ÿåº¦PID
+	pid_init(&TurnPID, 0.0f, 0.0f, 0.0f, 0.0f, 6000.0f);  //åˆå§‹åŒ–ä½ç½®PID
 	
-	lowpass_init(&leftSpeedFilt, 0.556);   //³õÊ¼»¯µÍÍ¨ÂË²¨Æ÷
+	lowpass_init(&leftSpeedFilt, 0.556);   //åˆå§‹åŒ–ä½é€šæ»¤æ³¢å™¨
 	lowpass_init(&rightSpeedFilt, 0.556);
 	
 	kalman_init(&imu693_kf, 0.98, 0.02, imu693kf_Q, imu693kf_R, 0.0);
@@ -38,16 +38,16 @@ void main(void)
 	
     while(1)
 	{
-		key_task();         // ´¦Àí°´¼üÈÎÎñ
-		display_task();     // OLEDÏÔÊ¾ÈÎÎñ
+		key_task();         // å¤„ç†æŒ‰é”®ä»»åŠ¡
+		display_task();     // OLEDæ˜¾ç¤ºä»»åŠ¡
 		
-		uart4_recv_task();  // ´®¿Ú4½ÓÊÕÈÎÎñ
+		uart4_recv_task();  // ä¸²å£4æ¥æ”¶ä»»åŠ¡
 		
 //		sprintf(g_TxData, "%f,%f\n",Gyro_Z,filtered_GyroZ);
 //		uart_putstr(UART_4, g_TxData);
 		
 #if 0
-		// Í¨¹ı´®¿ÚÊä³öÆßµç¸ĞÊı¾İ
+		// é€šè¿‡ä¸²å£è¾“å‡ºä¸ƒç”µæ„Ÿæ•°æ®
 		sprintf(g_TxData, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",
 		 (uint16)normalized_data[SENSOR_HL], 
 		 (uint16)normalized_data[SENSOR_VL], 
@@ -65,22 +65,22 @@ void main(void)
 		 uart_putstr(UART_4, g_TxData);
 #endif
 
-		// »ñÈ¡ÂË²¨ºóµÄADCÊı¾İ		
-		mid_filter();      // Ê¹ÓÃÖĞÎ»ÖµÂË²¨»ñÈ¡µç¸ĞÊı¾İ
+		// è·å–æ»¤æ³¢åçš„ADCæ•°æ®		
+		mid_filter();      // ä½¿ç”¨ä¸­ä½å€¼æ»¤æ³¢è·å–ç”µæ„Ÿæ•°æ®
 
-		// ¹éÒ»»¯µç¸ĞÊı×é¡¤
+		// å½’ä¸€åŒ–ç”µæ„Ÿæ•°ç»„Â·
 		normalize_sensors();
 		
-		// ¼ÆËãÎ»ÖÃÆ«²î
+		// è®¡ç®—ä½ç½®åå·®
 		position = calculate_position_improved();
 		
-		//¼ì²éµç´Å±£»¤
+		//æ£€æŸ¥ç”µç£ä¿æŠ¤
 		protection_flag = check_electromagnetic_protection();
 		
 		
-		/* µ÷ÊÔ¹¦ÄÜ */
+		/* è°ƒè¯•åŠŸèƒ½ */
 #if 0
-		//¶ÁÈ¡Æßµç¸ĞADCÖµ£¨ÓÃÓÚµ÷ÊÔ£©
+		//è¯»å–ä¸ƒç”µæ„ŸADCå€¼ï¼ˆç”¨äºè°ƒè¯•ï¼‰
 		value[0] = adc_once(ADC_HL,  ADC_10BIT);
 		value[1] = adc_once(ADC_VL,  ADC_10BIT);
 		value[2] = adc_once(ADC_HML, ADC_10BIT);
@@ -89,13 +89,13 @@ void main(void)
 		value[5] = adc_once(ADC_VR,  ADC_10BIT);
 		value[6] = adc_once(ADC_HR,  ADC_10BIT);	
 
-		// ¼ÆËãËùÓĞµç¸ĞÖµµÄ×ÜºÍ
+		// è®¡ç®—æ‰€æœ‰ç”µæ„Ÿå€¼çš„æ€»å’Œ
 //		sum_value = (uint16)normalized_data[SENSOR_HL] + (uint16)normalized_data[SENSOR_VL] + 
 //		            (uint16)normalized_data[SENSOR_HML] + (uint16)normalized_data[SENSOR_HC] + 
 //		            (uint16)normalized_data[SENSOR_HMR] + (uint16)normalized_data[SENSOR_VR] + 
 //		            (uint16)normalized_data[SENSOR_HR];
 
-		 // Í¨¹ı´®¿ÚÊä³öÆßµç¸ĞÔ­Ê¼Êı¾İ
+		 // é€šè¿‡ä¸²å£è¾“å‡ºä¸ƒç”µæ„ŸåŸå§‹æ•°æ®
 		  sprintf(g_TxData, "%d,%d,%d,%d,%d,%d,%d\n",
 					value[0], 
 					value[1], 

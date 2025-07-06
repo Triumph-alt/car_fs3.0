@@ -1,16 +1,16 @@
 ///*********************************************************************************************************************
 // * COPYRIGHT NOTICE
-// * Copyright (c) 2020,Öğ·É¿Æ¼¼
+// * Copyright (c) 2020,é€é£ç§‘æŠ€
 // * All rights reserved.
-// * ¼¼ÊõÌÖÂÛQQÈº£ºÒ»Èº£º179029047(ÒÑÂú)  ¶şÈº£º244861897(ÒÑÂú)  ÈıÈº£º824575535
+// * æŠ€æœ¯è®¨è®ºQQç¾¤ï¼šä¸€ç¾¤ï¼š179029047(å·²æ»¡)  äºŒç¾¤ï¼š244861897(å·²æ»¡)  ä¸‰ç¾¤ï¼š824575535
 // *
-// * ÒÔÏÂËùÓĞÄÚÈİ°æÈ¨¾ùÊôÖğ·É¿Æ¼¼ËùÓĞ£¬Î´¾­ÔÊĞí²»µÃÓÃÓÚÉÌÒµÓÃÍ¾£¬
-// * »¶Ó­¸÷Î»Ê¹ÓÃ²¢´«²¥±¾³ÌĞò£¬ĞŞ¸ÄÄÚÈİÊ±±ØĞë±£ÁôÖğ·É¿Æ¼¼µÄ°æÈ¨ÉùÃ÷¡£
+// * ä»¥ä¸‹æ‰€æœ‰å†…å®¹ç‰ˆæƒå‡å±é€é£ç§‘æŠ€æ‰€æœ‰ï¼Œæœªç»å…è®¸ä¸å¾—ç”¨äºå•†ä¸šç”¨é€”ï¼Œ
+// * æ¬¢è¿å„ä½ä½¿ç”¨å¹¶ä¼ æ’­æœ¬ç¨‹åºï¼Œä¿®æ”¹å†…å®¹æ—¶å¿…é¡»ä¿ç•™é€é£ç§‘æŠ€çš„ç‰ˆæƒå£°æ˜ã€‚
 // *
 // * @file       		isr
-// * @company	   		³É¶¼Öğ·É¿Æ¼¼ÓĞÏŞ¹«Ë¾
-// * @author     		Öğ·É¿Æ¼¼(QQ790875685)
-// * @version    		²é¿´docÄÚversionÎÄ¼ş °æ±¾ËµÃ÷
+// * @company	   		æˆéƒ½é€é£ç§‘æŠ€æœ‰é™å…¬å¸
+// * @author     		é€é£ç§‘æŠ€(QQ790875685)
+// * @version    		æŸ¥çœ‹docå†…versionæ–‡ä»¶ ç‰ˆæœ¬è¯´æ˜
 // * @Software 			MDK FOR C251 V5.60
 // * @Target core		STC32G12K128
 // * @Taobao   			https://seekfree.taobao.com/
@@ -18,21 +18,21 @@
 // ********************************************************************************************************************/
 #include "headfile.h"
 
-int g_encoder_average = 0;                       //×óÓÒ±àÂëÆ÷µÄÆ½¾ùÖµ
-float Gyro_Z = 0, filtered_GyroZ = 0;            // ÍÓÂİÒÇ½ÇËÙ¶ÈµÄÔ­Ê¼ÖµºÍ¿¨¶ûÂüÂË²¨Ö®ºóµÄÖµ
-int32_t g_DutyLeft = 0, g_DutyRight = 0;         // ×îºóÕæÕıÒª¸øµç»úµÄPWMÖµ
+int g_encoder_average = 0;                       //å·¦å³ç¼–ç å™¨çš„å¹³å‡å€¼
+float Gyro_Z = 0, filtered_GyroZ = 0;            // é™€èºä»ªè§’é€Ÿåº¦çš„åŸå§‹å€¼å’Œå¡å°”æ›¼æ»¤æ³¢ä¹‹åçš„å€¼
+int32_t g_DutyLeft = 0, g_DutyRight = 0;         // æœ€åçœŸæ­£è¦ç»™ç”µæœºçš„PWMå€¼
 
-//pid¿ØÖÆÏà¹Ø±äÁ¿
-float speed_pid = 0, turn_pid = 0;               //ËÙ¶È»·ºÍ×ªÏò»·pidµÄÖµ
+//pidæ§åˆ¶ç›¸å…³å˜é‡
+float speed_pid = 0, turn_pid = 0;               //é€Ÿåº¦ç¯å’Œè½¬å‘ç¯pidçš„å€¼
 int g_speedpoint = 80;
-int g_leftpoint = 0, g_rightpoint = 0;           //×óÓÒÂÖµÄÄ¿±êËÙ¶È
+int g_leftpoint = 0, g_rightpoint = 0;           //å·¦å³è½®çš„ç›®æ ‡é€Ÿåº¦
 
-// ·äÃùÆ÷¿ØÖÆÏà¹Ø±äÁ¿
-uint8_t beep_flag = 0;                           // ·äÃùÆ÷¿ªÆô±êÖ¾£¬1±íÊ¾¿ªÆô
-uint16_t beep_count = 0;                         // ·äÃùÆ÷¼ÆÊ±¼ÆÊıÆ÷
-uint8_t track_ten_cnt = 0;                       //³öÈë»·ÖØ¸´ÅĞ¶¨¼ÆÊ±Æ÷
+// èœ‚é¸£å™¨æ§åˆ¶ç›¸å…³å˜é‡
+uint8_t beep_flag = 0;                           // èœ‚é¸£å™¨å¼€å¯æ ‡å¿—ï¼Œ1è¡¨ç¤ºå¼€å¯
+uint16_t beep_count = 0;                         // èœ‚é¸£å™¨è®¡æ—¶è®¡æ•°å™¨
+uint8_t track_ten_cnt = 0;                       //å‡ºå…¥ç¯é‡å¤åˆ¤å®šè®¡æ—¶å™¨
 
-//UART1ÖĞ¶Ï
+//UART1ä¸­æ–­
 void UART1_Isr() interrupt 4
 {
 //  uint8 res;
@@ -48,7 +48,7 @@ void UART1_Isr() interrupt 4
     {
         UART1_CLEAR_RX_FLAG;
 //        res = SBUF;
-//        //³ÌĞò×Ô¶¯ÏÂÔØ
+//        //ç¨‹åºè‡ªåŠ¨ä¸‹è½½
 //        if(res == 0x7F)
 //        {
 //            if(dwon_count++ > 20)
@@ -61,7 +61,7 @@ void UART1_Isr() interrupt 4
     }
 }
 
-//UART2ÖĞ¶Ï
+//UART2ä¸­æ–­
 void UART2_Isr() interrupt 8
 {
     if(UART2_GET_TX_FLAG)
@@ -73,13 +73,13 @@ void UART2_Isr() interrupt 8
 	{
         UART2_CLEAR_RX_FLAG;
 		
-		//½ÓÊÕÊı¾İ¼Ä´æÆ÷Îª£ºS2BUF
+		//æ¥æ”¶æ•°æ®å¯„å­˜å™¨ä¸ºï¼šS2BUF
 
 	}
 }
 
 
-//UART3ÖĞ¶Ï
+//UART3ä¸­æ–­
 void UART3_Isr() interrupt 17
 {
     if(UART3_GET_TX_FLAG)
@@ -91,13 +91,13 @@ void UART3_Isr() interrupt 17
 	{
         UART3_CLEAR_RX_FLAG;
 		
-		//½ÓÊÕÊı¾İ¼Ä´æÆ÷Îª£ºS3BUF
+		//æ¥æ”¶æ•°æ®å¯„å­˜å™¨ä¸ºï¼šS3BUF
 
 	}
 }
 
 
-//UART4ÖĞ¶Ï
+//UART4ä¸­æ–­
 void UART4_Isr() interrupt 18
 {
     if(UART4_GET_TX_FLAG)
@@ -109,7 +109,7 @@ void UART4_Isr() interrupt 18
 	{
         UART4_CLEAR_RX_FLAG;
 		
-		//½ÓÊÕÊı¾İ¼Ä´æÆ÷Îª£ºS4BUF;
+		//æ¥æ”¶æ•°æ®å¯„å­˜å™¨ä¸ºï¼šS4BUF;
 		g_rxdat = S4BUF;
 		g_rxbuffer[g_rxpointer++] = g_rxdat;
 	}
@@ -129,18 +129,18 @@ void INT1_Isr() interrupt 2
 
 void INT2_Isr() interrupt 10
 {
-	INT2_CLEAR_FLAG;  //Çå³ıÖĞ¶Ï±êÖ¾
+	INT2_CLEAR_FLAG;  //æ¸…é™¤ä¸­æ–­æ ‡å¿—
 }
 
 
 void INT3_Isr() interrupt 11
 {
-	INT3_CLEAR_FLAG;  //Çå³ıÖĞ¶Ï±êÖ¾
+	INT3_CLEAR_FLAG;  //æ¸…é™¤ä¸­æ–­æ ‡å¿—
 }
 
 void INT4_Isr() interrupt 16
 {
-	INT4_CLEAR_FLAG;  //Çå³ıÖĞ¶Ï±êÖ¾
+	INT4_CLEAR_FLAG;  //æ¸…é™¤ä¸­æ–­æ ‡å¿—
 }
 
 void TM0_Isr() interrupt 1
@@ -196,19 +196,19 @@ void TM1_Isr() interrupt 3
 		}
 	}
 
-	/* ¼ì²âÈüµÀÀàĞÍ±ä»¯²¢¿ØÖÆ·äÃùÆ÷ */
+	/* æ£€æµ‹èµ›é“ç±»å‹å˜åŒ–å¹¶æ§åˆ¶èœ‚é¸£å™¨ */
     if (track_type != track_type_last)
     {
-        // ÈüµÀÀàĞÍ·¢Éú±ä»¯£¬Æô¶¯·äÃùÆ÷
+        // èµ›é“ç±»å‹å‘ç”Ÿå˜åŒ–ï¼Œå¯åŠ¨èœ‚é¸£å™¨
         beep_flag = 1;
-        beep_count = 0;  // ÖØÖÃ¼ÆÊıÆ÷
-        P26 = 0;         // ´ò¿ª·äÃùÆ÷
+        beep_count = 0;  // é‡ç½®è®¡æ•°å™¨
+        P26 = 0;         // æ‰“å¼€èœ‚é¸£å™¨
         
-        // ¸üĞÂÉÏÒ»´ÎÈüµÀÀàĞÍ
+        // æ›´æ–°ä¸Šä¸€æ¬¡èµ›é“ç±»å‹
         track_type_last = track_type;
     }
     
-    /* ·äÃùÆ÷¼ÆÊ±¿ØÖÆ */
+    /* èœ‚é¸£å™¨è®¡æ—¶æ§åˆ¶ */
     if (beep_flag)
     {
         beep_count++;
@@ -217,11 +217,11 @@ void TM1_Isr() interrupt 3
         {
             beep_count = 0;
             beep_flag = 0;
-            P26 = 1;  // ¹Ø±Õ·äÃùÆ÷
+            P26 = 1;  // å…³é—­èœ‚é¸£å™¨
         }
     }
 
-	/* ³öÈëÊ®×ÖÔ²»·¼ÆÊ±ÅĞ¶¨ */
+	/* å‡ºå…¥åå­—åœ†ç¯è®¡æ—¶åˆ¤å®š */
 	if (ten_change_flag == 1)
 	{
 		track_ten_cnt++;
@@ -237,47 +237,47 @@ void TM1_Isr() interrupt 3
 
 void TM2_Isr() interrupt 12
 {
-	TIM2_CLEAR_FLAG;  //Çå³ıÖĞ¶Ï±êÖ¾
+	TIM2_CLEAR_FLAG;  //æ¸…é™¤ä¸­æ–­æ ‡å¿—
 	
-	/* ³õ²½¶ÁÈ¡²¢Çå³ı±àÂëÆ÷µÄÖµ */
+	/* åˆæ­¥è¯»å–å¹¶æ¸…é™¤ç¼–ç å™¨çš„å€¼ */
 	EncoderL.encoder_original = get_left_encoder();
 	EncoderR.encoder_original = get_right_encoder();
 
-	/* ¶Ô±àÂëÆ÷µÄÖµ½øĞĞÂË²¨ */
+	/* å¯¹ç¼–ç å™¨çš„å€¼è¿›è¡Œæ»¤æ³¢ */
 	EncoderL.encoder_final = lowpass_filter(&leftSpeedFilt, EncoderL.encoder_original);
 	EncoderR.encoder_final = lowpass_filter(&rightSpeedFilt, EncoderR.encoder_original);
 
-	/* ¶Ô±àÂëÆ÷µÄÖµ½øĞĞÒì³£Ïû³ı */
+	/* å¯¹ç¼–ç å™¨çš„å€¼è¿›è¡Œå¼‚å¸¸æ¶ˆé™¤ */
 	EncoderL.encoder_final = encoder_debounce(&EncoderDeboL, EncoderR.encoder_final);
 	EncoderR.encoder_final = encoder_debounce(&EncoderDeboR, EncoderR.encoder_final);
 
-	/* È¡×óÓÒ±àÂëÆ÷Æ½¾ùÖµ */
+	/* å–å·¦å³ç¼–ç å™¨å¹³å‡å€¼ */
 	g_encoder_average = (EncoderL.encoder_final + EncoderR.encoder_final) / 2;
 
-	/* ¶ÁÈ¡ÍÓÂİÒÇÔ­Ê¼Êı¾İ²¢½«Æä×ª»¯ÎªÎïÀíÊı¾İ */
+	/* è¯»å–é™€èºä»ªåŸå§‹æ•°æ®å¹¶å°†å…¶è½¬åŒ–ä¸ºç‰©ç†æ•°æ® */
 	imu963ra_get_gyro();
 	Gyro_Z = imu963ra_gyro_transition(imu963ra_gyro_z);
 
-	/* ¶ÔGyro_Z½øĞĞ¿¨¶ûÂüÂË²¨ */
+	/* å¯¹Gyro_Zè¿›è¡Œå¡å°”æ›¼æ»¤æ³¢ */
 	filtered_GyroZ = kalman_update(&imu693_kf, Gyro_Z);
 	
-	/* ×ªÏò»·PID¿ØÖÆ */
+	/* è½¬å‘ç¯PIDæ§åˆ¶ */
 	turn_pid = pid_poisitional_turnning(&TurnPID, position, filtered_GyroZ);
 
-	/* ¸üĞÂ¿¨¶ûÂüÂË²¨Æ÷µÄÖµ */
+	/* æ›´æ–°å¡å°”æ›¼æ»¤æ³¢å™¨çš„å€¼ */
 	kalman_predict(&imu693_kf, turn_pid);
 
-	/* ËÙ¶È»·PID¿ØÖÆ */
+	/* é€Ÿåº¦ç¯PIDæ§åˆ¶ */
 	speed_pid = pid_increment(&SpeedPID, g_encoder_average, g_speedpoint);
 
-	/* ¿ØÖÆµç»ú */
+	/* æ§åˆ¶ç”µæœº */
 	g_DutyLeft = (int32_t)(speed_pid - turn_pid);
 	g_DutyRight = (int32_t)(speed_pid + turn_pid);
 
 	if (protection_flag == 1)
 	{
-		pid_clean(&SpeedPID);  // Çå³ıËÙ¶È»·PID
-		pid_clean(&TurnPID);   // Çå³ı×ªÏò»·PID
+		pid_clean(&SpeedPID);  // æ¸…é™¤é€Ÿåº¦ç¯PID
+		pid_clean(&TurnPID);   // æ¸…é™¤è½¬å‘ç¯PID
 
 		set_motor_pwm(0, 0);
 	}
@@ -290,13 +290,13 @@ void TM2_Isr() interrupt 12
 
 void TM3_Isr() interrupt 19
 {
-	TIM3_CLEAR_FLAG; //Çå³ıÖĞ¶Ï±êÖ¾
+	TIM3_CLEAR_FLAG; //æ¸…é™¤ä¸­æ–­æ ‡å¿—
 	
 }
 
 void TM4_Isr() interrupt 20
 {
-	TIM4_CLEAR_FLAG; //Çå³ıÖĞ¶Ï±êÖ¾
+	TIM4_CLEAR_FLAG; //æ¸…é™¤ä¸­æ–­æ ‡å¿—
 
 }
 

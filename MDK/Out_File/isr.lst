@@ -1,73 +1,74 @@
-C251 COMPILER V5.60.0,  isr                                                                06/07/25  11:17:02  PAGE 1   
+C251 COMPILER V5.60.0,  isr                                                                06/07/25  14:38:23  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE isr
 OBJECT MODULE PLACED IN .\Out_File\isr.obj
-COMPILER INVOKED BY: D:\keil5\C251\BIN\C251.EXE ..\USER\src\isr.c LARGE INTR2 WARNINGLEVEL(3) OPTIMIZE(0,SPEED) BROWSE I
-                    -NCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral) DEBUG PRINT(.\Out_File\isr.lst)
-                    - OBJECT(.\Out_File\isr.obj) 
+COMPILER INVOKED BY: D:\Software\Keil5\c251v560\C251\BIN\C251.EXE ..\USER\src\isr.c LARGE INTR2 WARNINGLEVEL(3) OPTIMIZE
+                    -(0,SPEED) BROWSE INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral) DEBUG PRINT(.
+                    -\Out_File\isr.lst) TABS(2) OBJECT(.\Out_File\isr.obj) 
 
 stmt  level    source
 
     1          ///******************************************************************************************************
              -***************
     2          // * COPYRIGHT NOTICE
-    3          // * Copyright (c) 2020,Öğ·É¿Æ¼¼
+    3          // * Copyright (c) 2020,é€é£ç§‘æŠ€
     4          // * All rights reserved.
-    5          // * ¼¼ÊõÌÖÂÛQQÈº£ºÒ»Èº£º179029047(ÒÑÂú)  ¶şÈº£º244861897(ÒÑÂú)  ÈıÈº£º824575535
+    5          // * æŠ€æœ¯è®¨è®ºQQç¾¤ï¼šä¸€ç¾¤ï¼š179029047(å·²æ»¡)  äºŒç¾¤ï¼š244861897(å·²æ»¡)  ä¸‰ç¾¤ï¼š824575535
     6          // *
-    7          // * ÒÔÏÂËùÓĞÄÚÈİ°æÈ¨¾ùÊôÖğ·É¿Æ¼¼ËùÓĞ£¬Î´¾­ÔÊĞí²»µÃÓÃÓÚÉÌÒµÓÃÍ¾£¬
-    8          // * »¶Ó­¸÷Î»Ê¹ÓÃ²¢´«²¥±¾³ÌĞò£¬ĞŞ¸ÄÄÚÈİÊ±±ØĞë±£ÁôÖğ·É¿Æ¼¼µÄ°æÈ¨ÉùÃ÷¡£
+    7          // * ä»¥ä¸‹æ‰€æœ‰å†…å®¹ç‰ˆæƒå‡å±é€é£ç§‘æŠ€æ‰€æœ‰ï¼Œæœªç»å…è®¸ä¸å¾—ç”¨äºå•†ä¸šç”¨é€”ï¼Œ
+    8          // * æ¬¢è¿å„ä½ä½¿ç”¨å¹¶ä¼ æ’­æœ¬ç¨‹åºï¼Œä¿®æ”¹å†…å®¹æ—¶å¿…é¡»ä¿ç•™é€é£ç§‘æŠ€çš„ç‰ˆæƒå£°æ˜ã€‚
     9          // *
-   10          // * @file                      isr
-   11          // * @company                   ³É¶¼Öğ·É¿Æ¼¼ÓĞÏŞ¹«Ë¾
-   12          // * @author                    Öğ·É¿Æ¼¼(QQ790875685)
-   13          // * @version                   ²é¿´docÄÚversionÎÄ¼ş °æ±¾ËµÃ÷
-   14          // * @Software                  MDK FOR C251 V5.60
-   15          // * @Target core               STC32G12K128
-   16          // * @Taobao                    https://seekfree.taobao.com/
-   17          // * @date                      2020-4-14
+   10          // * @file          isr
+   11          // * @company       æˆéƒ½é€é£ç§‘æŠ€æœ‰é™å…¬å¸
+   12          // * @author        é€é£ç§‘æŠ€(QQ790875685)
+   13          // * @version       æŸ¥çœ‹docå†…versionæ–‡ä»¶ ç‰ˆæœ¬è¯´æ˜
+   14          // * @Software      MDK FOR C251 V5.60
+   15          // * @Target core   STC32G12K128
+   16          // * @Taobao        https://seekfree.taobao.com/
+   17          // * @date          2020-4-14
    18          // ******************************************************************************************************
              -**************/
    19          #include "headfile.h"
    20          
-   21          int g_encoder_average = 0;                       //×óÓÒ±àÂëÆ÷µÄÆ½¾ùÖµ
-   22          float Gyro_Z = 0, filtered_GyroZ = 0;            // ÍÓÂİÒÇ½ÇËÙ¶ÈµÄÔ­Ê¼ÖµºÍ¿¨¶ûÂüÂË²¨Ö®ºóµÄÖµ
-   23          int32_t g_DutyLeft = 0, g_DutyRight = 0;         // ×îºóÕæÕıÒª¸øµç»úµÄPWMÖµ
+   21          int g_encoder_average = 0;                       //å·¦å³ç¼–ç å™¨çš„å¹³å‡å€¼
+   22          float Gyro_Z = 0, filtered_GyroZ = 0;            // é™€èºä»ªè§’é€Ÿåº¦çš„åŸå§‹å€¼å’Œå¡å°”æ›¼æ»¤æ³¢ä¹‹å
+             -çš„å€¼
+   23          int32_t g_DutyLeft = 0, g_DutyRight = 0;         // æœ€åçœŸæ­£è¦ç»™ç”µæœºçš„PWMå€¼
    24          
-   25          //pid¿ØÖÆÏà¹Ø±äÁ¿
-   26          float speed_pid = 0, turn_pid = 0;               //ËÙ¶È»·ºÍ×ªÏò»·pidµÄÖµ
+   25          //pidæ§åˆ¶ç›¸å…³å˜é‡
+   26          float speed_pid = 0, turn_pid = 0;               //é€Ÿåº¦ç¯å’Œè½¬å‘ç¯pidçš„å€¼
    27          int g_speedpoint = 80;
-   28          int g_leftpoint = 0, g_rightpoint = 0;           //×óÓÒÂÖµÄÄ¿±êËÙ¶È
+   28          int g_leftpoint = 0, g_rightpoint = 0;           //å·¦å³è½®çš„ç›®æ ‡é€Ÿåº¦
    29          
-   30          // ·äÃùÆ÷¿ØÖÆÏà¹Ø±äÁ¿
-   31          uint8_t beep_flag = 0;                           // ·äÃùÆ÷¿ªÆô±êÖ¾£¬1±íÊ¾¿ªÆô
-   32          uint16_t beep_count = 0;                         // ·äÃùÆ÷¼ÆÊ±¼ÆÊıÆ÷
-   33          uint8_t track_ten_cnt = 0;                       //³öÈë»·ÖØ¸´ÅĞ¶¨¼ÆÊ±Æ÷
+   30          // èœ‚é¸£å™¨æ§åˆ¶ç›¸å…³å˜é‡
+   31          uint8_t beep_flag = 0;                           // èœ‚é¸£å™¨å¼€å¯æ ‡å¿—ï¼Œ1è¡¨ç¤ºå¼€å¯
+   32          uint16_t beep_count = 0;                         // èœ‚é¸£å™¨è®¡æ—¶è®¡æ•°å™¨
+   33          uint8_t track_ten_cnt = 0;                       //å‡ºå…¥ç¯é‡å¤åˆ¤å®šè®¡æ—¶å™¨
    34          
-   35          //UART1ÖĞ¶Ï
+   35          //UART1ä¸­æ–­
    36          void UART1_Isr() interrupt 4
    37          {
    38   1      //  uint8 res;
-   39   1      //      static uint8 dwon_count;
-   40   1              
+   39   1      //  static uint8 dwon_count;
+   40   1        
    41   1          if(UART1_GET_TX_FLAG)
    42   1          {
    43   2              UART1_CLEAR_TX_FLAG;
    44   2              busy[1] = 0;
    45   2          }
-   46   1              
+   46   1        
    47   1          if(UART1_GET_RX_FLAG)
    48   1          {
    49   2              UART1_CLEAR_RX_FLAG;
    50   2      //        res = SBUF;
-   51   2      //        //³ÌĞò×Ô¶¯ÏÂÔØ
+   51   2      //        //ç¨‹åºè‡ªåŠ¨ä¸‹è½½
    52   2      //        if(res == 0x7F)
    53   2      //        {
    54   2      //            if(dwon_count++ > 20)
-   55   2      //                IAP_CONTR = 0x60;
-C251 COMPILER V5.60.0,  isr                                                                06/07/25  11:17:02  PAGE 2   
+C251 COMPILER V5.60.0,  isr                                                                06/07/25  14:38:23  PAGE 2   
 
+   55   2      //                IAP_CONTR = 0x60;
    56   2      //        }
    57   2      //        else
    58   2      //        {
@@ -76,66 +77,66 @@ stmt  level    source
    61   2          }
    62   1      }
    63          
-   64          //UART2ÖĞ¶Ï
+   64          //UART2ä¸­æ–­
    65          void UART2_Isr() interrupt 8
    66          {
    67   1          if(UART2_GET_TX_FLAG)
-   68   1              {
+   68   1        {
    69   2              UART2_CLEAR_TX_FLAG;
-   70   2                      busy[2] = 0;
-   71   2              }
+   70   2          busy[2] = 0;
+   71   2        }
    72   1          if(UART2_GET_RX_FLAG)
-   73   1              {
+   73   1        {
    74   2              UART2_CLEAR_RX_FLAG;
-   75   2                      
-   76   2                      //½ÓÊÕÊı¾İ¼Ä´æÆ÷Îª£ºS2BUF
+   75   2          
+   76   2          //æ¥æ”¶æ•°æ®å¯„å­˜å™¨ä¸ºï¼šS2BUF
    77   2      
-   78   2              }
+   78   2        }
    79   1      }
    80          
    81          
-   82          //UART3ÖĞ¶Ï
+   82          //UART3ä¸­æ–­
    83          void UART3_Isr() interrupt 17
    84          {
    85   1          if(UART3_GET_TX_FLAG)
-   86   1              {
+   86   1        {
    87   2              UART3_CLEAR_TX_FLAG;
-   88   2                      busy[3] = 0;
-   89   2              }
+   88   2          busy[3] = 0;
+   89   2        }
    90   1          if(UART3_GET_RX_FLAG)
-   91   1              {
+   91   1        {
    92   2              UART3_CLEAR_RX_FLAG;
-   93   2                      
-   94   2                      //½ÓÊÕÊı¾İ¼Ä´æÆ÷Îª£ºS3BUF
+   93   2          
+   94   2          //æ¥æ”¶æ•°æ®å¯„å­˜å™¨ä¸ºï¼šS3BUF
    95   2      
-   96   2              }
+   96   2        }
    97   1      }
    98          
    99          
-  100          //UART4ÖĞ¶Ï
+  100          //UART4ä¸­æ–­
   101          void UART4_Isr() interrupt 18
   102          {
   103   1          if(UART4_GET_TX_FLAG)
-  104   1              {
+  104   1        {
   105   2              UART4_CLEAR_TX_FLAG;
-  106   2                      busy[4] = 0;
-  107   2              }
+  106   2          busy[4] = 0;
+  107   2        }
   108   1          if(UART4_GET_RX_FLAG)
-  109   1              {
+  109   1        {
   110   2              UART4_CLEAR_RX_FLAG;
-  111   2                      
-  112   2                      //½ÓÊÕÊı¾İ¼Ä´æÆ÷Îª£ºS4BUF;
-  113   2                      g_rxdat = S4BUF;
-  114   2                      g_rxbuffer[g_rxpointer++] = g_rxdat;
-  115   2              }
+  111   2          
+  112   2          //æ¥æ”¶æ•°æ®å¯„å­˜å™¨ä¸ºï¼šS4BUF;
+  113   2          g_rxdat = S4BUF;
+  114   2          g_rxbuffer[g_rxpointer++] = g_rxdat;
+  115   2        }
   116   1      }
   117          
   118          void INT0_Isr() interrupt 0
   119          {
-  120   1              
-  121   1      }
-C251 COMPILER V5.60.0,  isr                                                                06/07/25  11:17:02  PAGE 3   
+  120   1        
+C251 COMPILER V5.60.0,  isr                                                                06/07/25  14:38:23  PAGE 3   
 
+  121   1      }
   122          
   123          
   124          void INT1_Isr() interrupt 2
@@ -146,18 +147,18 @@ stmt  level    source
   129          
   130          void INT2_Isr() interrupt 10
   131          {
-  132   1              INT2_CLEAR_FLAG;  //Çå³ıÖĞ¶Ï±êÖ¾
+  132   1        INT2_CLEAR_FLAG;  //æ¸…é™¤ä¸­æ–­æ ‡å¿—
   133   1      }
   134          
   135          
   136          void INT3_Isr() interrupt 11
   137          {
-  138   1              INT3_CLEAR_FLAG;  //Çå³ıÖĞ¶Ï±êÖ¾
+  138   1        INT3_CLEAR_FLAG;  //æ¸…é™¤ä¸­æ–­æ ‡å¿—
   139   1      }
   140          
   141          void INT4_Isr() interrupt 16
   142          {
-  143   1              INT4_CLEAR_FLAG;  //Çå³ıÖĞ¶Ï±êÖ¾
+  143   1        INT4_CLEAR_FLAG;  //æ¸…é™¤ä¸­æ–­æ ‡å¿—
   144   1      }
   145          
   146          void TM0_Isr() interrupt 1
@@ -168,66 +169,66 @@ stmt  level    source
   151          
   152          void TM1_Isr() interrupt 3
   153          {
-  154   1              int i = 0;
-  155   1              
-  156   1              key[0].state = P72;
-  157   1              key[1].state = P71;
-  158   1              key[2].state = P70;
-  159   1              key[3].state = P73;
-  160   1              
-  161   1              for (i = 0; i < 4; i++)
-  162   1              {
-  163   2                      switch (key[i].step)
-  164   2                      {
-  165   3                              case 0:
-  166   3                              {
-  167   4                                      if (key[i].state == 0)
-  168   4                                      {
-  169   5                                              key[i].step = 1;
-  170   5                                      }
-  171   4                              }
-  172   3                              break;
-  173   3                              
-  174   3                              case 1:
-  175   3                              {
-  176   4                                      if (key[i].state == 0)
-  177   4                                      {
-  178   5                                              key[i].step = 2;
-  179   5                                              key[i].flag = 1;
-  180   5                                      }
-  181   4                                      else
-  182   4                                      {
-  183   5                                              key[i].step = 0;
-  184   5                                      }
-  185   4                              }
-  186   3                              break;
-  187   3                              
-C251 COMPILER V5.60.0,  isr                                                                06/07/25  11:17:02  PAGE 4   
+  154   1        int i = 0;
+  155   1        
+  156   1        key[0].state = P72;
+  157   1        key[1].state = P71;
+  158   1        key[2].state = P70;
+  159   1        key[3].state = P73;
+  160   1        
+  161   1        for (i = 0; i < 4; i++)
+  162   1        {
+  163   2          switch (key[i].step)
+  164   2          {
+  165   3            case 0:
+  166   3            {
+  167   4              if (key[i].state == 0)
+  168   4              {
+  169   5                key[i].step = 1;
+  170   5              }
+  171   4            }
+  172   3            break;
+  173   3            
+  174   3            case 1:
+  175   3            {
+  176   4              if (key[i].state == 0)
+  177   4              {
+  178   5                key[i].step = 2;
+  179   5                key[i].flag = 1;
+  180   5              }
+  181   4              else
+  182   4              {
+  183   5                key[i].step = 0;
+  184   5              }
+  185   4            }
+  186   3            break;
+C251 COMPILER V5.60.0,  isr                                                                06/07/25  14:38:23  PAGE 4   
 
-  188   3                              case 2:
-  189   3                              {
-  190   4                                      if (key[i].state == 1)
-  191   4                                      {
-  192   5                                              key[i].step = 0;
-  193   5                                      }
-  194   4                              }
-  195   3                              break;
-  196   3                      }
-  197   2              }
+  187   3            
+  188   3            case 2:
+  189   3            {
+  190   4              if (key[i].state == 1)
+  191   4              {
+  192   5                key[i].step = 0;
+  193   5              }
+  194   4            }
+  195   3            break;
+  196   3          }
+  197   2        }
   198   1      
-  199   1              /* ¼ì²âÈüµÀÀàĞÍ±ä»¯²¢¿ØÖÆ·äÃùÆ÷ */
+  199   1        /* æ£€æµ‹èµ›é“ç±»å‹å˜åŒ–å¹¶æ§åˆ¶èœ‚é¸£å™¨ */
   200   1          if (track_type != track_type_last)
   201   1          {
-  202   2              // ÈüµÀÀàĞÍ·¢Éú±ä»¯£¬Æô¶¯·äÃùÆ÷
+  202   2              // èµ›é“ç±»å‹å‘ç”Ÿå˜åŒ–ï¼Œå¯åŠ¨èœ‚é¸£å™¨
   203   2              beep_flag = 1;
-  204   2              beep_count = 0;  // ÖØÖÃ¼ÆÊıÆ÷
-  205   2              P26 = 0;         // ´ò¿ª·äÃùÆ÷
+  204   2              beep_count = 0;  // é‡ç½®è®¡æ•°å™¨
+  205   2              P26 = 0;         // æ‰“å¼€èœ‚é¸£å™¨
   206   2              
-  207   2              // ¸üĞÂÉÏÒ»´ÎÈüµÀÀàĞÍ
+  207   2              // æ›´æ–°ä¸Šä¸€æ¬¡èµ›é“ç±»å‹
   208   2              track_type_last = track_type;
   209   2          }
   210   1          
-  211   1          /* ·äÃùÆ÷¼ÆÊ±¿ØÖÆ */
+  211   1          /* èœ‚é¸£å™¨è®¡æ—¶æ§åˆ¶ */
   212   1          if (beep_flag)
   213   1          {
   214   2              beep_count++;
@@ -236,88 +237,88 @@ stmt  level    source
   217   2              {
   218   3                  beep_count = 0;
   219   3                  beep_flag = 0;
-  220   3                  P26 = 1;  // ¹Ø±Õ·äÃùÆ÷
+  220   3                  P26 = 1;  // å…³é—­èœ‚é¸£å™¨
   221   3              }
   222   2          }
   223   1      
-  224   1              /* ³öÈëÊ®×ÖÔ²»·¼ÆÊ±ÅĞ¶¨ */
-  225   1              if (ten_change_flag == 1)
-  226   1              {
-  227   2                      track_ten_cnt++;
-  228   2                      if (track_ten_cnt >= 150)
-  229   2                      {
-  230   3                              track_ten_flag = 1;
-  231   3                              track_ten_cnt = 0;
-  232   3                              ten_change_flag = 0;
-  233   3                      }
-  234   2              }
+  224   1        /* å‡ºå…¥åå­—åœ†ç¯è®¡æ—¶åˆ¤å®š */
+  225   1        if (ten_change_flag == 1)
+  226   1        {
+  227   2          track_ten_cnt++;
+  228   2          if (track_ten_cnt >= 150)
+  229   2          {
+  230   3            track_ten_flag = 1;
+  231   3            track_ten_cnt = 0;
+  232   3            ten_change_flag = 0;
+  233   3          }
+  234   2        }
   235   1      }
   236          
   237          
   238          void TM2_Isr() interrupt 12
   239          {
-  240   1              TIM2_CLEAR_FLAG;  //Çå³ıÖĞ¶Ï±êÖ¾
-  241   1              
-  242   1              /* ³õ²½¶ÁÈ¡²¢Çå³ı±àÂëÆ÷µÄÖµ */
-  243   1              EncoderL.encoder_original = get_left_encoder();
-  244   1              EncoderR.encoder_original = get_right_encoder();
+  240   1        TIM2_CLEAR_FLAG;  //æ¸…é™¤ä¸­æ–­æ ‡å¿—
+  241   1        
+  242   1        /* åˆæ­¥è¯»å–å¹¶æ¸…é™¤ç¼–ç å™¨çš„å€¼ */
+  243   1        EncoderL.encoder_original = get_left_encoder();
+  244   1        EncoderR.encoder_original = get_right_encoder();
   245   1      
-  246   1              /* ¶Ô±àÂëÆ÷µÄÖµ½øĞĞÂË²¨ */
-  247   1              EncoderL.encoder_final = lowpass_filter(&leftSpeedFilt, EncoderL.encoder_original);
-  248   1              EncoderR.encoder_final = lowpass_filter(&rightSpeedFilt, EncoderR.encoder_original);
+  246   1        /* å¯¹ç¼–ç å™¨çš„å€¼è¿›è¡Œæ»¤æ³¢ */
+  247   1        EncoderL.encoder_final = lowpass_filter(&leftSpeedFilt, EncoderL.encoder_original);
+  248   1        EncoderR.encoder_final = lowpass_filter(&rightSpeedFilt, EncoderR.encoder_original);
   249   1      
-  250   1              /* ¶Ô±àÂëÆ÷µÄÖµ½øĞĞÒì³£Ïû³ı */
-  251   1              EncoderL.encoder_final = encoder_debounce(&EncoderDeboL, EncoderR.encoder_final);
-  252   1              EncoderR.encoder_final = encoder_debounce(&EncoderDeboR, EncoderR.encoder_final);
-  253   1      
-C251 COMPILER V5.60.0,  isr                                                                06/07/25  11:17:02  PAGE 5   
+  250   1        /* å¯¹ç¼–ç å™¨çš„å€¼è¿›è¡Œå¼‚å¸¸æ¶ˆé™¤ */
+  251   1        EncoderL.encoder_final = encoder_debounce(&EncoderDeboL, EncoderR.encoder_final);
+  252   1        EncoderR.encoder_final = encoder_debounce(&EncoderDeboR, EncoderR.encoder_final);
+C251 COMPILER V5.60.0,  isr                                                                06/07/25  14:38:23  PAGE 5   
 
-  254   1              /* È¡×óÓÒ±àÂëÆ÷Æ½¾ùÖµ */
-  255   1              g_encoder_average = (EncoderL.encoder_final + EncoderR.encoder_final) / 2;
+  253   1      
+  254   1        /* å–å·¦å³ç¼–ç å™¨å¹³å‡å€¼ */
+  255   1        g_encoder_average = (EncoderL.encoder_final + EncoderR.encoder_final) / 2;
   256   1      
-  257   1              /* ¶ÁÈ¡ÍÓÂİÒÇÔ­Ê¼Êı¾İ²¢½«Æä×ª»¯ÎªÎïÀíÊı¾İ */
-  258   1              imu963ra_get_gyro();
-  259   1              Gyro_Z = imu963ra_gyro_transition(imu963ra_gyro_z);
+  257   1        /* è¯»å–é™€èºä»ªåŸå§‹æ•°æ®å¹¶å°†å…¶è½¬åŒ–ä¸ºç‰©ç†æ•°æ® */
+  258   1        imu963ra_get_gyro();
+  259   1        Gyro_Z = imu963ra_gyro_transition(imu963ra_gyro_z);
   260   1      
-  261   1              /* ¶ÔGyro_Z½øĞĞ¿¨¶ûÂüÂË²¨ */
-  262   1              filtered_GyroZ = kalman_update(&imu693_kf, Gyro_Z);
-  263   1              
-  264   1              /* ×ªÏò»·PID¿ØÖÆ */
-  265   1              turn_pid = pid_poisitional_turnning(&TurnPID, position, filtered_GyroZ);
+  261   1        /* å¯¹Gyro_Zè¿›è¡Œå¡å°”æ›¼æ»¤æ³¢ */
+  262   1        filtered_GyroZ = kalman_update(&imu693_kf, Gyro_Z);
+  263   1        
+  264   1        /* è½¬å‘ç¯PIDæ§åˆ¶ */
+  265   1        turn_pid = pid_poisitional_turnning(&TurnPID, position, filtered_GyroZ);
   266   1      
-  267   1              /* ¸üĞÂ¿¨¶ûÂüÂË²¨Æ÷µÄÖµ */
-  268   1              kalman_predict(&imu693_kf, turn_pid);
+  267   1        /* æ›´æ–°å¡å°”æ›¼æ»¤æ³¢å™¨çš„å€¼ */
+  268   1        kalman_predict(&imu693_kf, turn_pid);
   269   1      
-  270   1              /* ËÙ¶È»·PID¿ØÖÆ */
-  271   1              speed_pid = pid_increment(&SpeedPID, g_encoder_average, g_speedpoint);
+  270   1        /* é€Ÿåº¦ç¯PIDæ§åˆ¶ */
+  271   1        speed_pid = pid_increment(&SpeedPID, g_encoder_average, g_speedpoint);
   272   1      
-  273   1              /* ¿ØÖÆµç»ú */
-  274   1              g_DutyLeft = (int32_t)(speed_pid - turn_pid);
-  275   1              g_DutyRight = (int32_t)(speed_pid + turn_pid);
+  273   1        /* æ§åˆ¶ç”µæœº */
+  274   1        g_DutyLeft = (int32_t)(speed_pid - turn_pid);
+  275   1        g_DutyRight = (int32_t)(speed_pid + turn_pid);
   276   1      
-  277   1              if (protection_flag == 1)
-  278   1              {
-  279   2                      pid_clean(&SpeedPID);  // Çå³ıËÙ¶È»·PID
-  280   2                      pid_clean(&TurnPID);   // Çå³ı×ªÏò»·PID
+  277   1        if (protection_flag == 1)
+  278   1        {
+  279   2          pid_clean(&SpeedPID);  // æ¸…é™¤é€Ÿåº¦ç¯PID
+  280   2          pid_clean(&TurnPID);   // æ¸…é™¤è½¬å‘ç¯PID
   281   2      
-  282   2                      set_motor_pwm(0, 0);
-  283   2              }
-  284   1              else
-  285   1              {
-  286   2                      set_motor_pwm(g_DutyLeft, g_DutyRight);
-  287   2              }
+  282   2          set_motor_pwm(0, 0);
+  283   2        }
+  284   1        else
+  285   1        {
+  286   2          set_motor_pwm(g_DutyLeft, g_DutyRight);
+  287   2        }
   288   1      }
   289          
   290          
   291          void TM3_Isr() interrupt 19
   292          {
-  293   1              TIM3_CLEAR_FLAG; //Çå³ıÖĞ¶Ï±êÖ¾
-  294   1              
+  293   1        TIM3_CLEAR_FLAG; //æ¸…é™¤ä¸­æ–­æ ‡å¿—
+  294   1        
   295   1      }
   296          
   297          void TM4_Isr() interrupt 20
   298          {
-  299   1              TIM4_CLEAR_FLAG; //Çå³ıÖĞ¶Ï±êÖ¾
+  299   1        TIM4_CLEAR_FLAG; //æ¸…é™¤ä¸­æ–­æ ‡å¿—
   300   1      
   301   1      }
   302          
@@ -337,9 +338,9 @@ stmt  level    source
   316          //void  INT4_Isr()  interrupt 16;
   317          //void  UART3_Isr() interrupt 17;
   318          //void  UART4_Isr() interrupt 18;
-  319          //void  TM3_Isr()   interrupt 19;
-C251 COMPILER V5.60.0,  isr                                                                06/07/25  11:17:02  PAGE 6   
+C251 COMPILER V5.60.0,  isr                                                                06/07/25  14:38:23  PAGE 6   
 
+  319          //void  TM3_Isr()   interrupt 19;
   320          //void  TM4_Isr()   interrupt 20;
   321          //void  CMP_Isr()   interrupt 21;
   322          //void  I2C_Isr()   interrupt 24;

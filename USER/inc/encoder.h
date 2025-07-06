@@ -9,9 +9,9 @@
 
 typedef struct
 {
-    int encoder_original;     //±àÂëÆ÷Ò»¿ªÊ¼¶Á³öÀ´µÄÖµ
-    int encoder_integral;     //±àÂëÆ÷»ı·ÖÖµ
-    int encoder_final;        //±àÂëÆ÷ÂË²¨¡¢Ïû³ıÒì³£Ö®ºóµÄÖµ
+    int encoder_original;     //ç¼–ç å™¨ä¸€å¼€å§‹è¯»å‡ºæ¥çš„å€¼
+    int encoder_integral;     //ç¼–ç å™¨ç§¯åˆ†å€¼
+    int encoder_final;        //ç¼–ç å™¨æ»¤æ³¢ã€æ¶ˆé™¤å¼‚å¸¸ä¹‹åçš„å€¼
 } Encoder_t;
 
 typedef struct

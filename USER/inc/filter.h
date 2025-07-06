@@ -4,13 +4,13 @@
 #include "headfile.h"
 
 typedef struct {
-    float F;        // ×´Ì¬×ªÒÆÏµÊı£¨ÏµÍ³¶¯Á¦Ñ§£©
-    float B;        // ¿ØÖÆÊäÈëÏµÊı
-    float Q;        // ¹ı³ÌÔëÉùĞ­·½²î
-    float R;        // ²âÁ¿ÔëÉùĞ­·½²î
-    float P;        // ¹À¼ÆÎó²îĞ­·½²î
-    float K;        // ¿¨¶ûÂüÔöÒæ
-    float x;        // ×´Ì¬¹À¼ÆÖµ£¨gyroz£©
+    float F;        // çŠ¶æ€è½¬ç§»ç³»æ•°ï¼ˆç³»ç»ŸåŠ¨åŠ›å­¦ï¼‰
+    float B;        // æ§åˆ¶è¾“å…¥ç³»æ•°
+    float Q;        // è¿‡ç¨‹å™ªå£°åæ–¹å·®
+    float R;        // æµ‹é‡å™ªå£°åæ–¹å·®
+    float P;        // ä¼°è®¡è¯¯å·®åæ–¹å·®
+    float K;        // å¡å°”æ›¼å¢ç›Š
+    float x;        // çŠ¶æ€ä¼°è®¡å€¼ï¼ˆgyrozï¼‰
 } KalmanFilter;
 
 typedef struct {

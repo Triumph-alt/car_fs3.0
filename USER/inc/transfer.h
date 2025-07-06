@@ -10,12 +10,12 @@ typedef struct
 	uint8 flag;
 } Key_t;
 
-enum state//Ğ¡³µÔËĞĞ×´Ì¬
+enum state//å°è½¦è¿è¡ŒçŠ¶æ€
 {
-	ELECT_PARA,   //µ÷½Úµç´Å
-	PID_PARA,     //µ÷½ÚPID²ÎÊı
-	CHARGE,       //ÎŞÏß³äµçÖĞ
-	RUNNING       //ÔËĞĞ
+	ELECT_PARA,   //è°ƒèŠ‚ç”µç£
+	PID_PARA,     //è°ƒèŠ‚PIDå‚æ•°
+	CHARGE,       //æ— çº¿å……ç”µä¸­
+	RUNNING       //è¿è¡Œ
 };
 
 extern Key_t key[4];

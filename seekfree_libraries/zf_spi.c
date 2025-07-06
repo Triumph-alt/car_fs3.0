@@ -1,16 +1,16 @@
 /*********************************************************************************************************************
  * COPYRIGHT NOTICE
- * Copyright (c) 2020,��ɿƼ�
+ * Copyright (c) 2020,逐飞科技
  * All rights reserved.
- * ��������QQȺ��һȺ��179029047(����)  ��Ⱥ��244861897(����)  ��Ⱥ��824575535
+ * 技术讨论QQ群：一群：179029047(已满)  二群：244861897(已满)  三群：824575535
  *
- * �����������ݰ�Ȩ������ɿƼ����У�δ����������������ҵ��;��
- * ��ӭ��λʹ�ò������������޸�����ʱ���뱣����ɿƼ��İ�Ȩ������
+ * 以下所有内容版权均属逐飞科技所有，未经允许不得用于商业用途，
+ * 欢迎各位使用并传播本程序，修改内容时必须保留逐飞科技的版权声明。
  *
  * @file       		spi
- * @company	   		�ɶ���ɿƼ����޹�˾
- * @author     		��ɿƼ�(QQ790875685)
- * @version    		�鿴doc��version�ļ� �汾˵��
+ * @company	   		成都逐飞科技有限公司
+ * @author     		逐飞科技(QQ790875685)
+ * @version    		查看doc内version文件 版本说明
  * @Software 		MDK FOR C251 V5.60
  * @Target core		STC32G12K128
  * @Taobao   		https://seekfree.taobao.com/
@@ -24,17 +24,17 @@
 
 
 //-------------------------------------------------------------------------------------------------------------------
-//  @brief      spi��ʼ������(ss��������������)
-//  @param      spi_n			ѡ��SPIģ��(SPI_1-SPI_4)
-//  @param      sck_pin			ѡ��SCK����
-//  @param      mosi_pin		ѡ��MOSI����
-//  @param      miso_pin		ѡ��MISO����
-//  @param     	mstr			����ѡ��
-//  @param      mode            SPIģʽ 0��CPOL=0 CPHA=0    1��CPOL=0 CPHA=1   2��CPOL=1 CPHA=0   3��CPOL=1 CPHA=1 //����ϸ�ڿ����аٶ�
-//  @param     	baud			����ѡ��
+//  @brief      spi初始化函数(ss引脚由软件控制)
+//  @param      spi_n			选择SPI模块(SPI_1-SPI_4)
+//  @param      sck_pin			选择SCK引脚
+//  @param      mosi_pin		选择MOSI引脚
+//  @param      miso_pin		选择MISO引脚
+//  @param     	mstr			主从选择
+//  @param      mode            SPI模式 0：CPOL=0 CPHA=0    1：CPOL=0 CPHA=1   2：CPOL=1 CPHA=0   3：CPOL=1 CPHA=1 //具体细节可自行百度
+//  @param     	baud			速率选择
 //  @since      v1.0
 //  Sample usage:				spi_init(SPI_1, SPI1_SCLK_P15, SPI1_MOSI_P13, SPI1_MISO_P14, 0, MASTER, SYSclk_DIV_4);	
-//								//��ʼ��SPI1,����ģʽ,����ΪϵͳƵ��/4��SCLK����P1.5 MOSI����P1.3 MISO����P1.4,SPIģʽ0
+//								//初始化SPI1,主机模式,速率为系统频率/4，SCLK引脚P1.5 MOSI引脚P1.3 MISO引脚P1.4,SPI模式0
 //-------------------------------------------------------------------------------------------------------------------
 void spi_init(SPIN_enum spi_n,
 			  SPI_PIN_enum sck_pin, 
@@ -44,7 +44,7 @@ void spi_init(SPIN_enum spi_n,
 			  SPI_MSTR_enum mstr,
 			  SPI_BAUD_enum baud)
 {
-	//IO����Ҫ����Ϊ��׼˫��ڣ���ͳ8051�˿�ģʽ����������
+	//IO口需要配置为：准双向口（传统8051端口模式，弱上拉）
 	if(sck_pin != SPI_NULL_PIN)
 	{
 		gpio_mode(sck_pin & 0xFF,GPIO);
@@ -61,7 +61,7 @@ void spi_init(SPIN_enum spi_n,
 	}
 
 	
-	P_SW1 &= ~(0x03<<2);  //���SPI���ܽ�ѡ��λ
+	P_SW1 &= ~(0x03<<2);  //清除SPI功能脚选择位
     switch(spi_n)
     {
     case SPI_CH1:
@@ -78,7 +78,7 @@ void spi_init(SPIN_enum spi_n,
         break;
     }
 	
-	SPCTL &= 0xF3;		//���SPI���Ժ���λ
+	SPCTL &= 0xF3;		//清除SPI极性和相位
 	switch(mode)
 	{
 	case 0:
@@ -96,52 +96,52 @@ void spi_init(SPIN_enum spi_n,
 	}
 		
 	
-	SPCTL |= baud;		//�����趨
+	SPCTL |= baud;		//速率设定
 
     if(mstr == MASTER)
     {
-        SPCTL |= 1<<7;	//����SS���Ź��ܣ�ʹ��MSTRȷ���������������Ǵӻ�
-        SPCTL |= 1<<4;	//����ģʽ
+        SPCTL |= 1<<7;	//忽略SS引脚功能，使用MSTR确定器件是主机还是从机
+        SPCTL |= 1<<4;	//主机模式
     }
     else
     {
-        //��������
+        //不做操作
     }
-    SPCTL |= 1<<6;		//ʹ��SPI����
+    SPCTL |= 1<<6;		//使能SPI功能
 }
 
 
 
 //-------------------------------------------------------------------------------------------------------------------
-//  @brief      SPI���ͽ��պ���
-//  @param      dat          	���͵�����
+//  @brief      SPI发送接收函数
+//  @param      dat          	发送的数据
 //  @since      v1.0
-//  Sample usage:				buf_1 = spi_mosi(buf);    //����buf�����ݣ������յ�buf_1�����Ϊ1�ֽ�
+//  Sample usage:				buf_1 = spi_mosi(buf);    //发送buf的内容，并接收到buf_1里，长度为1字节
 //-------------------------------------------------------------------------------------------------------------------
 uint8 spi_mosi(uint8 dat)
 {
-    SPDAT = dat;					//DATA�Ĵ�����ֵ
-    while (!(SPSTAT & 0x80));  		//��ѯ��ɱ�־
-    SPSTAT = 0xc0;                  //���жϱ�־
+    SPDAT = dat;					//DATA寄存器赋值
+    while (!(SPSTAT & 0x80));  		//查询完成标志
+    SPSTAT = 0xc0;                  //清中断标志
 	return SPDAT;
 }
 
 
 //-------------------------------------------------------------------------------------------------------------------
-//  @brief      spi�����л�����(ss��������������)
-//  @param      spi_n			ѡ��SPIģ��(SPI_1-SPI_4)
-//  @param      sck_pin			ѡ��SCK����
-//  @param      mosi_pin		ѡ��MOSI����
-//  @param      miso_pin		ѡ��MISO����
+//  @brief      spi引脚切换函数(ss引脚由软件控制)
+//  @param      spi_n			选择SPI模块(SPI_1-SPI_4)
+//  @param      sck_pin			选择SCK引脚
+//  @param      mosi_pin		选择MOSI引脚
+//  @param      miso_pin		选择MISO引脚
 //  Sample usage:				spi_change_pin(SPI_1,SPI1_SCLK_P15, SPI1_MOSI_P13,SPI1_MISO_P14);	
-//								//�л�SPI����
+//								//切换SPI引脚
 //-------------------------------------------------------------------------------------------------------------------
 void spi_change_pin(SPIN_enum spi_n, SPI_PIN_enum sck_pin, SPI_PIN_enum mosi_pin, SPI_PIN_enum miso_pin)
 {
-    P_SW1 &= ~(0x03<<2);  //���SPI���ܽ�ѡ��λ
+    P_SW1 &= ~(0x03<<2);  //清除SPI功能脚选择位
 	switch(spi_n)
     {
-	//IO����Ҫ����Ϊ��׼˫��ڣ���ͳ8051�˿�ģʽ����������
+	//IO口需要配置为：准双向口（传统8051端口模式，弱上拉）
     case SPI_CH1:
 		gpio_mode(P1_3,GPO_PP);
 		gpio_mode(P1_4,GPIO);
@@ -185,13 +185,13 @@ void spi_change_pin(SPIN_enum spi_n, SPI_PIN_enum sck_pin, SPI_PIN_enum mosi_pin
 
 
 //-------------------------------------------------------------------------------------------------------------------
-//  @brief      spiģʽ�л�����
-//  @param      mode            SPIģʽ 0��CPOL=0 CPHA=0    1��CPOL=0 CPHA=1   2��CPOL=1 CPHA=0   3��CPOL=1 CPHA=1 //����ϸ�ڿ����аٶ�
+//  @brief      spi模式切换函数
+//  @param      mode            SPI模式 0：CPOL=0 CPHA=0    1：CPOL=0 CPHA=1   2：CPOL=1 CPHA=0   3：CPOL=1 CPHA=1 //具体细节可自行百度
 //  Sample usage:				
 //-------------------------------------------------------------------------------------------------------------------
 void spi_change_mode(uint8 mode)
 {
-	SPCTL &= 0xF7;		//���SPI���Ժ���λ
+	SPCTL &= 0xF7;		//清除SPI极性和相位
 	switch(mode)
 	{
 	case 0:

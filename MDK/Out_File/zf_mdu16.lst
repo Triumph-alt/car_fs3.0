@@ -1,32 +1,32 @@
-C251 COMPILER V5.60.0,  zf_mdu16                                                           06/07/25  11:17:10  PAGE 1   
+C251 COMPILER V5.60.0,  zf_mdu16                                                           06/07/25  14:38:35  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE zf_mdu16
 OBJECT MODULE PLACED IN .\Out_File\zf_mdu16.obj
-COMPILER INVOKED BY: D:\keil5\C251\BIN\C251.EXE ..\seekfree_libraries\zf_mdu16.c LARGE INTR2 WARNINGLEVEL(3) OPTIMIZE(0,
-                    -SPEED) BROWSE INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral) DEBUG PRINT(.\Ou
-                    -t_File\zf_mdu16.lst) OBJECT(.\Out_File\zf_mdu16.obj) 
+COMPILER INVOKED BY: D:\Software\Keil5\c251v560\C251\BIN\C251.EXE ..\seekfree_libraries\zf_mdu16.c LARGE INTR2 WARNINGLE
+                    -VEL(3) OPTIMIZE(0,SPEED) BROWSE INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral
+                    -) DEBUG PRINT(.\Out_File\zf_mdu16.lst) TABS(2) OBJECT(.\Out_File\zf_mdu16.obj) 
 
 stmt  level    source
 
     1          /********************************************************************************************************
              -*************
     2           * COPYRIGHT NOTICE
-    3           * Copyright (c) 2020,Öğ·É¿Æ¼¼
+    3           * Copyright (c) 2020,é€é£ç§‘æŠ€
     4           * All rights reserved.
-    5           * ¼¼ÊõÌÖÂÛQQÈº£ºÒ»Èº£º179029047(ÒÑÂú)  ¶şÈº£º244861897(ÒÑÂú)  ÈıÈº£º824575535
+    5           * æŠ€æœ¯è®¨è®ºQQç¾¤ï¼šä¸€ç¾¤ï¼š179029047(å·²æ»¡)  äºŒç¾¤ï¼š244861897(å·²æ»¡)  ä¸‰ç¾¤ï¼š824575535
     6           *
-    7           * ÒÔÏÂËùÓĞÄÚÈİ°æÈ¨¾ùÊôÖğ·É¿Æ¼¼ËùÓĞ£¬Î´¾­ÔÊĞí²»µÃÓÃÓÚÉÌÒµÓÃÍ¾£¬
-    8           * »¶Ó­¸÷Î»Ê¹ÓÃ²¢´«²¥±¾³ÌĞò£¬ĞŞ¸ÄÄÚÈİÊ±±ØĞë±£ÁôÖğ·É¿Æ¼¼µÄ°æÈ¨ÉùÃ÷¡£
+    7           * ä»¥ä¸‹æ‰€æœ‰å†…å®¹ç‰ˆæƒå‡å±é€é£ç§‘æŠ€æ‰€æœ‰ï¼Œæœªç»å…è®¸ä¸å¾—ç”¨äºå•†ä¸šç”¨é€”ï¼Œ
+    8           * æ¬¢è¿å„ä½ä½¿ç”¨å¹¶ä¼ æ’­æœ¬ç¨‹åºï¼Œä¿®æ”¹å†…å®¹æ—¶å¿…é¡»ä¿ç•™é€é£ç§‘æŠ€çš„ç‰ˆæƒå£°æ˜ã€‚
     9           *
-   10           * @file                mdu16(16Î»Ó²¼ş³Ë³ı·¨)
-   11           * @company                     ³É¶¼Öğ·É¿Æ¼¼ÓĞÏŞ¹«Ë¾
-   12           * @author              Öğ·É¿Æ¼¼(QQ790875685)
-   13           * @version             ²é¿´docÄÚversionÎÄ¼ş °æ±¾ËµÃ÷
-   14           * @Software            MDK FOR C251 V5.60
-   15           * @Target core         STC32G12K128
-   16           * @Taobao              https://seekfree.taobao.com/
-   17           * @date                2020-06-03
+   10           * @file          mdu16(16ä½ç¡¬ä»¶ä¹˜é™¤æ³•)
+   11           * @company       æˆéƒ½é€é£ç§‘æŠ€æœ‰é™å…¬å¸
+   12           * @author        é€é£ç§‘æŠ€(QQ790875685)
+   13           * @version       æŸ¥çœ‹docå†…versionæ–‡ä»¶ ç‰ˆæœ¬è¯´æ˜
+   14           * @Software    MDK FOR C251 V5.60
+   15           * @Target core   STC32G12K128
+   16           * @Taobao      https://seekfree.taobao.com/
+   17           * @date          2020-06-03
    18           ********************************************************************************************************
              -************/
    19          #include "zf_mdu16.h"

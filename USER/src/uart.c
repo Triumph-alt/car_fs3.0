@@ -1,6 +1,6 @@
 #include "uart.h"
 
-//串口收发相关数据
+//涓插彛鏀跺彂鐩稿叧鏁版嵁
 uint8_t g_txbuffer[UART_TX_LENGTH] = {0};
 uint8_t g_rxbuffer[UART_RX_LENGTH] = {0};
 uint8_t g_rxpointer = 0, g_rxdat = 0;

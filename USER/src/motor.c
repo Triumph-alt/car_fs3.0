@@ -2,18 +2,18 @@
 
 void motor_init(void)
 {
-	/* ×óÂÖ³õÊ¼»¯ */
+	/* å·¦è½®åˆå§‹åŒ– */
 	pwm_init(PWMA_CH1P_P60, MOTOR_PWM_FREQ, 0);
 	pwm_init(PWMA_CH2P_P62, MOTOR_PWM_FREQ, 0);
 	
-	/* ÓÒÂÖ³õÊ¼»¯ */
+	/* å³è½®åˆå§‹åŒ– */
 	pwm_init(PWMA_CH3P_P64, MOTOR_PWM_FREQ, 0);
 	pwm_init(PWMA_CH4P_P66, MOTOR_PWM_FREQ, 0);
 }
 
 void set_motor_pwm(int32_t left_duty, int32_t right_duty)
 {
-	/* ×óÂÖPWMÏÞ·ù²¢Êä³ö */
+	/* å·¦è½®PWMé™å¹…å¹¶è¾“å‡º */
 	if(left_duty >= 0)
 	{
 		if (left_duty > MOTOR_PWM_LIMIT)
@@ -36,7 +36,7 @@ void set_motor_pwm(int32_t left_duty, int32_t right_duty)
 		pwm_duty(PWMA_CH2P_P62, 0);
 	}
 	
-	/* ÓÒÂÖPWMÏÞ·ù²¢Êä³ö */
+	/* å³è½®PWMé™å¹…å¹¶è¾“å‡º */
 	if (right_duty >= 0)
 	{
 		if (right_duty > MOTOR_PWM_LIMIT)

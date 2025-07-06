@@ -1,16 +1,16 @@
 /*********************************************************************************************************************
  * COPYRIGHT NOTICE
- * Copyright (c) 2020,Öð·É¿Æ¼¼
+ * Copyright (c) 2020,é€é£žç§‘æŠ€
  * All rights reserved.
- * ¼¼ÊõÌÖÂÛQQÈº£ºÒ»Èº£º179029047(ÒÑÂú)  ¶þÈº£º244861897(ÒÑÂú)  ÈýÈº£º824575535
+ * æŠ€æœ¯è®¨è®ºQQç¾¤ï¼šä¸€ç¾¤ï¼š179029047(å·²æ»¡)  äºŒç¾¤ï¼š244861897(å·²æ»¡)  ä¸‰ç¾¤ï¼š824575535
  *
- * ÒÔÏÂËùÓÐÄÚÈÝ°æÈ¨¾ùÊôÖð·É¿Æ¼¼ËùÓÐ£¬Î´¾­ÔÊÐí²»µÃÓÃÓÚÉÌÒµÓÃÍ¾£¬
- * »¶Ó­¸÷Î»Ê¹ÓÃ²¢´«²¥±¾³ÌÐò£¬ÐÞ¸ÄÄÚÈÝÊ±±ØÐë±£ÁôÖð·É¿Æ¼¼µÄ°æÈ¨ÉùÃ÷¡£
+ * ä»¥ä¸‹æ‰€æœ‰å†…å®¹ç‰ˆæƒå‡å±žé€é£žç§‘æŠ€æ‰€æœ‰ï¼Œæœªç»å…è®¸ä¸å¾—ç”¨äºŽå•†ä¸šç”¨é€”ï¼Œ
+ * æ¬¢è¿Žå„ä½ä½¿ç”¨å¹¶ä¼ æ’­æœ¬ç¨‹åºï¼Œä¿®æ”¹å†…å®¹æ—¶å¿…é¡»ä¿ç•™é€é£žç§‘æŠ€çš„ç‰ˆæƒå£°æ˜Žã€‚
  *
  * @file       		gpio
- * @company	   		³É¶¼Öð·É¿Æ¼¼ÓÐÏÞ¹«Ë¾
- * @author     		Öð·É¿Æ¼¼(QQ790875685)
- * @version    		²é¿´docÄÚversionÎÄ¼þ °æ±¾ËµÃ÷
+ * @company	   		æˆéƒ½é€é£žç§‘æŠ€æœ‰é™å…¬å¸
+ * @author     		é€é£žç§‘æŠ€(QQ790875685)
+ * @version    		æŸ¥çœ‹docå†…versionæ–‡ä»¶ ç‰ˆæœ¬è¯´æ˜Ž
  * @Software 		MDK FOR C251 V5.60
  * @Target core		STC32G12K128
  * @Taobao   		https://seekfree.taobao.com/
@@ -24,11 +24,11 @@
 #define PxPU_BASE_ADDR  0x7EFE10 
 
 //-------------------------------------------------------------------------------------------------------------------
-//  @brief      GPIOÉèÖÃÒý½ÅÉÏÀ­µç×èÉèÖÃ
-//  @param      pin         Ñ¡ÔñÒý½Å£¨P0_0-P7_7£©
-//  @param      pull        ÉèÖÃÉÏÏÂÀ­µç×è NOPULL:²»ÉèÖÃ PULLUP:ÉÏÀ­
+//  @brief      GPIOè®¾ç½®å¼•è„šä¸Šæ‹‰ç”µé˜»è®¾ç½®
+//  @param      pin         é€‰æ‹©å¼•è„šï¼ˆP0_0-P7_7ï¼‰
+//  @param      pull        è®¾ç½®ä¸Šä¸‹æ‹‰ç”µé˜» NOPULL:ä¸è®¾ç½® PULLUP:ä¸Šæ‹‰
 //  @return     void
-//  Sample usage:           gpio_pull_set(P0_0,NOPULL);       // ÉèÖÃP0.0Òý½ÅÃ»ÓÐÉÏÏÂÀ­µç×è
+//  Sample usage:           gpio_pull_set(P0_0,NOPULL);       // è®¾ç½®P0.0å¼•è„šæ²¡æœ‰ä¸Šä¸‹æ‹‰ç”µé˜»
 //-------------------------------------------------------------------------------------------------------------------
 void gpio_pull_set(PIN_enum pin, PULL_enum pull)
 {
@@ -45,11 +45,11 @@ void gpio_pull_set(PIN_enum pin, PULL_enum pull)
 
 
 //-------------------------------------------------------------------------------------------------------------------
-//  @brief      GPIOÉèÖÃÒý½ÅÄ£Ê½
-//  @param      pin         Ñ¡ÔñÒý½Å£¨P0_0-P5_4£©
-//  @param      mode        Òý½ÅÄ£Ê½ GPIO:×¼Ë«Ïò¿Ú, GPO_PP:ÍÆÍìÊä³ö, GPI_IMPEDANCE:¸ß×èÊäÈë, GPI_OD:¿ªÂ©Êä³ö
+//  @brief      GPIOè®¾ç½®å¼•è„šæ¨¡å¼
+//  @param      pin         é€‰æ‹©å¼•è„šï¼ˆP0_0-P5_4ï¼‰
+//  @param      mode        å¼•è„šæ¨¡å¼ GPIO:å‡†åŒå‘å£, GPO_PP:æŽ¨æŒ½è¾“å‡º, GPI_IMPEDANCE:é«˜é˜»è¾“å…¥, GPI_OD:å¼€æ¼è¾“å‡º
 //  @return     void
-//  Sample usage:           gpio_mode(P0_0,GPIO);       // ÉèÖÃP0.0ÉèÖÃÎªË«ÏòIO
+//  Sample usage:           gpio_mode(P0_0,GPIO);       // è®¾ç½®P0.0è®¾ç½®ä¸ºåŒå‘IO
 //-------------------------------------------------------------------------------------------------------------------
 void gpio_mode(PIN_enum pin, GPIOMODE_enum mode)
 {

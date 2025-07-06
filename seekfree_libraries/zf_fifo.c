@@ -1,16 +1,16 @@
 /*********************************************************************************************************************
  * COPYRIGHT NOTICE
- * Copyright (c) 2020,Öğ·É¿Æ¼¼
+ * Copyright (c) 2020,é€é£ç§‘æŠ€
  * All rights reserved.
- * ¼¼ÊõÌÖÂÛQQÈº£ºÒ»Èº£º179029047(ÒÑÂú)  ¶şÈº£º244861897(ÒÑÂú)  ÈıÈº£º824575535
+ * æŠ€æœ¯è®¨è®ºQQç¾¤ï¼šä¸€ç¾¤ï¼š179029047(å·²æ»¡)  äºŒç¾¤ï¼š244861897(å·²æ»¡)  ä¸‰ç¾¤ï¼š824575535
  *
- * ÒÔÏÂËùÓĞÄÚÈİ°æÈ¨¾ùÊôÖğ·É¿Æ¼¼ËùÓĞ£¬Î´¾­ÔÊĞí²»µÃÓÃÓÚÉÌÒµÓÃÍ¾£¬
- * »¶Ó­¸÷Î»Ê¹ÓÃ²¢´«²¥±¾³ÌĞò£¬ĞŞ¸ÄÄÚÈİÊ±±ØĞë±£ÁôÖğ·É¿Æ¼¼µÄ°æÈ¨ÉùÃ÷¡£
+ * ä»¥ä¸‹æ‰€æœ‰å†…å®¹ç‰ˆæƒå‡å±é€é£ç§‘æŠ€æ‰€æœ‰ï¼Œæœªç»å…è®¸ä¸å¾—ç”¨äºå•†ä¸šç”¨é€”ï¼Œ
+ * æ¬¢è¿å„ä½ä½¿ç”¨å¹¶ä¼ æ’­æœ¬ç¨‹åºï¼Œä¿®æ”¹å†…å®¹æ—¶å¿…é¡»ä¿ç•™é€é£ç§‘æŠ€çš„ç‰ˆæƒå£°æ˜ã€‚
  *
  * @file       		fifo
- * @company	   		³É¶¼Öğ·É¿Æ¼¼ÓĞÏŞ¹«Ë¾
- * @author     		Öğ·É¿Æ¼¼(QQ790875685)
- * @version    		²é¿´docÄÚversionÎÄ¼ş °æ±¾ËµÃ÷
+ * @company	   		æˆéƒ½é€é£ç§‘æŠ€æœ‰é™å…¬å¸
+ * @author     		é€é£ç§‘æŠ€(QQ790875685)
+ * @version    		æŸ¥çœ‹docå†…versionæ–‡ä»¶ ç‰ˆæœ¬è¯´æ˜
  * @Software 		MDK FOR C251 V5.60
  * @Target core		STC32F12K
  * @Taobao   		https://seekfree.taobao.com/
@@ -32,110 +32,110 @@
 
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êı¼ò½é     FIFO Í·Ö¸ÕëÎ»ÒÆ
-// ²ÎÊıËµÃ÷     *fifo               FIFO ¶ÔÏóÖ¸Õë
-// ²ÎÊıËµÃ÷     offset              Æ«ÒÆÁ¿
-// ·µ»Ø²ÎÊı     void
-// Ê¹ÓÃÊ¾Àı     fifo_head_offset(fifo, 1);
-// ±¸×¢ĞÅÏ¢     ±¾º¯ÊıÔÚÎÄ¼şÄÚ²¿µ÷ÓÃ ÓÃ»§²»ÓÃ¹Ø×¢ Ò²²»¿ÉĞŞ¸Ä
+// å‡½æ•°ç®€ä»‹     FIFO å¤´æŒ‡é’ˆä½ç§»
+// å‚æ•°è¯´æ˜     *fifo               FIFO å¯¹è±¡æŒ‡é’ˆ
+// å‚æ•°è¯´æ˜     offset              åç§»é‡
+// è¿”å›å‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     fifo_head_offset(fifo, 1);
+// å¤‡æ³¨ä¿¡æ¯     æœ¬å‡½æ•°åœ¨æ–‡ä»¶å†…éƒ¨è°ƒç”¨ ç”¨æˆ·ä¸ç”¨å…³æ³¨ ä¹Ÿä¸å¯ä¿®æ”¹
 //-------------------------------------------------------------------------------------------------------------------
 static void fifo_head_offset (fifo_struct *fifo, uint32 offset)
 {
     fifo->head += offset;
     
-    while(fifo->max <= fifo->head)                                              // Èç¹û·¶Î§³¬¹ıÔò¼õ»º³åÇø´óĞ¡ Ö±µ½Ğ¡ÓÚ×î´ó»º³åÇø´óĞ¡
+    while(fifo->max <= fifo->head)                                              // å¦‚æœèŒƒå›´è¶…è¿‡åˆ™å‡ç¼“å†²åŒºå¤§å° ç›´åˆ°å°äºæœ€å¤§ç¼“å†²åŒºå¤§å°
     {
         fifo->head -= fifo->max;
     }
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êı¼ò½é     FIFO Î²Ö¸ÕëÎ»ÒÆ
-// ²ÎÊıËµÃ÷     *fifo               FIFO ¶ÔÏóÖ¸Õë
-// ²ÎÊıËµÃ÷     offset              Æ«ÒÆÁ¿
-// ·µ»Ø²ÎÊı     void
-// Ê¹ÓÃÊ¾Àı     fifo_end_offset(fifo, 1);
-// ±¸×¢ĞÅÏ¢     ±¾º¯ÊıÔÚÎÄ¼şÄÚ²¿µ÷ÓÃ ÓÃ»§²»ÓÃ¹Ø×¢ Ò²²»¿ÉĞŞ¸Ä
+// å‡½æ•°ç®€ä»‹     FIFO å°¾æŒ‡é’ˆä½ç§»
+// å‚æ•°è¯´æ˜     *fifo               FIFO å¯¹è±¡æŒ‡é’ˆ
+// å‚æ•°è¯´æ˜     offset              åç§»é‡
+// è¿”å›å‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     fifo_end_offset(fifo, 1);
+// å¤‡æ³¨ä¿¡æ¯     æœ¬å‡½æ•°åœ¨æ–‡ä»¶å†…éƒ¨è°ƒç”¨ ç”¨æˆ·ä¸ç”¨å…³æ³¨ ä¹Ÿä¸å¯ä¿®æ”¹
 //-------------------------------------------------------------------------------------------------------------------
 static void fifo_end_offset (fifo_struct *fifo, uint32 offset)
 {
     fifo->end += offset;
     
-    while(fifo->max <= fifo->end)                                               // Èç¹û·¶Î§³¬¹ıÔò¼õ»º³åÇø´óĞ¡ Ö±µ½Ğ¡ÓÚ×î´ó»º³åÇø´óĞ¡
+    while(fifo->max <= fifo->end)                                               // å¦‚æœèŒƒå›´è¶…è¿‡åˆ™å‡ç¼“å†²åŒºå¤§å° ç›´åˆ°å°äºæœ€å¤§ç¼“å†²åŒºå¤§å°
     {
         fifo->end -= fifo->max;
     }
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êı¼ò½é     FIFO ÖØÖÃ»º³åÆ÷
-// ²ÎÊıËµÃ÷     *fifo               FIFO ¶ÔÏóÖ¸Õë
-// ·µ»Ø²ÎÊı     void
-// Ê¹ÓÃÊ¾Àı     fifo_clear(fifo);
-// ±¸×¢ĞÅÏ¢     Çå¿Õµ±Ç° FIFO ¶ÔÏóµÄÄÚ´æ
+// å‡½æ•°ç®€ä»‹     FIFO é‡ç½®ç¼“å†²å™¨
+// å‚æ•°è¯´æ˜     *fifo               FIFO å¯¹è±¡æŒ‡é’ˆ
+// è¿”å›å‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     fifo_clear(fifo);
+// å¤‡æ³¨ä¿¡æ¯     æ¸…ç©ºå½“å‰ FIFO å¯¹è±¡çš„å†…å­˜
 //-------------------------------------------------------------------------------------------------------------------
 fifo_state_enum fifo_clear (fifo_struct *fifo)
 {
     //zf_assert(NULL != fifo);
-    fifo_state_enum return_state = FIFO_SUCCESS;                                // ²Ù×÷½á¹û³õÖµ
+    fifo_state_enum return_state = FIFO_SUCCESS;                                // æ“ä½œç»“æœåˆå€¼
     do
     {
-//        if(FIFO_IDLE != fifo->execution)                                        // ÅĞ¶ÏÊÇ·ñµ±Ç° FIFO ÊÇ·ñ¿ÕÏĞ
+//        if(FIFO_IDLE != fifo->execution)                                        // åˆ¤æ–­æ˜¯å¦å½“å‰ FIFO æ˜¯å¦ç©ºé—²
 //        {
-//            return_state = FIFO_RESET_UNDO;                                     // ÖØÖÃ²Ù×÷Î´Íê³É
+//            return_state = FIFO_RESET_UNDO;                                     // é‡ç½®æ“ä½œæœªå®Œæˆ
 //            break;
 //        }
-        fifo->execution |= FIFO_RESET;                                          // ÖØÖÃ²Ù×÷ÖÃÎ»
-        fifo->head      = 0;                                                    // ÖØÖÃ FIFO ËùÓĞÊıÖµ¸´Î»
-        fifo->end       = 0;                                                    // ÖØÖÃ FIFO ËùÓĞÊıÖµ¸´Î»
-        fifo->reamin_size      = fifo->max;                                            // ÖØÖÃ FIFO ËùÓĞÊıÖµ¸´Î»
+        fifo->execution |= FIFO_RESET;                                          // é‡ç½®æ“ä½œç½®ä½
+        fifo->head      = 0;                                                    // é‡ç½® FIFO æ‰€æœ‰æ•°å€¼å¤ä½
+        fifo->end       = 0;                                                    // é‡ç½® FIFO æ‰€æœ‰æ•°å€¼å¤ä½
+        fifo->reamin_size      = fifo->max;                                            // é‡ç½® FIFO æ‰€æœ‰æ•°å€¼å¤ä½
         switch(fifo->type)
         {
             case FIFO_DATA_8BIT:    memset(fifo->buffer, 0, (uint16)fifo->max);     break;
             case FIFO_DATA_16BIT:   memset(fifo->buffer, 0, (uint16)fifo->max * 2); break;
             case FIFO_DATA_32BIT:   memset(fifo->buffer, 0, (uint16)fifo->max * 4); break;
         }
-        fifo->execution = FIFO_IDLE;                                            // ²Ù×÷×´Ì¬¸´Î»
+        fifo->execution = FIFO_IDLE;                                            // æ“ä½œçŠ¶æ€å¤ä½
     }while(0);
     return return_state;
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êı¼ò½é     FIFO ²éÑ¯µ±Ç°Êı¾İ¸öÊı
-// ²ÎÊıËµÃ÷     *fifo               FIFO ¶ÔÏóÖ¸Õë
-// ·µ»Ø²ÎÊı     uint32              ÒÑÊ¹ÓÃ³¤¶È
-// Ê¹ÓÃÊ¾Àı     uint32 len = fifo_used(fifo);
-// ±¸×¢ĞÅÏ¢
+// å‡½æ•°ç®€ä»‹     FIFO æŸ¥è¯¢å½“å‰æ•°æ®ä¸ªæ•°
+// å‚æ•°è¯´æ˜     *fifo               FIFO å¯¹è±¡æŒ‡é’ˆ
+// è¿”å›å‚æ•°     uint32              å·²ä½¿ç”¨é•¿åº¦
+// ä½¿ç”¨ç¤ºä¾‹     uint32 len = fifo_used(fifo);
+// å¤‡æ³¨ä¿¡æ¯
 //-------------------------------------------------------------------------------------------------------------------
 uint32 fifo_used (fifo_struct *fifo)
 {
     //zf_assert(fifo != NULL);
-    return (fifo->max - fifo->reamin_size);                                            // ·µ»Øµ±Ç° FIFO »º³åÇøÖĞÊı¾İ¸öÊı
+    return (fifo->max - fifo->reamin_size);                                            // è¿”å›å½“å‰ FIFO ç¼“å†²åŒºä¸­æ•°æ®ä¸ªæ•°
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êı¼ò½é     Ïò FIFO ÖĞĞ´ÈëÊı¾İ
-// ²ÎÊıËµÃ÷     *fifo               FIFO ¶ÔÏóÖ¸Õë
-// ²ÎÊıËµÃ÷     dat                 Êı¾İ
-// ·µ»Ø²ÎÊı     fifo_state_enum     ²Ù×÷×´Ì¬
-// Ê¹ÓÃÊ¾Àı     zf_log(fifo_write_element(&fifo, data) == FIFO_SUCCESS, "fifo_write_byte error");
-// ±¸×¢ĞÅÏ¢
+// å‡½æ•°ç®€ä»‹     å‘ FIFO ä¸­å†™å…¥æ•°æ®
+// å‚æ•°è¯´æ˜     *fifo               FIFO å¯¹è±¡æŒ‡é’ˆ
+// å‚æ•°è¯´æ˜     dat                 æ•°æ®
+// è¿”å›å‚æ•°     fifo_state_enum     æ“ä½œçŠ¶æ€
+// ä½¿ç”¨ç¤ºä¾‹     zf_log(fifo_write_element(&fifo, data) == FIFO_SUCCESS, "fifo_write_byte error");
+// å¤‡æ³¨ä¿¡æ¯
 //-------------------------------------------------------------------------------------------------------------------
 fifo_state_enum fifo_write_element (fifo_struct *fifo, uint32 dat)
 {
     //zf_assert(NULL != fifo);
-    fifo_state_enum return_state = FIFO_SUCCESS;                                // ²Ù×÷½á¹û³õÖµ
+    fifo_state_enum return_state = FIFO_SUCCESS;                                // æ“ä½œç»“æœåˆå€¼
 
     do
     {
-        if((FIFO_RESET | FIFO_WRITE) & fifo->execution)                         // ²»ÔÚĞ´ÈëÓëÖØÖÃ×´Ì¬ ±ÜÃâĞ´Èë¾ºÕùÓëÖ¸Ïò´íÎó
+        if((FIFO_RESET | FIFO_WRITE) & fifo->execution)                         // ä¸åœ¨å†™å…¥ä¸é‡ç½®çŠ¶æ€ é¿å…å†™å…¥ç«äº‰ä¸æŒ‡å‘é”™è¯¯
         {
-            return_state = FIFO_WRITE_UNDO;                                     // Ğ´Èë²Ù×÷Î´Íê³É
+            return_state = FIFO_WRITE_UNDO;                                     // å†™å…¥æ“ä½œæœªå®Œæˆ
             break;
         }
-        fifo->execution |= FIFO_WRITE;                                          // Ğ´Èë²Ù×÷ÖÃÎ»
+        fifo->execution |= FIFO_WRITE;                                          // å†™å…¥æ“ä½œç½®ä½
 
-        if(1 <= fifo->reamin_size)                                                     // Ê£Óà¿Õ¼ä×ã¹»×°ÏÂ±¾´ÎÊı¾İ
+        if(1 <= fifo->reamin_size)                                                     // å‰©ä½™ç©ºé—´è¶³å¤Ÿè£…ä¸‹æœ¬æ¬¡æ•°æ®
         {
             switch(fifo->type)
             {
@@ -143,53 +143,53 @@ fifo_state_enum fifo_write_element (fifo_struct *fifo, uint32 dat)
                 case FIFO_DATA_16BIT:   ((uint16 *)fifo->buffer)[fifo->head] = dat; break;
                 case FIFO_DATA_32BIT:   ((uint32 *)fifo->buffer)[fifo->head] = dat; break;
             }
-            fifo_head_offset(fifo, 1);                                          // Í·Ö¸ÕëÆ«ÒÆ
-            fifo->reamin_size -= 1;                                                    // »º³åÇøÊ£Óà³¤¶È¼õĞ¡
+            fifo_head_offset(fifo, 1);                                          // å¤´æŒ‡é’ˆåç§»
+            fifo->reamin_size -= 1;                                                    // ç¼“å†²åŒºå‰©ä½™é•¿åº¦å‡å°
         }
         else
         {
-            return_state = FIFO_SPACE_NO_ENOUGH;                                // µ±Ç° FIFO »º³åÇøÂú ²»ÄÜÔÙĞ´ÈëÊı¾İ ·µ»Ø¿Õ¼ä²»×ã
+            return_state = FIFO_SPACE_NO_ENOUGH;                                // å½“å‰ FIFO ç¼“å†²åŒºæ»¡ ä¸èƒ½å†å†™å…¥æ•°æ® è¿”å›ç©ºé—´ä¸è¶³
         }
-        fifo->execution &= ~FIFO_WRITE;                                         // Ğ´Èë²Ù×÷¸´Î»
+        fifo->execution &= ~FIFO_WRITE;                                         // å†™å…¥æ“ä½œå¤ä½
     }while(0);
 
     return return_state;
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êı¼ò½é     Ïò FIFO ÖĞĞ´ÈëÊı¾İ
-// ²ÎÊıËµÃ÷     *fifo               FIFO ¶ÔÏóÖ¸Õë
-// ²ÎÊıËµÃ÷     *dat                Êı¾İÀ´Ô´»º³åÇøÖ¸Õë
-// ²ÎÊıËµÃ÷     length              ĞèÒªĞ´ÈëµÄÊı¾İ³¤¶È
-// ·µ»Ø²ÎÊı     fifo_state_enum     ²Ù×÷×´Ì¬
-// Ê¹ÓÃÊ¾Àı     zf_log(fifo_write_buffer(&fifo, data, 32) == FIFO_SUCCESS, "fifo_write_buffer error");
-// ±¸×¢ĞÅÏ¢
+// å‡½æ•°ç®€ä»‹     å‘ FIFO ä¸­å†™å…¥æ•°æ®
+// å‚æ•°è¯´æ˜     *fifo               FIFO å¯¹è±¡æŒ‡é’ˆ
+// å‚æ•°è¯´æ˜     *dat                æ•°æ®æ¥æºç¼“å†²åŒºæŒ‡é’ˆ
+// å‚æ•°è¯´æ˜     length              éœ€è¦å†™å…¥çš„æ•°æ®é•¿åº¦
+// è¿”å›å‚æ•°     fifo_state_enum     æ“ä½œçŠ¶æ€
+// ä½¿ç”¨ç¤ºä¾‹     zf_log(fifo_write_buffer(&fifo, data, 32) == FIFO_SUCCESS, "fifo_write_buffer error");
+// å¤‡æ³¨ä¿¡æ¯
 //-------------------------------------------------------------------------------------------------------------------
 fifo_state_enum fifo_write_buffer (fifo_struct *fifo, void *dat, uint32 length)
 {
     //zf_assert(NULL != fifo);
-    fifo_state_enum return_state = FIFO_SUCCESS;                                // ²Ù×÷½á¹û³õÖµ
+    fifo_state_enum return_state = FIFO_SUCCESS;                                // æ“ä½œç»“æœåˆå€¼
     uint32 temp_length = 0;
     
     do
     {
         if(NULL == dat)
         {
-            return_state = FIFO_BUFFER_NULL;                                    // ÓÃ»§»º³åÇøÒì³£
+            return_state = FIFO_BUFFER_NULL;                                    // ç”¨æˆ·ç¼“å†²åŒºå¼‚å¸¸
             break;
         }
-        if((FIFO_RESET | FIFO_WRITE) & fifo->execution)                         // ²»ÔÚĞ´ÈëÓëÖØÖÃ×´Ì¬ ±ÜÃâĞ´Èë¾ºÕùÓëÖ¸Ïò´íÎó
+        if((FIFO_RESET | FIFO_WRITE) & fifo->execution)                         // ä¸åœ¨å†™å…¥ä¸é‡ç½®çŠ¶æ€ é¿å…å†™å…¥ç«äº‰ä¸æŒ‡å‘é”™è¯¯
         {
-            return_state = FIFO_WRITE_UNDO;                                     // Ğ´Èë²Ù×÷Î´Íê³É
+            return_state = FIFO_WRITE_UNDO;                                     // å†™å…¥æ“ä½œæœªå®Œæˆ
             break;
         }
-        fifo->execution |= FIFO_WRITE;                                          // Ğ´Èë²Ù×÷ÖÃÎ»
+        fifo->execution |= FIFO_WRITE;                                          // å†™å…¥æ“ä½œç½®ä½
 
-        if(length <= fifo->reamin_size)                                                // Ê£Óà¿Õ¼ä×ã¹»×°ÏÂ±¾´ÎÊı¾İ
+        if(length <= fifo->reamin_size)                                                // å‰©ä½™ç©ºé—´è¶³å¤Ÿè£…ä¸‹æœ¬æ¬¡æ•°æ®
         {
-            temp_length = fifo->max - fifo->head;                               // ¼ÆËãÍ·Ö¸Õë¾àÀë»º³åÇøÎ²»¹ÓĞ¶àÉÙ¿Õ¼ä
+            temp_length = fifo->max - fifo->head;                               // è®¡ç®—å¤´æŒ‡é’ˆè·ç¦»ç¼“å†²åŒºå°¾è¿˜æœ‰å¤šå°‘ç©ºé—´
 
-            if(length > temp_length)                                            // ¾àÀë»º³åÇøÎ²³¤¶È²»×ãĞ´ÈëÊı¾İ »·ĞÎ»º³åÇø·Ö¶Î²Ù×÷
+            if(length > temp_length)                                            // è·ç¦»ç¼“å†²åŒºå°¾é•¿åº¦ä¸è¶³å†™å…¥æ•°æ® ç¯å½¢ç¼“å†²åŒºåˆ†æ®µæ“ä½œ
             {
                 switch(fifo->type)
                 {
@@ -197,37 +197,37 @@ fifo_state_enum fifo_write_buffer (fifo_struct *fifo, void *dat, uint32 length)
                     {
                         memcpy(
                             &(((uint8 *)fifo->buffer)[fifo->head]),
-                            dat, (uint16)temp_length);                                  // ¿½±´µÚÒ»¶ÎÊı¾İ
-                        fifo_head_offset(fifo, temp_length);                    // Í·Ö¸ÕëÆ«ÒÆ
+                            dat, (uint16)temp_length);                                  // æ‹·è´ç¬¬ä¸€æ®µæ•°æ®
+                        fifo_head_offset(fifo, temp_length);                    // å¤´æŒ‡é’ˆåç§»
                         memcpy(
                             &(((uint8 *)fifo->buffer)[fifo->head]),
                             &(((uint8 *)dat)[temp_length]),
-                            (uint16)(length - temp_length));                              // ¿½±´µÚ¶ş¶ÎÊı¾İ
-                        fifo_head_offset(fifo, length - temp_length);           // Í·Ö¸ÕëÆ«ÒÆ
+                            (uint16)(length - temp_length));                              // æ‹·è´ç¬¬äºŒæ®µæ•°æ®
+                        fifo_head_offset(fifo, length - temp_length);           // å¤´æŒ‡é’ˆåç§»
                     }break;
                     case FIFO_DATA_16BIT:
                     {
                         memcpy(
                             &(((uint16 *)fifo->buffer)[fifo->head]),
-                            dat, temp_length * 2);                              // ¿½±´µÚÒ»¶ÎÊı¾İ
-                        fifo_head_offset(fifo, temp_length);                    // Í·Ö¸ÕëÆ«ÒÆ
+                            dat, temp_length * 2);                              // æ‹·è´ç¬¬ä¸€æ®µæ•°æ®
+                        fifo_head_offset(fifo, temp_length);                    // å¤´æŒ‡é’ˆåç§»
                         memcpy(
                             &(((uint16 *)fifo->buffer)[fifo->head]),
                             &(((uint16 *)dat)[temp_length]),
-                            (length - temp_length) * 2);                        // ¿½±´µÚ¶ş¶ÎÊı¾İ
-                        fifo_head_offset(fifo, length - temp_length);           // Í·Ö¸ÕëÆ«ÒÆ
+                            (length - temp_length) * 2);                        // æ‹·è´ç¬¬äºŒæ®µæ•°æ®
+                        fifo_head_offset(fifo, length - temp_length);           // å¤´æŒ‡é’ˆåç§»
                     }break;
                     case FIFO_DATA_32BIT:
                     {
                         memcpy(
                             &(((uint32 *)fifo->buffer)[fifo->head]),
-                            dat, temp_length * 4);                              // ¿½±´µÚÒ»¶ÎÊı¾İ
-                        fifo_head_offset(fifo, temp_length);                    // Í·Ö¸ÕëÆ«ÒÆ
+                            dat, temp_length * 4);                              // æ‹·è´ç¬¬ä¸€æ®µæ•°æ®
+                        fifo_head_offset(fifo, temp_length);                    // å¤´æŒ‡é’ˆåç§»
                         memcpy(
                             &(((uint32 *)fifo->buffer)[fifo->head]),
                             &(((uint32 *)dat)[temp_length]),
-                            (length - temp_length) * 4);                        // ¿½±´µÚ¶ş¶ÎÊı¾İ
-                        fifo_head_offset(fifo, length - temp_length);           // Í·Ö¸ÕëÆ«ÒÆ
+                            (length - temp_length) * 4);                        // æ‹·è´ç¬¬äºŒæ®µæ•°æ®
+                        fifo_head_offset(fifo, length - temp_length);           // å¤´æŒ‡é’ˆåç§»
                     }break;
                 }
             }
@@ -239,93 +239,93 @@ fifo_state_enum fifo_write_buffer (fifo_struct *fifo, void *dat, uint32 length)
                     {
                         memcpy(
                             &(((uint8 *)fifo->buffer)[fifo->head]),
-                            dat, (uint16)length);                                       // Ò»´ÎÍêÕûĞ´Èë
-                        fifo_head_offset(fifo, length);                         // Í·Ö¸ÕëÆ«ÒÆ
+                            dat, (uint16)length);                                       // ä¸€æ¬¡å®Œæ•´å†™å…¥
+                        fifo_head_offset(fifo, length);                         // å¤´æŒ‡é’ˆåç§»
                     }break;
                     case FIFO_DATA_16BIT:
                     {
                         memcpy(
                             &(((uint16 *)fifo->buffer)[fifo->head]),
-                            dat, length * 2);                                   // Ò»´ÎÍêÕûĞ´Èë
-                        fifo_head_offset(fifo, length);                         // Í·Ö¸ÕëÆ«ÒÆ
+                            dat, length * 2);                                   // ä¸€æ¬¡å®Œæ•´å†™å…¥
+                        fifo_head_offset(fifo, length);                         // å¤´æŒ‡é’ˆåç§»
                     }break;
                     case FIFO_DATA_32BIT:
                     {
                         memcpy(
                             &(((uint32 *)fifo->buffer)[fifo->head]),
-                            dat, length * 4);                                   // Ò»´ÎÍêÕûĞ´Èë
-                        fifo_head_offset(fifo, length);                         // Í·Ö¸ÕëÆ«ÒÆ
+                            dat, length * 4);                                   // ä¸€æ¬¡å®Œæ•´å†™å…¥
+                        fifo_head_offset(fifo, length);                         // å¤´æŒ‡é’ˆåç§»
                     }break;
                 }
             }
 
-            fifo->reamin_size -= length;                                               // »º³åÇøÊ£Óà³¤¶È¼õĞ¡
+            fifo->reamin_size -= length;                                               // ç¼“å†²åŒºå‰©ä½™é•¿åº¦å‡å°
         }
         else
         {
-            return_state = FIFO_SPACE_NO_ENOUGH;                                // µ±Ç° FIFO »º³åÇøÂú ²»ÄÜÔÙĞ´ÈëÊı¾İ ·µ»Ø¿Õ¼ä²»×ã
+            return_state = FIFO_SPACE_NO_ENOUGH;                                // å½“å‰ FIFO ç¼“å†²åŒºæ»¡ ä¸èƒ½å†å†™å…¥æ•°æ® è¿”å›ç©ºé—´ä¸è¶³
         }
-        fifo->execution &= ~FIFO_WRITE;                                         // Ğ´Èë²Ù×÷¸´Î»
+        fifo->execution &= ~FIFO_WRITE;                                         // å†™å…¥æ“ä½œå¤ä½
     }while(0);
 
     return return_state;
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êı¼ò½é     ´Ó FIFO ¶ÁÈ¡Êı¾İ
-// ²ÎÊıËµÃ÷     *fifo               FIFO ¶ÔÏóÖ¸Õë
-// ²ÎÊıËµÃ÷     *dat                Ä¿±ê»º³åÇøÖ¸Õë
-// ²ÎÊıËµÃ÷     flag                ÊÇ·ñ±ä¸ü FIFO ×´Ì¬ ¿ÉÑ¡ÔñÊÇ·ñÇå¿Õ¶ÁÈ¡µÄÊı¾İ
-// ·µ»Ø²ÎÊı     fifo_state_enum     ²Ù×÷×´Ì¬
-// Ê¹ÓÃÊ¾Àı     zf_log(fifo_read_element(&fifo, data, FIFO_READ_ONLY) == FIFO_SUCCESS, "fifo_read_byte error");
-// ±¸×¢ĞÅÏ¢
+// å‡½æ•°ç®€ä»‹     ä» FIFO è¯»å–æ•°æ®
+// å‚æ•°è¯´æ˜     *fifo               FIFO å¯¹è±¡æŒ‡é’ˆ
+// å‚æ•°è¯´æ˜     *dat                ç›®æ ‡ç¼“å†²åŒºæŒ‡é’ˆ
+// å‚æ•°è¯´æ˜     flag                æ˜¯å¦å˜æ›´ FIFO çŠ¶æ€ å¯é€‰æ‹©æ˜¯å¦æ¸…ç©ºè¯»å–çš„æ•°æ®
+// è¿”å›å‚æ•°     fifo_state_enum     æ“ä½œçŠ¶æ€
+// ä½¿ç”¨ç¤ºä¾‹     zf_log(fifo_read_element(&fifo, data, FIFO_READ_ONLY) == FIFO_SUCCESS, "fifo_read_byte error");
+// å¤‡æ³¨ä¿¡æ¯
 //-------------------------------------------------------------------------------------------------------------------
 fifo_state_enum fifo_read_element (fifo_struct *fifo, void *dat, fifo_operation_enum flag)
 {
     //zf_assert(NULL != fifo);
-    fifo_state_enum return_state = FIFO_SUCCESS;                                // ²Ù×÷½á¹û³õÖµ
+    fifo_state_enum return_state = FIFO_SUCCESS;                                // æ“ä½œç»“æœåˆå€¼
 
     do
     {
         if(NULL == dat)
         {
-            return_state = FIFO_BUFFER_NULL;                                    // ÓÃ»§»º³åÇøÒì³£
+            return_state = FIFO_BUFFER_NULL;                                    // ç”¨æˆ·ç¼“å†²åŒºå¼‚å¸¸
         }
         else
         {
-            if((FIFO_RESET | FIFO_CLEAR) & fifo->execution)                     // ÅĞ¶ÏÊÇ·ñµ±Ç° FIFO ÊÇ·ñÔÚÖ´ĞĞÇå¿Õ»òÖØÖÃ²Ù×÷
+            if((FIFO_RESET | FIFO_CLEAR) & fifo->execution)                     // åˆ¤æ–­æ˜¯å¦å½“å‰ FIFO æ˜¯å¦åœ¨æ‰§è¡Œæ¸…ç©ºæˆ–é‡ç½®æ“ä½œ
             {
-                return_state = FIFO_READ_UNDO;                                  // ¶ÁÈ¡²Ù×÷Î´Íê³É
+                return_state = FIFO_READ_UNDO;                                  // è¯»å–æ“ä½œæœªå®Œæˆ
                 break;
             }
 
             if(1 > fifo_used(fifo))
             {
-                return_state = FIFO_DATA_NO_ENOUGH;                             // »º³åÇøÃ»ÓĞÊı¾İ ·µ»ØÊı¾İ³¤¶È²»×ã
-                break;                                                          // Ö±½ÓÍË³ö²Ù×÷
+                return_state = FIFO_DATA_NO_ENOUGH;                             // ç¼“å†²åŒºæ²¡æœ‰æ•°æ® è¿”å›æ•°æ®é•¿åº¦ä¸è¶³
+                break;                                                          // ç›´æ¥é€€å‡ºæ“ä½œ
             }
 
-            fifo->execution |= FIFO_READ;                                       // ¶Á²Ù×÷ÖÃÎ»
+            fifo->execution |= FIFO_READ;                                       // è¯»æ“ä½œç½®ä½
             switch(fifo->type)
             {
                 case FIFO_DATA_8BIT:    *((uint8 *)dat) = ((uint8 *)fifo->buffer)[fifo->end];   break;
                 case FIFO_DATA_16BIT:   *((uint16 *)dat) = ((uint16 *)fifo->buffer)[fifo->end]; break;
                 case FIFO_DATA_32BIT:   *((uint32 *)dat) = ((uint32 *)fifo->buffer)[fifo->end]; break;
             }
-            fifo->execution &= ~FIFO_READ;                                      // ¶Á²Ù×÷¸´Î»
+            fifo->execution &= ~FIFO_READ;                                      // è¯»æ“ä½œå¤ä½
         }
 
-        if(FIFO_READ_AND_CLEAN == flag)                                         // Èç¹ûÑ¡Ôñ¶ÁÈ¡²¢¸ü¸Ä FIFO ×´Ì¬
+        if(FIFO_READ_AND_CLEAN == flag)                                         // å¦‚æœé€‰æ‹©è¯»å–å¹¶æ›´æ”¹ FIFO çŠ¶æ€
         {
-            if((FIFO_RESET | FIFO_CLEAR | FIFO_READ) == fifo->execution)        // ²»ÔÚ ÖØÖÃ Çå¿Õ ¶ÁÈ¡ ×´Ì¬ ±ÜÃâÒì³£
+            if((FIFO_RESET | FIFO_CLEAR | FIFO_READ) == fifo->execution)        // ä¸åœ¨ é‡ç½® æ¸…ç©º è¯»å– çŠ¶æ€ é¿å…å¼‚å¸¸
             {
-                return_state = FIFO_CLEAR_UNDO;                                 // Çå¿Õ²Ù×÷Î´Íê³É
+                return_state = FIFO_CLEAR_UNDO;                                 // æ¸…ç©ºæ“ä½œæœªå®Œæˆ
                 break;
             }
-            fifo->execution |= FIFO_CLEAR;                                      // Çå¿Õ×÷ÖÃÎ»
-            fifo_end_offset(fifo, 1);                                           // ÒÆ¶¯ FIFO Í·Ö¸Õë
-            fifo->reamin_size += 1;                                                    // ÊÍ·Å¶ÔÓ¦³¤¶È¿Õ¼ä
-            fifo->execution &= ~FIFO_CLEAR;                                     // Çå¿Õ×÷¸´Î»
+            fifo->execution |= FIFO_CLEAR;                                      // æ¸…ç©ºä½œç½®ä½
+            fifo_end_offset(fifo, 1);                                           // ç§»åŠ¨ FIFO å¤´æŒ‡é’ˆ
+            fifo->reamin_size += 1;                                                    // é‡Šæ”¾å¯¹åº”é•¿åº¦ç©ºé—´
+            fifo->execution &= ~FIFO_CLEAR;                                     // æ¸…ç©ºä½œå¤ä½
         }
     }while(0);
 
@@ -333,20 +333,20 @@ fifo_state_enum fifo_read_element (fifo_struct *fifo, void *dat, fifo_operation_
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êı¼ò½é     ´Ó FIFO ¶ÁÈ¡Êı¾İ
-// ²ÎÊıËµÃ÷     *fifo               FIFO ¶ÔÏóÖ¸Õë
-// ²ÎÊıËµÃ÷     *dat                Ä¿±ê»º³åÇøÖ¸Õë
-// ²ÎÊıËµÃ÷     *length             ¶ÁÈ¡µÄÊı¾İ³¤¶È Èç¹ûÃ»ÓĞÕâÃ´¶àÊı¾İÕâÀï»á±»ĞŞ¸Ä
-// ²ÎÊıËµÃ÷     flag                ÊÇ·ñ±ä¸ü FIFO ×´Ì¬ ¿ÉÑ¡ÔñÊÇ·ñÇå¿Õ¶ÁÈ¡µÄÊı¾İ
-// ·µ»Ø²ÎÊı     fifo_state_enum     ²Ù×÷×´Ì¬
-// Ê¹ÓÃÊ¾Àı     zf_log(fifo_read_buffer(&fifo, data, &length, FIFO_READ_ONLY) == FIFO_SUCCESS, "fifo_read_buffer error");
-// ±¸×¢ĞÅÏ¢
+// å‡½æ•°ç®€ä»‹     ä» FIFO è¯»å–æ•°æ®
+// å‚æ•°è¯´æ˜     *fifo               FIFO å¯¹è±¡æŒ‡é’ˆ
+// å‚æ•°è¯´æ˜     *dat                ç›®æ ‡ç¼“å†²åŒºæŒ‡é’ˆ
+// å‚æ•°è¯´æ˜     *length             è¯»å–çš„æ•°æ®é•¿åº¦ å¦‚æœæ²¡æœ‰è¿™ä¹ˆå¤šæ•°æ®è¿™é‡Œä¼šè¢«ä¿®æ”¹
+// å‚æ•°è¯´æ˜     flag                æ˜¯å¦å˜æ›´ FIFO çŠ¶æ€ å¯é€‰æ‹©æ˜¯å¦æ¸…ç©ºè¯»å–çš„æ•°æ®
+// è¿”å›å‚æ•°     fifo_state_enum     æ“ä½œçŠ¶æ€
+// ä½¿ç”¨ç¤ºä¾‹     zf_log(fifo_read_buffer(&fifo, data, &length, FIFO_READ_ONLY) == FIFO_SUCCESS, "fifo_read_buffer error");
+// å¤‡æ³¨ä¿¡æ¯
 //-------------------------------------------------------------------------------------------------------------------
 fifo_state_enum fifo_read_buffer (fifo_struct *fifo, void *dat, uint32 *length, fifo_operation_enum flag)
 {
     //zf_assert(NULL != fifo);
     //zf_assert(NULL != length);
-    fifo_state_enum return_state = FIFO_SUCCESS;                                // ²Ù×÷½á¹û³õÖµ
+    fifo_state_enum return_state = FIFO_SUCCESS;                                // æ“ä½œç»“æœåˆå€¼
     uint32 temp_length = 0;
     uint32 fifo_data_length = 0;
 
@@ -358,28 +358,28 @@ fifo_state_enum fifo_read_buffer (fifo_struct *fifo, void *dat, uint32 *length, 
         }
         else
         {
-            if((FIFO_RESET | FIFO_CLEAR) & fifo->execution)                     // ÅĞ¶ÏÊÇ·ñµ±Ç° FIFO ÊÇ·ñÔÚÖ´ĞĞÇå¿Õ»òÖØÖÃ²Ù×÷
+            if((FIFO_RESET | FIFO_CLEAR) & fifo->execution)                     // åˆ¤æ–­æ˜¯å¦å½“å‰ FIFO æ˜¯å¦åœ¨æ‰§è¡Œæ¸…ç©ºæˆ–é‡ç½®æ“ä½œ
             {
-                *length = fifo_data_length;                                     // ¾ÀÕı¶ÁÈ¡µÄ³¤¶È
-                return_state = FIFO_READ_UNDO;                                  // ¶ÁÈ¡²Ù×÷Î´Íê³É
+                *length = fifo_data_length;                                     // çº æ­£è¯»å–çš„é•¿åº¦
+                return_state = FIFO_READ_UNDO;                                  // è¯»å–æ“ä½œæœªå®Œæˆ
                 break;
             }
 
-            fifo_data_length = fifo_used(fifo);                                 // »ñÈ¡µ±Ç°Êı¾İÓĞ¶àÉÙ
-            if(*length > fifo_data_length)                                      // ÅĞ¶Ï³¤¶ÈÊÇ·ñ×ã¹»
+            fifo_data_length = fifo_used(fifo);                                 // è·å–å½“å‰æ•°æ®æœ‰å¤šå°‘
+            if(*length > fifo_data_length)                                      // åˆ¤æ–­é•¿åº¦æ˜¯å¦è¶³å¤Ÿ
             {
-                *length = fifo_data_length;                                     // ¾ÀÕı¶ÁÈ¡µÄ³¤¶È
-                return_state = FIFO_DATA_NO_ENOUGH;                             // ±êÖ¾Êı¾İ²»¹»
-                if(0 == fifo_data_length)                                       // Èç¹ûÃ»ÓĞÊı¾İ ¾ÍÖ±½ÓÍË³ö
+                *length = fifo_data_length;                                     // çº æ­£è¯»å–çš„é•¿åº¦
+                return_state = FIFO_DATA_NO_ENOUGH;                             // æ ‡å¿—æ•°æ®ä¸å¤Ÿ
+                if(0 == fifo_data_length)                                       // å¦‚æœæ²¡æœ‰æ•°æ® å°±ç›´æ¥é€€å‡º
                 {
-                    fifo->execution &= ~FIFO_READ;                              // ¶Á²Ù×÷¸´Î»
+                    fifo->execution &= ~FIFO_READ;                              // è¯»æ“ä½œå¤ä½
                     break;
                 }
             }
 
-            fifo->execution |= FIFO_READ;                                       // ¶Á²Ù×÷ÖÃÎ»
-            temp_length = fifo->max - fifo->end;                                // ¼ÆËãÎ²Ö¸Õë¾àÀë»º³åÇøÎ²»¹ÓĞ¶àÉÙ¿Õ¼ä
-            if(*length <= temp_length)                                          // ×ã¹»Ò»´ÎĞÔ¶ÁÈ¡Íê±Ï
+            fifo->execution |= FIFO_READ;                                       // è¯»æ“ä½œç½®ä½
+            temp_length = fifo->max - fifo->end;                                // è®¡ç®—å°¾æŒ‡é’ˆè·ç¦»ç¼“å†²åŒºå°¾è¿˜æœ‰å¤šå°‘ç©ºé—´
+            if(*length <= temp_length)                                          // è¶³å¤Ÿä¸€æ¬¡æ€§è¯»å–å®Œæ¯•
             {
                 switch(fifo->type)
                 {
@@ -409,20 +409,20 @@ fifo_state_enum fifo_read_buffer (fifo_struct *fifo, void *dat, uint32 *length, 
                     }break;
                 }
             }
-            fifo->execution &= ~FIFO_READ;                                      // ¶Á²Ù×÷¸´Î»
+            fifo->execution &= ~FIFO_READ;                                      // è¯»æ“ä½œå¤ä½
         }
 
-        if(FIFO_READ_AND_CLEAN == flag)                                         // Èç¹ûÑ¡Ôñ¶ÁÈ¡²¢¸ü¸Ä FIFO ×´Ì¬
+        if(FIFO_READ_AND_CLEAN == flag)                                         // å¦‚æœé€‰æ‹©è¯»å–å¹¶æ›´æ”¹ FIFO çŠ¶æ€
         {
-            if((FIFO_RESET | FIFO_CLEAR | FIFO_READ) == fifo->execution)        // ²»ÔÚ ÖØÖÃ Çå¿Õ ¶ÁÈ¡ ×´Ì¬ ±ÜÃâÒì³£
+            if((FIFO_RESET | FIFO_CLEAR | FIFO_READ) == fifo->execution)        // ä¸åœ¨ é‡ç½® æ¸…ç©º è¯»å– çŠ¶æ€ é¿å…å¼‚å¸¸
             {
-                return_state = FIFO_CLEAR_UNDO;                                 // Çå¿Õ²Ù×÷Î´Íê³É
+                return_state = FIFO_CLEAR_UNDO;                                 // æ¸…ç©ºæ“ä½œæœªå®Œæˆ
                 break;
             }
-            fifo->execution |= FIFO_CLEAR;                                      // Çå¿Õ×÷ÖÃÎ»
-            fifo_end_offset(fifo, *length);                                     // ÒÆ¶¯ FIFO Í·Ö¸Õë
-            fifo->reamin_size += *length;                                              // ÊÍ·Å¶ÔÓ¦³¤¶È¿Õ¼ä
-            fifo->execution &= ~FIFO_CLEAR;                                     // Çå¿Õ×÷¸´Î»
+            fifo->execution |= FIFO_CLEAR;                                      // æ¸…ç©ºä½œç½®ä½
+            fifo_end_offset(fifo, *length);                                     // ç§»åŠ¨ FIFO å¤´æŒ‡é’ˆ
+            fifo->reamin_size += *length;                                              // é‡Šæ”¾å¯¹åº”é•¿åº¦ç©ºé—´
+            fifo->execution &= ~FIFO_CLEAR;                                     // æ¸…ç©ºä½œå¤ä½
         }
     }while(0);
 
@@ -430,22 +430,22 @@ fifo_state_enum fifo_read_buffer (fifo_struct *fifo, void *dat, uint32 *length, 
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êı¼ò½é     ´Ó FIFO Î²²¿¶ÁÈ¡Ö¸¶¨³¤¶È buffer
-// ²ÎÊıËµÃ÷     *fifo               FIFO ¶ÔÏóÖ¸Õë
-// ²ÎÊıËµÃ÷     *dat                Ä¿±ê»º³åÇøÖ¸Õë
-// ²ÎÊıËµÃ÷     *length             ¶ÁÈ¡µÄÊı¾İ³¤¶È Èç¹ûÃ»ÓĞÕâÃ´¶àÊı¾İÕâÀï»á±»ĞŞ¸Ä
-// ²ÎÊıËµÃ÷     flag                ÊÇ·ñ±ä¸ü FIFO ×´Ì¬ ¿ÉÑ¡ÔñÊÇ·ñÇå¿Õ¶ÁÈ¡µÄÊı¾İ
-// ·µ»Ø²ÎÊı     fifo_state_enum     ²Ù×÷×´Ì¬
-// Ê¹ÓÃÊ¾Àı     zf_log(fifo_read_tail_buffer(&fifo, data, &length, FIFO_READ_ONLY) == FIFO_SUCCESS, "fifo_read_buffer error");
-// ±¸×¢ĞÅÏ¢     Èç¹ûÊ¹ÓÃ FIFO_READ_AND_CLEAN ²Ù×÷ ½«»á¶ªÆúËùÓĞÊı¾İ²¢Çå¿ÕÕû¸ö FIFO
-//              Èç¹ûÊ¹ÓÃ FIFO_READ_AND_CLEAN ²Ù×÷ ½«»á¶ªÆúËùÓĞÊı¾İ²¢Çå¿ÕÕû¸ö FIFO
-//              Èç¹ûÊ¹ÓÃ FIFO_READ_AND_CLEAN ²Ù×÷ ½«»á¶ªÆúËùÓĞÊı¾İ²¢Çå¿ÕÕû¸ö FIFO
+// å‡½æ•°ç®€ä»‹     ä» FIFO å°¾éƒ¨è¯»å–æŒ‡å®šé•¿åº¦ buffer
+// å‚æ•°è¯´æ˜     *fifo               FIFO å¯¹è±¡æŒ‡é’ˆ
+// å‚æ•°è¯´æ˜     *dat                ç›®æ ‡ç¼“å†²åŒºæŒ‡é’ˆ
+// å‚æ•°è¯´æ˜     *length             è¯»å–çš„æ•°æ®é•¿åº¦ å¦‚æœæ²¡æœ‰è¿™ä¹ˆå¤šæ•°æ®è¿™é‡Œä¼šè¢«ä¿®æ”¹
+// å‚æ•°è¯´æ˜     flag                æ˜¯å¦å˜æ›´ FIFO çŠ¶æ€ å¯é€‰æ‹©æ˜¯å¦æ¸…ç©ºè¯»å–çš„æ•°æ®
+// è¿”å›å‚æ•°     fifo_state_enum     æ“ä½œçŠ¶æ€
+// ä½¿ç”¨ç¤ºä¾‹     zf_log(fifo_read_tail_buffer(&fifo, data, &length, FIFO_READ_ONLY) == FIFO_SUCCESS, "fifo_read_buffer error");
+// å¤‡æ³¨ä¿¡æ¯     å¦‚æœä½¿ç”¨ FIFO_READ_AND_CLEAN æ“ä½œ å°†ä¼šä¸¢å¼ƒæ‰€æœ‰æ•°æ®å¹¶æ¸…ç©ºæ•´ä¸ª FIFO
+//              å¦‚æœä½¿ç”¨ FIFO_READ_AND_CLEAN æ“ä½œ å°†ä¼šä¸¢å¼ƒæ‰€æœ‰æ•°æ®å¹¶æ¸…ç©ºæ•´ä¸ª FIFO
+//              å¦‚æœä½¿ç”¨ FIFO_READ_AND_CLEAN æ“ä½œ å°†ä¼šä¸¢å¼ƒæ‰€æœ‰æ•°æ®å¹¶æ¸…ç©ºæ•´ä¸ª FIFO
 //-------------------------------------------------------------------------------------------------------------------
 fifo_state_enum fifo_read_tail_buffer (fifo_struct *fifo, void *dat, uint32 *length, fifo_operation_enum flag)
 {
     //zf_assert(NULL != fifo);
     //zf_assert(NULL != length);
-    fifo_state_enum return_state = FIFO_SUCCESS;                                // ²Ù×÷½á¹û³õÖµ
+    fifo_state_enum return_state = FIFO_SUCCESS;                                // æ“ä½œç»“æœåˆå€¼
     uint32 temp_length = 0;
     uint32 fifo_data_length = 0;
 
@@ -457,26 +457,26 @@ fifo_state_enum fifo_read_tail_buffer (fifo_struct *fifo, void *dat, uint32 *len
         }
         else
         {
-            if((FIFO_RESET | FIFO_CLEAR | FIFO_WRITE) & fifo->execution)        // ÅĞ¶ÏÊÇ·ñµ±Ç° FIFO ÊÇ·ñÔÚÖ´ĞĞÇå¿Õ»òÖØÖÃ²Ù×÷
+            if((FIFO_RESET | FIFO_CLEAR | FIFO_WRITE) & fifo->execution)        // åˆ¤æ–­æ˜¯å¦å½“å‰ FIFO æ˜¯å¦åœ¨æ‰§è¡Œæ¸…ç©ºæˆ–é‡ç½®æ“ä½œ
             {
-                *length = fifo_data_length;                                     // ¾ÀÕı¶ÁÈ¡µÄ³¤¶È
-                return_state = FIFO_READ_UNDO;                                  // ¶ÁÈ¡²Ù×÷Î´Íê³É
+                *length = fifo_data_length;                                     // çº æ­£è¯»å–çš„é•¿åº¦
+                return_state = FIFO_READ_UNDO;                                  // è¯»å–æ“ä½œæœªå®Œæˆ
                 break;
             }
 
-            fifo_data_length = fifo_used(fifo);                                 // »ñÈ¡µ±Ç°Êı¾İÓĞ¶àÉÙ
-            if(*length > fifo_data_length)                                      // ÅĞ¶Ï³¤¶ÈÊÇ·ñ×ã¹»
+            fifo_data_length = fifo_used(fifo);                                 // è·å–å½“å‰æ•°æ®æœ‰å¤šå°‘
+            if(*length > fifo_data_length)                                      // åˆ¤æ–­é•¿åº¦æ˜¯å¦è¶³å¤Ÿ
             {
-                *length = fifo_data_length;                                     // ¾ÀÕı¶ÁÈ¡µÄ³¤¶È
-                return_state = FIFO_DATA_NO_ENOUGH;                             // ±êÖ¾Êı¾İ²»¹»
-                if(0 == fifo_data_length)                                       // Èç¹ûÃ»ÓĞÊı¾İ ¾ÍÖ±½ÓÍË³ö
+                *length = fifo_data_length;                                     // çº æ­£è¯»å–çš„é•¿åº¦
+                return_state = FIFO_DATA_NO_ENOUGH;                             // æ ‡å¿—æ•°æ®ä¸å¤Ÿ
+                if(0 == fifo_data_length)                                       // å¦‚æœæ²¡æœ‰æ•°æ® å°±ç›´æ¥é€€å‡º
                 {
-                    fifo->execution &= ~FIFO_READ;                              // ¶Á²Ù×÷¸´Î»
+                    fifo->execution &= ~FIFO_READ;                              // è¯»æ“ä½œå¤ä½
                     break;
                 }
             }
 
-            fifo->execution |= FIFO_READ;                                       // ¶Á²Ù×÷ÖÃÎ»
+            fifo->execution |= FIFO_READ;                                       // è¯»æ“ä½œç½®ä½
             if((fifo->head > fifo->end) || (fifo->head >= *length))
             {
                 switch(fifo->type)
@@ -488,7 +488,7 @@ fifo_state_enum fifo_read_tail_buffer (fifo_struct *fifo, void *dat, uint32 *len
             }
             else
             {
-                temp_length = *length - fifo->head;                             // ¼ÆËãÎ²Ö¸Õë¾àÀë»º³åÇøÎ²»¹ÓĞ¶àÉÙ¿Õ¼ä
+                temp_length = *length - fifo->head;                             // è®¡ç®—å°¾æŒ‡é’ˆè·ç¦»ç¼“å†²åŒºå°¾è¿˜æœ‰å¤šå°‘ç©ºé—´
                 switch(fifo->type)
                 {
                     case FIFO_DATA_8BIT:
@@ -508,14 +508,14 @@ fifo_state_enum fifo_read_tail_buffer (fifo_struct *fifo, void *dat, uint32 *len
                     }break;
                 }
             }
-            fifo->execution &= ~FIFO_READ;                                      // ¶Á²Ù×÷¸´Î»
+            fifo->execution &= ~FIFO_READ;                                      // è¯»æ“ä½œå¤ä½
         }
 
-        if(FIFO_READ_AND_CLEAN == flag)                                         // Èç¹ûÑ¡Ôñ¶ÁÈ¡²¢¸ü¸Ä FIFO ×´Ì¬
+        if(FIFO_READ_AND_CLEAN == flag)                                         // å¦‚æœé€‰æ‹©è¯»å–å¹¶æ›´æ”¹ FIFO çŠ¶æ€
         {
-            if((FIFO_RESET | FIFO_CLEAR | FIFO_READ) == fifo->execution)        // ²»ÔÚ ÖØÖÃ Çå¿Õ ¶ÁÈ¡ ×´Ì¬ ±ÜÃâÒì³£
+            if((FIFO_RESET | FIFO_CLEAR | FIFO_READ) == fifo->execution)        // ä¸åœ¨ é‡ç½® æ¸…ç©º è¯»å– çŠ¶æ€ é¿å…å¼‚å¸¸
             {
-                return_state = FIFO_CLEAR_UNDO;                                 // Çå¿Õ²Ù×÷Î´Íê³É
+                return_state = FIFO_CLEAR_UNDO;                                 // æ¸…ç©ºæ“ä½œæœªå®Œæˆ
                 break;
             }
             fifo_clear(fifo);
@@ -526,14 +526,14 @@ fifo_state_enum fifo_read_tail_buffer (fifo_struct *fifo, void *dat, uint32 *len
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êı¼ò½é     FIFO ³õÊ¼»¯ ¹ÒÔØ¶ÔÓ¦»º³åÇø
-// ²ÎÊıËµÃ÷     *fifo               FIFO ¶ÔÏóÖ¸Õë
-// ²ÎÊıËµÃ÷     type                FIFO Êı¾İÎ»Êı
-// ²ÎÊıËµÃ÷     *buffer_addr        Òª¹ÒÔØµÄ»º³åÇø
-// ²ÎÊıËµÃ÷     size                »º³åÇø´óĞ¡
-// ·µ»Ø²ÎÊı     fifo_state_enum     ²Ù×÷×´Ì¬
-// Ê¹ÓÃÊ¾Àı     fifo_init(&user_fifo, user_buffer, 64);
-// ±¸×¢ĞÅÏ¢
+// å‡½æ•°ç®€ä»‹     FIFO åˆå§‹åŒ– æŒ‚è½½å¯¹åº”ç¼“å†²åŒº
+// å‚æ•°è¯´æ˜     *fifo               FIFO å¯¹è±¡æŒ‡é’ˆ
+// å‚æ•°è¯´æ˜     type                FIFO æ•°æ®ä½æ•°
+// å‚æ•°è¯´æ˜     *buffer_addr        è¦æŒ‚è½½çš„ç¼“å†²åŒº
+// å‚æ•°è¯´æ˜     size                ç¼“å†²åŒºå¤§å°
+// è¿”å›å‚æ•°     fifo_state_enum     æ“ä½œçŠ¶æ€
+// ä½¿ç”¨ç¤ºä¾‹     fifo_init(&user_fifo, user_buffer, 64);
+// å¤‡æ³¨ä¿¡æ¯
 //-------------------------------------------------------------------------------------------------------------------
 fifo_state_enum fifo_init (fifo_struct *fifo, fifo_data_type_enum type, void *buffer_addr, uint32 len)
 {

@@ -1,11 +1,11 @@
-C251 COMPILER V5.60.0,  filter                                                             06/07/25  11:17:04  PAGE 1   
+C251 COMPILER V5.60.0,  filter                                                             06/07/25  14:38:27  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE filter
 OBJECT MODULE PLACED IN .\Out_File\filter.obj
-COMPILER INVOKED BY: D:\keil5\C251\BIN\C251.EXE ..\USER\src\filter.c LARGE INTR2 WARNINGLEVEL(3) OPTIMIZE(0,SPEED) BROWS
-                    -E INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral) DEBUG PRINT(.\Out_File\filte
-                    -r.lst) OBJECT(.\Out_File\filter.obj) 
+COMPILER INVOKED BY: D:\Software\Keil5\c251v560\C251\BIN\C251.EXE ..\USER\src\filter.c LARGE INTR2 WARNINGLEVEL(3) OPTIM
+                    -IZE(0,SPEED) BROWSE INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral) DEBUG PRIN
+                    -T(.\Out_File\filter.lst) TABS(2) OBJECT(.\Out_File\filter.obj) 
 
 stmt  level    source
 
@@ -25,7 +25,7 @@ stmt  level    source
    14   1          kf->B = B;
    15   1          kf->Q = Q;
    16   1          kf->R = R;
-   17   1          kf->P = 1.0;       // ³õÊ¼Ð­·½²î
+   17   1          kf->P = 1.0;       // åˆå§‹åæ–¹å·®
    18   1          kf->x = initial_x;
    19   1      }
    20          
@@ -45,17 +45,17 @@ stmt  level    source
    34          
    35          void lowpass_init(LowPassFilter* instance, float alpha)
    36          {
-   37   1              instance->alpha = alpha;
-   38   1              instance->output = 0;
-   39   1              instance->lastoutput = 0;
+   37   1        instance->alpha = alpha;
+   38   1        instance->output = 0;
+   39   1        instance->lastoutput = 0;
    40   1      }
    41          
    42          float lowpass_filter(LowPassFilter* instance, float input) 
    43          {
-   44   1          // ÊµÏÖÒ»½×µÍÍ¨ÂË²¨µÄºËÐÄËã·¨
+   44   1          // å®žçŽ°ä¸€é˜¶ä½Žé€šæ»¤æ³¢çš„æ ¸å¿ƒç®—æ³•
    45   1          instance->output = instance->alpha * input + (1 - instance->alpha) * instance->lastoutput;
    46   1          
-   47   1          // ¸üÐÂÉÏÒ»Ê±¿ÌµÄÊäÈëÖµ
+   47   1          // æ›´æ–°ä¸Šä¸€æ—¶åˆ»çš„è¾“å…¥å€¼
    48   1          instance->lastoutput = instance->output;
    49   1          
    50   1          return instance->output;
@@ -67,7 +67,7 @@ Module Information          Static   Overlayable
   code size            =      1003     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
-C251 COMPILER V5.60.0,  filter                                                             06/07/25  11:17:04  PAGE 2   
+C251 COMPILER V5.60.0,  filter                                                             06/07/25  14:38:27  PAGE 2   
 
   idata size           =    ------     ------
   pdata size           =    ------     ------

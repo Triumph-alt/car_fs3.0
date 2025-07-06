@@ -1,32 +1,32 @@
-C251 COMPILER V5.60.0,  zf_spi                                                             06/07/25  11:17:11  PAGE 1   
+C251 COMPILER V5.60.0,  zf_spi                                                             06/07/25  14:38:37  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE zf_spi
 OBJECT MODULE PLACED IN .\Out_File\zf_spi.obj
-COMPILER INVOKED BY: D:\keil5\C251\BIN\C251.EXE ..\seekfree_libraries\zf_spi.c LARGE INTR2 WARNINGLEVEL(3) OPTIMIZE(0,SP
-                    -EED) BROWSE INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral) DEBUG PRINT(.\Out_
-                    -File\zf_spi.lst) OBJECT(.\Out_File\zf_spi.obj) 
+COMPILER INVOKED BY: D:\Software\Keil5\c251v560\C251\BIN\C251.EXE ..\seekfree_libraries\zf_spi.c LARGE INTR2 WARNINGLEVE
+                    -L(3) OPTIMIZE(0,SPEED) BROWSE INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral) 
+                    -DEBUG PRINT(.\Out_File\zf_spi.lst) TABS(2) OBJECT(.\Out_File\zf_spi.obj) 
 
 stmt  level    source
 
     1          /********************************************************************************************************
              -*************
     2           * COPYRIGHT NOTICE
-    3           * Copyright (c) 2020,Öğ·É¿Æ¼¼
+    3           * Copyright (c) 2020,é€é£ç§‘æŠ€
     4           * All rights reserved.
-    5           * ¼¼ÊõÌÖÂÛQQÈº£ºÒ»Èº£º179029047(ÒÑÂú)  ¶şÈº£º244861897(ÒÑÂú)  ÈıÈº£º824575535
+    5           * æŠ€æœ¯è®¨è®ºQQç¾¤ï¼šä¸€ç¾¤ï¼š179029047(å·²æ»¡)  äºŒç¾¤ï¼š244861897(å·²æ»¡)  ä¸‰ç¾¤ï¼š824575535
     6           *
-    7           * ÒÔÏÂËùÓĞÄÚÈİ°æÈ¨¾ùÊôÖğ·É¿Æ¼¼ËùÓĞ£¬Î´¾­ÔÊĞí²»µÃÓÃÓÚÉÌÒµÓÃÍ¾£¬
-    8           * »¶Ó­¸÷Î»Ê¹ÓÃ²¢´«²¥±¾³ÌĞò£¬ĞŞ¸ÄÄÚÈİÊ±±ØĞë±£ÁôÖğ·É¿Æ¼¼µÄ°æÈ¨ÉùÃ÷¡£
+    7           * ä»¥ä¸‹æ‰€æœ‰å†…å®¹ç‰ˆæƒå‡å±é€é£ç§‘æŠ€æ‰€æœ‰ï¼Œæœªç»å…è®¸ä¸å¾—ç”¨äºå•†ä¸šç”¨é€”ï¼Œ
+    8           * æ¬¢è¿å„ä½ä½¿ç”¨å¹¶ä¼ æ’­æœ¬ç¨‹åºï¼Œä¿®æ”¹å†…å®¹æ—¶å¿…é¡»ä¿ç•™é€é£ç§‘æŠ€çš„ç‰ˆæƒå£°æ˜ã€‚
     9           *
-   10           * @file                spi
-   11           * @company                     ³É¶¼Öğ·É¿Æ¼¼ÓĞÏŞ¹«Ë¾
-   12           * @author              Öğ·É¿Æ¼¼(QQ790875685)
-   13           * @version             ²é¿´docÄÚversionÎÄ¼ş °æ±¾ËµÃ÷
-   14           * @Software            MDK FOR C251 V5.60
-   15           * @Target core         STC32G12K128
-   16           * @Taobao              https://seekfree.taobao.com/
-   17           * @date                2020-4-14
+   10           * @file          spi
+   11           * @company       æˆéƒ½é€é£ç§‘æŠ€æœ‰é™å…¬å¸
+   12           * @author        é€é£ç§‘æŠ€(QQ790875685)
+   13           * @version       æŸ¥çœ‹docå†…versionæ–‡ä»¶ ç‰ˆæœ¬è¯´æ˜
+   14           * @Software    MDK FOR C251 V5.60
+   15           * @Target core   STC32G12K128
+   16           * @Taobao      https://seekfree.taobao.com/
+   17           * @date          2020-4-14
    18           ********************************************************************************************************
              -************/
    19          #pragma warning disable = 47
@@ -38,49 +38,50 @@ stmt  level    source
    25          
    26          //-------------------------------------------------------------------------------------------------------
              -------------
-   27          //  @brief      spi³õÊ¼»¯º¯Êı(ssÒı½ÅÓÉÈí¼ş¿ØÖÆ)
-   28          //  @param      spi_n                   Ñ¡ÔñSPIÄ£¿é(SPI_1-SPI_4)
-   29          //  @param      sck_pin                 Ñ¡ÔñSCKÒı½Å
-   30          //  @param      mosi_pin                Ñ¡ÔñMOSIÒı½Å
-   31          //  @param      miso_pin                Ñ¡ÔñMISOÒı½Å
-   32          //  @param      mstr                    Ö÷´ÓÑ¡Ôñ
-   33          //  @param      mode            SPIÄ£Ê½ 0£ºCPOL=0 CPHA=0    1£ºCPOL=0 CPHA=1   2£ºCPOL=1 CPHA=0   3£ºCPOL
-             -=1 CPHA=1 //¾ßÌåÏ¸½Ú¿É×ÔĞĞ°Ù¶È
-   34          //  @param      baud                    ËÙÂÊÑ¡Ôñ
+   27          //  @brief      spiåˆå§‹åŒ–å‡½æ•°(sså¼•è„šç”±è½¯ä»¶æ§åˆ¶)
+   28          //  @param      spi_n     é€‰æ‹©SPIæ¨¡å—(SPI_1-SPI_4)
+   29          //  @param      sck_pin     é€‰æ‹©SCKå¼•è„š
+   30          //  @param      mosi_pin    é€‰æ‹©MOSIå¼•è„š
+   31          //  @param      miso_pin    é€‰æ‹©MISOå¼•è„š
+   32          //  @param      mstr      ä¸»ä»é€‰æ‹©
+   33          //  @param      mode            SPIæ¨¡å¼ 0ï¼šCPOL=0 CPHA=0    1ï¼šCPOL=0 CPHA=1   2ï¼šCPOL=1 CPHA=0   3ï
+             -¼šCPOL=1 CPHA=1 //å…·ä½“ç»†èŠ‚å¯è‡ªè¡Œç™¾åº¦
+   34          //  @param      baud      é€Ÿç‡é€‰æ‹©
    35          //  @since      v1.0
-   36          //  Sample usage:                               spi_init(SPI_1, SPI1_SCLK_P15, SPI1_MOSI_P13, SPI1_MISO_P14, 0, MASTER, SYSclk_DIV_4
-             -);        
-   37          //                                                              //³õÊ¼»¯SPI1,Ö÷»úÄ£Ê½,ËÙÂÊÎªÏµÍ³ÆµÂÊ/4£¬SCLKÒı½ÅP1.5 MOSIÒı½ÅP1.3 MISOÒı½ÅP1.4,SPIÄ£Ê½0
+   36          //  Sample usage:       spi_init(SPI_1, SPI1_SCLK_P15, SPI1_MOSI_P13, SPI1_MISO_P14, 0, MASTER, SYSclk_DIV_4
+             -);  
+   37          //                //åˆå§‹åŒ–SPI1,ä¸»æœºæ¨¡å¼,é€Ÿç‡ä¸ºç³»ç»Ÿé¢‘ç‡/4ï¼ŒSCLKå¼•è„šP1.5 MOSIå¼•è„šP1.3 MISOå¼•è„š
+             -P1.4,SPIæ¨¡å¼0
    38          //-------------------------------------------------------------------------------------------------------
              -------------
    39          void spi_init(SPIN_enum spi_n,
-   40                                    SPI_PIN_enum sck_pin, 
-   41                                    SPI_PIN_enum mosi_pin, 
-   42                                    SPI_PIN_enum miso_pin, 
-   43                                    uint8 mode,
-   44                                    SPI_MSTR_enum mstr,
-   45                                    SPI_BAUD_enum baud)
+   40                  SPI_PIN_enum sck_pin, 
+   41                  SPI_PIN_enum mosi_pin, 
+   42                  SPI_PIN_enum miso_pin, 
+   43                  uint8 mode,
+   44                  SPI_MSTR_enum mstr,
+   45                  SPI_BAUD_enum baud)
    46          {
-   47   1              //IO¿ÚĞèÒªÅäÖÃÎª£º×¼Ë«Ïò¿Ú£¨´«Í³8051¶Ë¿ÚÄ£Ê½£¬ÈõÉÏÀ­£©
-   48   1              if(sck_pin != SPI_NULL_PIN)
-   49   1              {
-   50   2                      gpio_mode(sck_pin & 0xFF,GPIO);
-   51   2              }
-C251 COMPILER V5.60.0,  zf_spi                                                             06/07/25  11:17:11  PAGE 2   
+   47   1        //IOå£éœ€è¦é…ç½®ä¸ºï¼šå‡†åŒå‘å£ï¼ˆä¼ ç»Ÿ8051ç«¯å£æ¨¡å¼ï¼Œå¼±ä¸Šæ‹‰ï¼‰
+   48   1        if(sck_pin != SPI_NULL_PIN)
+   49   1        {
+   50   2          gpio_mode(sck_pin & 0xFF,GPIO);
+C251 COMPILER V5.60.0,  zf_spi                                                             06/07/25  14:38:37  PAGE 2   
 
-   52   1              
-   53   1              if(mosi_pin != SPI_NULL_PIN)
-   54   1              {
-   55   2                      gpio_mode(mosi_pin & 0xFF,GPIO);
-   56   2              }
-   57   1              
-   58   1              if(miso_pin != SPI_NULL_PIN)
-   59   1              {
-   60   2                      gpio_mode(miso_pin & 0xFF,GPIO);
-   61   2              }
+   51   2        }
+   52   1        
+   53   1        if(mosi_pin != SPI_NULL_PIN)
+   54   1        {
+   55   2          gpio_mode(mosi_pin & 0xFF,GPIO);
+   56   2        }
+   57   1        
+   58   1        if(miso_pin != SPI_NULL_PIN)
+   59   1        {
+   60   2          gpio_mode(miso_pin & 0xFF,GPIO);
+   61   2        }
    62   1      
-   63   1              
-   64   1              P_SW1 &= ~(0x03<<2);  //Çå³ıSPI¹¦ÄÜ½ÅÑ¡ÔñÎ»
+   63   1        
+   64   1        P_SW1 &= ~(0x03<<2);  //æ¸…é™¤SPIåŠŸèƒ½è„šé€‰æ‹©ä½
    65   1          switch(spi_n)
    66   1          {
    67   2          case SPI_CH1:
@@ -96,99 +97,100 @@ stmt  level    source
    77   2              P_SW1 |= (0x03<<2);
    78   2              break;
    79   2          }
-   80   1              
-   81   1              SPCTL &= 0xF3;          //Çå³ıSPI¼«ĞÔºÍÏàÎ»
-   82   1              switch(mode)
-   83   1              {
-   84   2              case 0:
-   85   2                      
-   86   2                      break;
-   87   2              case 1:
-   88   2                      SPCTL |= 0x01<<2;
-   89   2                      break;
-   90   2              case 2:
-   91   2                      SPCTL |= 0x02<<2;
-   92   2                      break;
-   93   2              case 3:
-   94   2                      SPCTL |= 0x03<<2;
-   95   2                      break;
-   96   2              }
-   97   1                      
-   98   1              
-   99   1              SPCTL |= baud;          //ËÙÂÊÉè¶¨
+   80   1        
+   81   1        SPCTL &= 0xF3;    //æ¸…é™¤SPIææ€§å’Œç›¸ä½
+   82   1        switch(mode)
+   83   1        {
+   84   2        case 0:
+   85   2          
+   86   2          break;
+   87   2        case 1:
+   88   2          SPCTL |= 0x01<<2;
+   89   2          break;
+   90   2        case 2:
+   91   2          SPCTL |= 0x02<<2;
+   92   2          break;
+   93   2        case 3:
+   94   2          SPCTL |= 0x03<<2;
+   95   2          break;
+   96   2        }
+   97   1          
+   98   1        
+   99   1        SPCTL |= baud;    //é€Ÿç‡è®¾å®š
   100   1      
   101   1          if(mstr == MASTER)
   102   1          {
-  103   2              SPCTL |= 1<<7;  //ºöÂÔSSÒı½Å¹¦ÄÜ£¬Ê¹ÓÃMSTRÈ·¶¨Æ÷¼şÊÇÖ÷»ú»¹ÊÇ´Ó»ú
-  104   2              SPCTL |= 1<<4;  //Ö÷»úÄ£Ê½
+  103   2              SPCTL |= 1<<7;  //å¿½ç•¥SSå¼•è„šåŠŸèƒ½ï¼Œä½¿ç”¨MSTRç¡®å®šå™¨ä»¶æ˜¯ä¸»æœºè¿˜æ˜¯ä»æœº
+  104   2              SPCTL |= 1<<4;  //ä¸»æœºæ¨¡å¼
   105   2          }
   106   1          else
   107   1          {
-  108   2              //²»×ö²Ù×÷
+  108   2              //ä¸åšæ“ä½œ
   109   2          }
-  110   1          SPCTL |= 1<<6;              //Ê¹ÄÜSPI¹¦ÄÜ
+  110   1          SPCTL |= 1<<6;    //ä½¿èƒ½SPIåŠŸèƒ½
   111   1      }
   112          
   113          
   114          
   115          //-------------------------------------------------------------------------------------------------------
              -------------
-  116          //  @brief      SPI·¢ËÍ½ÓÊÕº¯Êı
-C251 COMPILER V5.60.0,  zf_spi                                                             06/07/25  11:17:11  PAGE 3   
+C251 COMPILER V5.60.0,  zf_spi                                                             06/07/25  14:38:37  PAGE 3   
 
-  117          //  @param      dat             ·¢ËÍµÄÊı¾İ
+  116          //  @brief      SPIå‘é€æ¥æ”¶å‡½æ•°
+  117          //  @param      dat           å‘é€çš„æ•°æ®
   118          //  @since      v1.0
-  119          //  Sample usage:                               buf_1 = spi_mosi(buf);    //·¢ËÍbufµÄÄÚÈİ£¬²¢½ÓÊÕµ½buf_1Àï£¬³¤¶ÈÎª1×Ö½Ú
+  119          //  Sample usage:       buf_1 = spi_mosi(buf);    //å‘é€bufçš„å†…å®¹ï¼Œå¹¶æ¥æ”¶åˆ°buf_1é‡Œï¼Œé•¿åº¦ä¸º1å­
+             -—èŠ‚
   120          //-------------------------------------------------------------------------------------------------------
              -------------
   121          uint8 spi_mosi(uint8 dat)
   122          {
-  123   1          SPDAT = dat;                                        //DATA¼Ä´æÆ÷¸³Öµ
-  124   1          while (!(SPSTAT & 0x80));           //²éÑ¯Íê³É±êÖ¾
-  125   1          SPSTAT = 0xc0;                  //ÇåÖĞ¶Ï±êÖ¾
-  126   1              return SPDAT;
+  123   1          SPDAT = dat;          //DATAå¯„å­˜å™¨èµ‹å€¼
+  124   1          while (!(SPSTAT & 0x80));     //æŸ¥è¯¢å®Œæˆæ ‡å¿—
+  125   1          SPSTAT = 0xc0;                  //æ¸…ä¸­æ–­æ ‡å¿—
+  126   1        return SPDAT;
   127   1      }
   128          
   129          
   130          //-------------------------------------------------------------------------------------------------------
              -------------
-  131          //  @brief      spiÒı½ÅÇĞ»»º¯Êı(ssÒı½ÅÓÉÈí¼ş¿ØÖÆ)
-  132          //  @param      spi_n                   Ñ¡ÔñSPIÄ£¿é(SPI_1-SPI_4)
-  133          //  @param      sck_pin                 Ñ¡ÔñSCKÒı½Å
-  134          //  @param      mosi_pin                Ñ¡ÔñMOSIÒı½Å
-  135          //  @param      miso_pin                Ñ¡ÔñMISOÒı½Å
-  136          //  Sample usage:                               spi_change_pin(SPI_1,SPI1_SCLK_P15, SPI1_MOSI_P13,SPI1_MISO_P14);       
-  137          //                                                              //ÇĞ»»SPIÒı½Å
+  131          //  @brief      spiå¼•è„šåˆ‡æ¢å‡½æ•°(sså¼•è„šç”±è½¯ä»¶æ§åˆ¶)
+  132          //  @param      spi_n     é€‰æ‹©SPIæ¨¡å—(SPI_1-SPI_4)
+  133          //  @param      sck_pin     é€‰æ‹©SCKå¼•è„š
+  134          //  @param      mosi_pin    é€‰æ‹©MOSIå¼•è„š
+  135          //  @param      miso_pin    é€‰æ‹©MISOå¼•è„š
+  136          //  Sample usage:       spi_change_pin(SPI_1,SPI1_SCLK_P15, SPI1_MOSI_P13,SPI1_MISO_P14); 
+  137          //                //åˆ‡æ¢SPIå¼•è„š
   138          //-------------------------------------------------------------------------------------------------------
              -------------
   139          void spi_change_pin(SPIN_enum spi_n, SPI_PIN_enum sck_pin, SPI_PIN_enum mosi_pin, SPI_PIN_enum miso_pin)
   140          {
-  141   1          P_SW1 &= ~(0x03<<2);  //Çå³ıSPI¹¦ÄÜ½ÅÑ¡ÔñÎ»
-  142   1              switch(spi_n)
+  141   1          P_SW1 &= ~(0x03<<2);  //æ¸…é™¤SPIåŠŸèƒ½è„šé€‰æ‹©ä½
+  142   1        switch(spi_n)
   143   1          {
-  144   2              //IO¿ÚĞèÒªÅäÖÃÎª£º×¼Ë«Ïò¿Ú£¨´«Í³8051¶Ë¿ÚÄ£Ê½£¬ÈõÉÏÀ­£©
+  144   2        //IOå£éœ€è¦é…ç½®ä¸ºï¼šå‡†åŒå‘å£ï¼ˆä¼ ç»Ÿ8051ç«¯å£æ¨¡å¼ï¼Œå¼±ä¸Šæ‹‰ï¼‰
   145   2          case SPI_CH1:
-  146   2                      gpio_mode(P1_3,GPO_PP);
-  147   2                      gpio_mode(P1_4,GPIO);
-  148   2                      gpio_mode(P1_5,GPO_PP);
+  146   2          gpio_mode(P1_3,GPO_PP);
+  147   2          gpio_mode(P1_4,GPIO);
+  148   2          gpio_mode(P1_5,GPO_PP);
   149   2              break;
   150   2          case SPI_CH2:
-  151   2                      gpio_mode(P2_3,GPO_PP);
-  152   2                      gpio_mode(P2_4,GPIO);
-  153   2                      gpio_mode(P2_5,GPO_PP);
+  151   2          gpio_mode(P2_3,GPO_PP);
+  152   2          gpio_mode(P2_4,GPIO);
+  153   2          gpio_mode(P2_5,GPO_PP);
   154   2              break;
   155   2          case SPI_CH3:
-  156   2                      gpio_mode(P4_0,GPO_PP);
-  157   2                      gpio_mode(P4_1,GPIO);
-  158   2                      gpio_mode(P4_3,GPO_PP);
+  156   2          gpio_mode(P4_0,GPO_PP);
+  157   2          gpio_mode(P4_1,GPIO);
+  158   2          gpio_mode(P4_3,GPO_PP);
   159   2              break;
   160   2          case SPI_CH4:
-  161   2                      gpio_mode(P3_4,GPO_PP);
-  162   2                      gpio_mode(P3_3,GPIO);
-  163   2                      gpio_mode(P3_2,GPO_PP);
+  161   2          gpio_mode(P3_4,GPO_PP);
+  162   2          gpio_mode(P3_3,GPIO);
+  163   2          gpio_mode(P3_2,GPO_PP);
   164   2              break;
   165   2          }
-  166   1              
+  166   1        
   167   1      
   168   1          switch(spi_n)
   169   1          {
@@ -200,10 +202,10 @@ stmt  level    source
   175   2              break;
   176   2          case SPI_CH3:
   177   2              P_SW1 |= (0x02<<2);
+C251 COMPILER V5.60.0,  zf_spi                                                             06/07/25  14:38:37  PAGE 4   
+
   178   2              break;
   179   2          case SPI_CH4:
-C251 COMPILER V5.60.0,  zf_spi                                                             06/07/25  11:17:11  PAGE 4   
-
   180   2              P_SW1 |= (0x03<<2);
   181   2              break;
   182   2          }
@@ -213,30 +215,30 @@ stmt  level    source
   186          
   187          //-------------------------------------------------------------------------------------------------------
              -------------
-  188          //  @brief      spiÄ£Ê½ÇĞ»»º¯Êı
-  189          //  @param      mode            SPIÄ£Ê½ 0£ºCPOL=0 CPHA=0    1£ºCPOL=0 CPHA=1   2£ºCPOL=1 CPHA=0   3£ºCPOL
-             -=1 CPHA=1 //¾ßÌåÏ¸½Ú¿É×ÔĞĞ°Ù¶È
-  190          //  Sample usage:                               
+  188          //  @brief      spiæ¨¡å¼åˆ‡æ¢å‡½æ•°
+  189          //  @param      mode            SPIæ¨¡å¼ 0ï¼šCPOL=0 CPHA=0    1ï¼šCPOL=0 CPHA=1   2ï¼šCPOL=1 CPHA=0   3ï
+             -¼šCPOL=1 CPHA=1 //å…·ä½“ç»†èŠ‚å¯è‡ªè¡Œç™¾åº¦
+  190          //  Sample usage:       
   191          //-------------------------------------------------------------------------------------------------------
              -------------
   192          void spi_change_mode(uint8 mode)
   193          {
-  194   1              SPCTL &= 0xF7;          //Çå³ıSPI¼«ĞÔºÍÏàÎ»
-  195   1              switch(mode)
-  196   1              {
-  197   2              case 0:
-  198   2                      
-  199   2                      break;
-  200   2              case 1:
-  201   2                      SPCTL |= 0x01<<2;
-  202   2                      break;
-  203   2              case 2:
-  204   2                      SPCTL |= 0x02<<2;
-  205   2                      break;
-  206   2              case 3:
-  207   2                      SPCTL |= 0x03<<2;
-  208   2                      break;
-  209   2              }
+  194   1        SPCTL &= 0xF7;    //æ¸…é™¤SPIææ€§å’Œç›¸ä½
+  195   1        switch(mode)
+  196   1        {
+  197   2        case 0:
+  198   2          
+  199   2          break;
+  200   2        case 1:
+  201   2          SPCTL |= 0x01<<2;
+  202   2          break;
+  203   2        case 2:
+  204   2          SPCTL |= 0x02<<2;
+  205   2          break;
+  206   2        case 3:
+  207   2          SPCTL |= 0x03<<2;
+  208   2          break;
+  209   2        }
   210   1      }
 
 

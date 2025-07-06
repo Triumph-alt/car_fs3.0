@@ -1,11 +1,11 @@
-C251 COMPILER V5.60.0,  maths                                                              06/07/25  11:17:05  PAGE 1   
+C251 COMPILER V5.60.0,  maths                                                              06/07/25  14:38:28  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE maths
 OBJECT MODULE PLACED IN .\Out_File\maths.obj
-COMPILER INVOKED BY: D:\keil5\C251\BIN\C251.EXE ..\USER\src\maths.c LARGE INTR2 WARNINGLEVEL(3) OPTIMIZE(0,SPEED) BROWSE
-                    - INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral) DEBUG PRINT(.\Out_File\maths.
-                    -lst) OBJECT(.\Out_File\maths.obj) 
+COMPILER INVOKED BY: D:\Software\Keil5\c251v560\C251\BIN\C251.EXE ..\USER\src\maths.c LARGE INTR2 WARNINGLEVEL(3) OPTIMI
+                    -ZE(0,SPEED) BROWSE INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral) DEBUG PRINT
+                    -(.\Out_File\maths.lst) TABS(2) OBJECT(.\Out_File\maths.obj) 
 
 stmt  level    source
 
@@ -13,44 +13,44 @@ stmt  level    source
     2          
     3          int myabs(int num)
     4          {
-    5   1              return (num > 0) ? num : -num;
+    5   1        return (num > 0) ? num : -num;
     6   1      }
     7          
     8          float myfabs(float num)
     9          {
-   10   1              return (num > 0) ? num : -num;
+   10   1        return (num > 0) ? num : -num;
    11   1      }
    12          
    13          ///**
-   14          //  * @brief  ¾ØÕó³Ë·¨º¯Êı
-   15          //  * @param  A: µÚÒ»¸ö¾ØÕó£¬rowsA x colsA
-   16          //  * @param  rowsA: µÚÒ»¸ö¾ØÕóµÄĞĞÊı
-   17          //  * @param  colsA: µÚÒ»¸ö¾ØÕóµÄÁĞÊı
-   18          //  * @param  B: µÚ¶ş¸ö¾ØÕó£¬rowsB x colsB
-   19          //  * @param  rowsB: µÚ¶ş¸ö¾ØÕóµÄĞĞÊı
-   20          //  * @param  colsB: µÚ¶ş¸ö¾ØÕóµÄÁĞÊı
-   21          //  * @param  C: ½á¹û¾ØÕó£¬rowsA x colsB
-   22          //  * @retval ÎŞ
+   14          //  * @brief  çŸ©é˜µä¹˜æ³•å‡½æ•°
+   15          //  * @param  A: ç¬¬ä¸€ä¸ªçŸ©é˜µï¼ŒrowsA x colsA
+   16          //  * @param  rowsA: ç¬¬ä¸€ä¸ªçŸ©é˜µçš„è¡Œæ•°
+   17          //  * @param  colsA: ç¬¬ä¸€ä¸ªçŸ©é˜µçš„åˆ—æ•°
+   18          //  * @param  B: ç¬¬äºŒä¸ªçŸ©é˜µï¼ŒrowsB x colsB
+   19          //  * @param  rowsB: ç¬¬äºŒä¸ªçŸ©é˜µçš„è¡Œæ•°
+   20          //  * @param  colsB: ç¬¬äºŒä¸ªçŸ©é˜µçš„åˆ—æ•°
+   21          //  * @param  C: ç»“æœçŸ©é˜µï¼ŒrowsA x colsB
+   22          //  * @retval æ— 
    23          //  */
    24          //void Matrix_Mult(float* A, uint8_t rowsA, uint8_t colsA,
    25          //                 float* B, uint8_t rowsB, uint8_t colsB,
    26          //                 float* C) 
    27          //{
-   28          //      uint8_t i = 0, j = 0, k = 0;
-   29          //      
-   30          //    if (colsA != rowsB) // ´íÎó£º¾ØÕóÎ¬¶È²»Æ¥Åä
-   31          //      {
+   28          //  uint8_t i = 0, j = 0, k = 0;
+   29          //  
+   30          //    if (colsA != rowsB) // é”™è¯¯ï¼šçŸ©é˜µç»´åº¦ä¸åŒ¹é…
+   31          //  {
    32          //        return;
    33          //    }
    34          
    35          //    for (i = 0; i < rowsA; i++)
-   36          //      {
+   36          //  {
    37          //        for (j = 0; j < colsB; j++) 
-   38          //              {
+   38          //    {
    39          //            float sum = 0.0f;
    40          
    41          //            for (k = 0; k < colsA; k++) 
-   42          //                      {
+   42          //      {
    43          //                sum += A[i * colsA + k] * B[k * colsB + j];
    44          //            }
    45          
@@ -60,32 +60,32 @@ stmt  level    source
    49          //}
    50          
    51          ///**
-   52          //  * @brief  ¾ØÕóËõ·Åº¯Êı
-   53          //  * @param  A: ÊäÈë¾ØÕó£¬rowsA x colsA
-   54          //  * @param  rowsA: ¾ØÕóµÄĞĞÊı
-   55          //  * @param  colsA: ¾ØÕóµÄÁĞÊı
-   56          //  * @param  scalar: Ëõ·ÅÒò×Ó
-   57          //  * @param  C: Êä³ö¾ØÕó£¬rowsA x colsA
-C251 COMPILER V5.60.0,  maths                                                              06/07/25  11:17:05  PAGE 2   
+   52          //  * @brief  çŸ©é˜µç¼©æ”¾å‡½æ•°
+   53          //  * @param  A: è¾“å…¥çŸ©é˜µï¼ŒrowsA x colsA
+   54          //  * @param  rowsA: çŸ©é˜µçš„è¡Œæ•°
+   55          //  * @param  colsA: çŸ©é˜µçš„åˆ—æ•°
+   56          //  * @param  scalar: ç¼©æ”¾å› å­
+   57          //  * @param  C: è¾“å‡ºçŸ©é˜µï¼ŒrowsA x colsA
+C251 COMPILER V5.60.0,  maths                                                              06/07/25  14:38:28  PAGE 2   
 
-   58          //  * @retval ÎŞ
+   58          //  * @retval æ— 
    59          //  */
    60          //void Matrix_Scale(float* A, uint8_t rowsA, uint8_t colsA, float scalar, float* C) 
    61          //{
-   62          //      uint16_t i = 0;
-   63          //      
+   62          //  uint16_t i = 0;
+   63          //  
    64          //    for (i = 0; i < rowsA * colsA; i++) 
-   65          //      {
+   65          //  {
    66          //        C[i] = A[i] * scalar;
    67          //    }
    68          //}
    69          
    70          //void Matrix_Negate(float* A, uint8_t rowsA, uint8_t colsA, float* C)
    71          //{
-   72          //      uint16_t i = 0;
-   73          //      
+   72          //  uint16_t i = 0;
+   73          //  
    74          //    for (i = 0; i < rowsA * colsA; i++) 
-   75          //      {
+   75          //  {
    76          //        C[i] = -A[i];
    77          //    }
    78          //}

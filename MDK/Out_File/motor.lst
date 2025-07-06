@@ -1,11 +1,11 @@
-C251 COMPILER V5.60.0,  motor                                                              06/07/25  11:17:05  PAGE 1   
+C251 COMPILER V5.60.0,  motor                                                              06/07/25  14:38:27  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE motor
 OBJECT MODULE PLACED IN .\Out_File\motor.obj
-COMPILER INVOKED BY: D:\keil5\C251\BIN\C251.EXE ..\USER\src\motor.c LARGE INTR2 WARNINGLEVEL(3) OPTIMIZE(0,SPEED) BROWSE
-                    - INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral) DEBUG PRINT(.\Out_File\motor.
-                    -lst) OBJECT(.\Out_File\motor.obj) 
+COMPILER INVOKED BY: D:\Software\Keil5\c251v560\C251\BIN\C251.EXE ..\USER\src\motor.c LARGE INTR2 WARNINGLEVEL(3) OPTIMI
+                    -ZE(0,SPEED) BROWSE INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral) DEBUG PRINT
+                    -(.\Out_File\motor.lst) TABS(2) OBJECT(.\Out_File\motor.obj) 
 
 stmt  level    source
 
@@ -13,64 +13,64 @@ stmt  level    source
     2          
     3          void motor_init(void)
     4          {
-    5   1              /* ×óÂÖ³õÊ¼»¯ */
-    6   1              pwm_init(PWMA_CH1P_P60, MOTOR_PWM_FREQ, 0);
-    7   1              pwm_init(PWMA_CH2P_P62, MOTOR_PWM_FREQ, 0);
-    8   1              
-    9   1              /* ÓÒÂÖ³õÊ¼»¯ */
-   10   1              pwm_init(PWMA_CH3P_P64, MOTOR_PWM_FREQ, 0);
-   11   1              pwm_init(PWMA_CH4P_P66, MOTOR_PWM_FREQ, 0);
+    5   1        /* å·¦è½®åˆå§‹åŒ– */
+    6   1        pwm_init(PWMA_CH1P_P60, MOTOR_PWM_FREQ, 0);
+    7   1        pwm_init(PWMA_CH2P_P62, MOTOR_PWM_FREQ, 0);
+    8   1        
+    9   1        /* å³è½®åˆå§‹åŒ– */
+   10   1        pwm_init(PWMA_CH3P_P64, MOTOR_PWM_FREQ, 0);
+   11   1        pwm_init(PWMA_CH4P_P66, MOTOR_PWM_FREQ, 0);
    12   1      }
    13          
    14          void set_motor_pwm(int32_t left_duty, int32_t right_duty)
    15          {
-   16   1              /* ×óÂÖPWMÏÞ·ù²¢Êä³ö */
-   17   1              if(left_duty >= 0)
-   18   1              {
-   19   2                      if (left_duty > MOTOR_PWM_LIMIT)
-   20   2                      {
-   21   3                              left_duty = MOTOR_PWM_LIMIT;
-   22   3                      }
-   23   2              
-   24   2                      pwm_duty(PWMA_CH1P_P60, 0);
-   25   2                      pwm_duty(PWMA_CH2P_P62, left_duty);
-   26   2              }
-   27   1              else
-   28   1              {
-   29   2                      if (left_duty < -MOTOR_PWM_LIMIT)
-   30   2                      {
-   31   3                              left_duty = -MOTOR_PWM_LIMIT;
-   32   3                      }
-   33   2              
-   34   2                      pwm_duty(PWMA_CH1P_P60, -left_duty);
-   35   2      //              pwm_duty(PWMA_CH1P_P60, 0);
-   36   2                      pwm_duty(PWMA_CH2P_P62, 0);
-   37   2              }
-   38   1              
-   39   1              /* ÓÒÂÖPWMÏÞ·ù²¢Êä³ö */
-   40   1              if (right_duty >= 0)
-   41   1              {
-   42   2                      if (right_duty > MOTOR_PWM_LIMIT)
-   43   2                      {
-   44   3                              right_duty = MOTOR_PWM_LIMIT;
-   45   3                      }
-   46   2                      
-   47   2                      pwm_duty(PWMA_CH3P_P64, right_duty);
-   48   2                      pwm_duty(PWMA_CH4P_P66, 0);
-   49   2              }
-   50   1              else    
-   51   1              {
-   52   2                      if (right_duty < -MOTOR_PWM_LIMIT)
-   53   2                      {
-   54   3                              right_duty = -MOTOR_PWM_LIMIT;
-   55   3                      }
-   56   2                      
-   57   2                      pwm_duty(PWMA_CH3P_P64, 0);
-C251 COMPILER V5.60.0,  motor                                                              06/07/25  11:17:05  PAGE 2   
+   16   1        /* å·¦è½®PWMé™å¹…å¹¶è¾“å‡º */
+   17   1        if(left_duty >= 0)
+   18   1        {
+   19   2          if (left_duty > MOTOR_PWM_LIMIT)
+   20   2          {
+   21   3            left_duty = MOTOR_PWM_LIMIT;
+   22   3          }
+   23   2        
+   24   2          pwm_duty(PWMA_CH1P_P60, 0);
+   25   2          pwm_duty(PWMA_CH2P_P62, left_duty);
+   26   2        }
+   27   1        else
+   28   1        {
+   29   2          if (left_duty < -MOTOR_PWM_LIMIT)
+   30   2          {
+   31   3            left_duty = -MOTOR_PWM_LIMIT;
+   32   3          }
+   33   2        
+   34   2          pwm_duty(PWMA_CH1P_P60, -left_duty);
+   35   2      //    pwm_duty(PWMA_CH1P_P60, 0);
+   36   2          pwm_duty(PWMA_CH2P_P62, 0);
+   37   2        }
+   38   1        
+   39   1        /* å³è½®PWMé™å¹…å¹¶è¾“å‡º */
+   40   1        if (right_duty >= 0)
+   41   1        {
+   42   2          if (right_duty > MOTOR_PWM_LIMIT)
+   43   2          {
+   44   3            right_duty = MOTOR_PWM_LIMIT;
+   45   3          }
+   46   2          
+   47   2          pwm_duty(PWMA_CH3P_P64, right_duty);
+   48   2          pwm_duty(PWMA_CH4P_P66, 0);
+   49   2        }
+   50   1        else  
+   51   1        {
+   52   2          if (right_duty < -MOTOR_PWM_LIMIT)
+   53   2          {
+   54   3            right_duty = -MOTOR_PWM_LIMIT;
+   55   3          }
+   56   2          
+   57   2          pwm_duty(PWMA_CH3P_P64, 0);
+C251 COMPILER V5.60.0,  motor                                                              06/07/25  14:38:27  PAGE 2   
 
-   58   2                      pwm_duty(PWMA_CH4P_P66, -right_duty);
-   59   2      //              pwm_duty(PWMA_CH4P_P66, 0);
-   60   2              }
+   58   2          pwm_duty(PWMA_CH4P_P66, -right_duty);
+   59   2      //    pwm_duty(PWMA_CH4P_P66, 0);
+   60   2        }
    61   1      }
 
 

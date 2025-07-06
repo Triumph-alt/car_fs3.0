@@ -1,11 +1,11 @@
-C251 COMPILER V5.60.0,  transfer                                                           06/07/25  11:17:03  PAGE 1   
+C251 COMPILER V5.60.0,  transfer                                                           06/07/25  14:38:25  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE transfer
 OBJECT MODULE PLACED IN .\Out_File\transfer.obj
-COMPILER INVOKED BY: D:\keil5\C251\BIN\C251.EXE ..\USER\src\transfer.c LARGE INTR2 WARNINGLEVEL(3) OPTIMIZE(0,SPEED) BRO
-                    -WSE INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral) DEBUG PRINT(.\Out_File\tra
-                    -nsfer.lst) OBJECT(.\Out_File\transfer.obj) 
+COMPILER INVOKED BY: D:\Software\Keil5\c251v560\C251\BIN\C251.EXE ..\USER\src\transfer.c LARGE INTR2 WARNINGLEVEL(3) OPT
+                    -IMIZE(0,SPEED) BROWSE INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral) DEBUG PR
+                    -INT(.\Out_File\transfer.lst) TABS(2) OBJECT(.\Out_File\transfer.obj) 
 
 stmt  level    source
 
@@ -17,37 +17,37 @@ stmt  level    source
     6          
     7          void key_task(void)
     8          {
-    9   1              if (key[0].flag == 1)
-   10   1              {
+    9   1        if (key[0].flag == 1)
+   10   1        {
    11   2              if (car_state < RUNNING)
    12   2              {
    13   3                  car_state++;
    14   3                  oled_clear();
    15   3              }
-   16   2                      
-   17   2                      key[0].flag = 0;
-   18   2              }
+   16   2          
+   17   2          key[0].flag = 0;
+   18   2        }
    19   1      
-   20   1              if (key[1].flag == 1)
-   21   1              {
+   20   1        if (key[1].flag == 1)
+   21   1        {
    22   2      
-   23   2                      
-   24   2                      key[1].flag = 0;
-   25   2              }
+   23   2          
+   24   2          key[1].flag = 0;
+   25   2        }
    26   1      
-   27   1              if (key[2].flag == 1)
-   28   1              {
+   27   1        if (key[2].flag == 1)
+   28   1        {
    29   2      
-   30   2                      
-   31   2                      key[2].flag = 0;
-   32   2              }
+   30   2          
+   31   2          key[2].flag = 0;
+   32   2        }
    33   1      
-   34   1              if (key[3].flag == 1)
-   35   1              {
+   34   1        if (key[3].flag == 1)
+   35   1        {
    36   2      
-   37   2                      
-   38   2                      key[3].flag = 0;
-   39   2              }
+   37   2          
+   38   2          key[3].flag = 0;
+   39   2        }
    40   1      }
    41          
    42          void display_task(void)
@@ -66,7 +66,7 @@ stmt  level    source
    55   3                  }
    56   2                  break;
    57   2      
-C251 COMPILER V5.60.0,  transfer                                                           06/07/25  11:17:03  PAGE 2   
+C251 COMPILER V5.60.0,  transfer                                                           06/07/25  14:38:25  PAGE 2   
 
    58   2              case CHARGE:
    59   2                  {

@@ -1,32 +1,32 @@
-C251 COMPILER V5.60.0,  common                                                             06/07/25  11:17:06  PAGE 1   
+C251 COMPILER V5.60.0,  common                                                             06/07/25  14:38:30  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE common
 OBJECT MODULE PLACED IN .\Out_File\common.obj
-COMPILER INVOKED BY: D:\keil5\C251\BIN\C251.EXE ..\libraries\common.c LARGE INTR2 WARNINGLEVEL(3) OPTIMIZE(0,SPEED) BROW
-                    -SE INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral) DEBUG PRINT(.\Out_File\comm
-                    -on.lst) OBJECT(.\Out_File\common.obj) 
+COMPILER INVOKED BY: D:\Software\Keil5\c251v560\C251\BIN\C251.EXE ..\libraries\common.c LARGE INTR2 WARNINGLEVEL(3) OPTI
+                    -MIZE(0,SPEED) BROWSE INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral) DEBUG PRI
+                    -NT(.\Out_File\common.lst) TABS(2) OBJECT(.\Out_File\common.obj) 
 
 stmt  level    source
 
     1          /********************************************************************************************************
              -*************
     2           * COPYRIGHT NOTICE
-    3           * Copyright (c) 2020,Öğ·É¿Æ¼¼
+    3           * Copyright (c) 2020,é€é£ç§‘æŠ€
     4           * All rights reserved.
-    5           * ¼¼ÊõÌÖÂÛQQÈº£ºÒ»Èº£º179029047(ÒÑÂú)  ¶şÈº£º244861897(ÒÑÂú)  ÈıÈº£º824575535
+    5           * æŠ€æœ¯è®¨è®ºQQç¾¤ï¼šä¸€ç¾¤ï¼š179029047(å·²æ»¡)  äºŒç¾¤ï¼š244861897(å·²æ»¡)  ä¸‰ç¾¤ï¼š824575535
     6           *
-    7           * ÒÔÏÂËùÓĞÄÚÈİ°æÈ¨¾ùÊôÖğ·É¿Æ¼¼ËùÓĞ£¬Î´¾­ÔÊĞí²»µÃÓÃÓÚÉÌÒµÓÃÍ¾£¬
-    8           * »¶Ó­¸÷Î»Ê¹ÓÃ²¢´«²¥±¾³ÌĞò£¬ĞŞ¸ÄÄÚÈİÊ±±ØĞë±£ÁôÖğ·É¿Æ¼¼µÄ°æÈ¨ÉùÃ÷¡£
+    7           * ä»¥ä¸‹æ‰€æœ‰å†…å®¹ç‰ˆæƒå‡å±é€é£ç§‘æŠ€æ‰€æœ‰ï¼Œæœªç»å…è®¸ä¸å¾—ç”¨äºå•†ä¸šç”¨é€”ï¼Œ
+    8           * æ¬¢è¿å„ä½ä½¿ç”¨å¹¶ä¼ æ’­æœ¬ç¨‹åºï¼Œä¿®æ”¹å†…å®¹æ—¶å¿…é¡»ä¿ç•™é€é£ç§‘æŠ€çš„ç‰ˆæƒå£°æ˜ã€‚
     9           *
-   10           * @file                common
-   11           * @company                     ³É¶¼Öğ·É¿Æ¼¼ÓĞÏŞ¹«Ë¾
-   12           * @author              Öğ·É¿Æ¼¼(QQ790875685)
-   13           * @version             ²é¿´docÄÚversionÎÄ¼ş °æ±¾ËµÃ÷
-   14           * @Software            MDK FOR C251 V5.60
-   15           * @Target core         STC32G12K128
-   16           * @Taobao              https://seekfree.taobao.com/
-   17           * @date                2020-4-14
+   10           * @file          common
+   11           * @company       æˆéƒ½é€é£ç§‘æŠ€æœ‰é™å…¬å¸
+   12           * @author        é€é£ç§‘æŠ€(QQ790875685)
+   13           * @version       æŸ¥çœ‹docå†…versionæ–‡ä»¶ ç‰ˆæœ¬è¯´æ˜
+   14           * @Software    MDK FOR C251 V5.60
+   15           * @Target core   STC32G12K128
+   16           * @Taobao      https://seekfree.taobao.com/
+   17           * @date          2020-4-14
    18           ********************************************************************************************************
              -************/
    19          
@@ -35,11 +35,11 @@ stmt  level    source
    22          #include "intrins.h"
    23          
    24          
-   25          ////ÎŞÏßÄ£¿éÀàĞÍ
+   25          ////æ— çº¿æ¨¡å—ç±»å‹
    26          //WIRELESS_TYPE_enum wireless_type = NO_WIRELESS_MODE;
    27          
    28          
-   29          //// ÎŞÏßÄ£¿é½ÓÊÕ»Øµ÷º¯Êı
+   29          //// æ— çº¿æ¨¡å—æ¥æ”¶å›è°ƒå‡½æ•°
    30          //void (*wireless_module_uart_handler)(uint8 dat) = NULL;
 
 

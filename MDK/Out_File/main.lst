@@ -1,127 +1,127 @@
-C251 COMPILER V5.60.0,  main                                                               06/07/25  11:17:02  PAGE 1   
+C251 COMPILER V5.60.0,  main                                                               06/07/25  14:38:23  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE main
 OBJECT MODULE PLACED IN .\Out_File\main.obj
-COMPILER INVOKED BY: D:\keil5\C251\BIN\C251.EXE ..\USER\src\main.c LARGE INTR2 WARNINGLEVEL(3) OPTIMIZE(0,SPEED) BROWSE 
-                    -INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral) DEBUG PRINT(.\Out_File\main.ls
-                    -t) OBJECT(.\Out_File\main.obj) 
+COMPILER INVOKED BY: D:\Software\Keil5\c251v560\C251\BIN\C251.EXE ..\USER\src\main.c LARGE INTR2 WARNINGLEVEL(3) OPTIMIZ
+                    -E(0,SPEED) BROWSE INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral) DEBUG PRINT(
+                    -.\Out_File\main.lst) TABS(2) OBJECT(.\Out_File\main.obj) 
 
 stmt  level    source
 
     1          #include "headfile.h"
     2          
     3          /*
-    4           * ÏµÍ³ÆµÂÊ£¬¿É²é¿´board.hÖĞµÄ FOSC ºê¶¨ÒåĞŞ¸Ä¡£
-    5           * board.hÎÄ¼şÖĞFOSCµÄÖµÉèÖÃÎª0,Ôò³ÌĞò×Ô¶¯ÉèÖÃÏµÍ³ÆµÂÊÎª33.1776MHZ
-    6           * ÔÚboard_initÖĞ,ÒÑ¾­½«P54Òı½ÅÉèÖÃÎª¸´Î»
-    7           * Èç¹ûĞèÒªÊ¹ÓÃP54Òı½Å,¿ÉÒÔÔÚboard.cÎÄ¼şÖĞµÄboard_init()º¯ÊıÖĞÉ¾³ıSET_P54_RESRT¼´¿É
+    4           * ç³»ç»Ÿé¢‘ç‡ï¼Œå¯æŸ¥çœ‹board.hä¸­çš„ FOSC å®å®šä¹‰ä¿®æ”¹ã€‚
+    5           * board.hæ–‡ä»¶ä¸­FOSCçš„å€¼è®¾ç½®ä¸º0,åˆ™ç¨‹åºè‡ªåŠ¨è®¾ç½®ç³»ç»Ÿé¢‘ç‡ä¸º33.1776MHZ
+    6           * åœ¨board_initä¸­,å·²ç»å°†P54å¼•è„šè®¾ç½®ä¸ºå¤ä½
+    7           * å¦‚æœéœ€è¦ä½¿ç”¨P54å¼•è„š,å¯ä»¥åœ¨board.cæ–‡ä»¶ä¸­çš„board_init()å‡½æ•°ä¸­åˆ é™¤SET_P54_RESRTå³å¯
     8           */
     9          void main(void)
    10          {
-   11   1              int state = 5;
-   12   1              uint16 sum_value = 0;    
-   13   1              uint16 value[7] = {0};   //µ÷ÊÔÓÃÊı×é
-   14   1              
-   15   1              board_init();                    // ³õÊ¼»¯¼Ä´æÆ÷,ÎğÉ¾³ı´Ë¾ä´úÂë
-   16   1              
-   17   1              electromagnetic_init();  //³õÊ¼»¯µç´Å´«¸ĞÆ÷
-   18   1              
-   19   1              iic_init(IIC_2, IIC2_SCL_P25, IIC2_SDA_P24, 0);
-   20   1              uart_init(UART_4, UART4_RX_P02, UART4_TX_P03, 115200, TIM_4);
-   21   1              
-   22   1              motor_init();
-   23   1              encoder_init();
-   24   1              
-   25   1              imu963ra_init();
-   26   1              oled_init();
+   11   1        int state = 5;
+   12   1        uint16 sum_value = 0;    
+   13   1        uint16 value[7] = {0};   //è°ƒè¯•ç”¨æ•°ç»„
+   14   1        
+   15   1        board_init();      // åˆå§‹åŒ–å¯„å­˜å™¨,å‹¿åˆ é™¤æ­¤å¥ä»£ç 
+   16   1        
+   17   1        electromagnetic_init();  //åˆå§‹åŒ–ç”µç£ä¼ æ„Ÿå™¨
+   18   1        
+   19   1        iic_init(IIC_2, IIC2_SCL_P25, IIC2_SDA_P24, 0);
+   20   1        uart_init(UART_4, UART4_RX_P02, UART4_TX_P03, 115200, TIM_4);
+   21   1        
+   22   1        motor_init();
+   23   1        encoder_init();
+   24   1        
+   25   1        imu963ra_init();
+   26   1        oled_init();
    27   1      
-   28   1              pid_init(&SpeedPID, 0.0f, 0.0f, 0.0f, 5000.0f, 6000.0f); //³õÊ¼»¯ËÙ¶ÈPID
-   29   1              pid_init(&TurnPID, 0.0f, 0.0f, 0.0f, 0.0f, 6000.0f);  //³õÊ¼»¯Î»ÖÃPID
-   30   1              
-   31   1              lowpass_init(&leftSpeedFilt, 0.556);   //³õÊ¼»¯µÍÍ¨ÂË²¨Æ÷
-   32   1              lowpass_init(&rightSpeedFilt, 0.556);
-   33   1              
-   34   1              kalman_init(&imu693_kf, 0.98, 0.02, imu693kf_Q, imu693kf_R, 0.0);
-   35   1              
-   36   1              pit_timer_ms(TIM_1, 10);
-   37   1              pit_timer_ms(TIM_2, 5);
-   38   1              
+   28   1        pid_init(&SpeedPID, 0.0f, 0.0f, 0.0f, 5000.0f, 6000.0f); //åˆå§‹åŒ–é€Ÿåº¦PID
+   29   1        pid_init(&TurnPID, 0.0f, 0.0f, 0.0f, 0.0f, 6000.0f);  //åˆå§‹åŒ–ä½ç½®PID
+   30   1        
+   31   1        lowpass_init(&leftSpeedFilt, 0.556);   //åˆå§‹åŒ–ä½é€šæ»¤æ³¢å™¨
+   32   1        lowpass_init(&rightSpeedFilt, 0.556);
+   33   1        
+   34   1        kalman_init(&imu693_kf, 0.98, 0.02, imu693kf_Q, imu693kf_R, 0.0);
+   35   1        
+   36   1        pit_timer_ms(TIM_1, 10);
+   37   1        pit_timer_ms(TIM_2, 5);
+   38   1        
    39   1          while(1)
-   40   1              {
-   41   2                      key_task();         // ´¦Àí°´¼üÈÎÎñ
-   42   2                      display_task();     // OLEDÏÔÊ¾ÈÎÎñ
-   43   2                      
-   44   2                      uart4_recv_task();  // ´®¿Ú4½ÓÊÕÈÎÎñ
-   45   2                      
-   46   2      //              sprintf(g_TxData, "%f,%f\n",Gyro_Z,filtered_GyroZ);
-   47   2      //              uart_putstr(UART_4, g_TxData);
-   48   2                      
+   40   1        {
+   41   2          key_task();         // å¤„ç†æŒ‰é”®ä»»åŠ¡
+   42   2          display_task();     // OLEDæ˜¾ç¤ºä»»åŠ¡
+   43   2          
+   44   2          uart4_recv_task();  // ä¸²å£4æ¥æ”¶ä»»åŠ¡
+   45   2          
+   46   2      //    sprintf(g_TxData, "%f,%f\n",Gyro_Z,filtered_GyroZ);
+   47   2      //    uart_putstr(UART_4, g_TxData);
+   48   2          
    49   2      #if 0
-                               // Í¨¹ı´®¿ÚÊä³öÆßµç¸ĞÊı¾İ
-                               sprintf(g_TxData, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",
-                                (uint16)normalized_data[SENSOR_HL], 
-                                (uint16)normalized_data[SENSOR_VL], 
-                                (uint16)normalized_data[SENSOR_HML], 
-                                (uint16)normalized_data[SENSOR_HC],
-                                (uint16)normalized_data[SENSOR_HMR], 
-                                (uint16)normalized_data[SENSOR_VR], 
-C251 COMPILER V5.60.0,  main                                                               06/07/25  11:17:02  PAGE 2   
+                   // é€šè¿‡ä¸²å£è¾“å‡ºä¸ƒç”µæ„Ÿæ•°æ®
+                   sprintf(g_TxData, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",
+                    (uint16)normalized_data[SENSOR_HL], 
+                    (uint16)normalized_data[SENSOR_VL], 
+                    (uint16)normalized_data[SENSOR_HML], 
+                    (uint16)normalized_data[SENSOR_HC],
+                    (uint16)normalized_data[SENSOR_HMR], 
+                    (uint16)normalized_data[SENSOR_VR], 
+C251 COMPILER V5.60.0,  main                                                               06/07/25  14:38:23  PAGE 2   
 
-                                (uint16)normalized_data[SENSOR_HR], 
-                                 position,
-                                (uint16)signal_strength_value,
-                                 track_type,
-                                 track_route,
-                                 track_route_status,
-                                 track_type_zj);
-                                uart_putstr(UART_4, g_TxData);
+                    (uint16)normalized_data[SENSOR_HR], 
+                     position,
+                    (uint16)signal_strength_value,
+                     track_type,
+                     track_route,
+                     track_route_status,
+                     track_type_zj);
+                    uart_putstr(UART_4, g_TxData);
                #endif
    67   2      
-   68   2                      // »ñÈ¡ÂË²¨ºóµÄADCÊı¾İ          
-   69   2                      mid_filter();      // Ê¹ÓÃÖĞÎ»ÖµÂË²¨»ñÈ¡µç¸ĞÊı¾İ
+   68   2          // è·å–æ»¤æ³¢åçš„ADCæ•°æ®    
+   69   2          mid_filter();      // ä½¿ç”¨ä¸­ä½å€¼æ»¤æ³¢è·å–ç”µæ„Ÿæ•°æ®
    70   2      
-   71   2                      // ¹éÒ»»¯µç¸ĞÊı×é¡¤
-   72   2                      normalize_sensors();
-   73   2                      
-   74   2                      // ¼ÆËãÎ»ÖÃÆ«²î
-   75   2                      position = calculate_position_improved();
-   76   2                      
-   77   2                      //¼ì²éµç´Å±£»¤
-   78   2                      protection_flag = check_electromagnetic_protection();
-   79   2                      
-   80   2                      
-   81   2                      /* µ÷ÊÔ¹¦ÄÜ */
+   71   2          // å½’ä¸€åŒ–ç”µæ„Ÿæ•°ç»„Â·
+   72   2          normalize_sensors();
+   73   2          
+   74   2          // è®¡ç®—ä½ç½®åå·®
+   75   2          position = calculate_position_improved();
+   76   2          
+   77   2          //æ£€æŸ¥ç”µç£ä¿æŠ¤
+   78   2          protection_flag = check_electromagnetic_protection();
+   79   2          
+   80   2          
+   81   2          /* è°ƒè¯•åŠŸèƒ½ */
    82   2      #if 0
-                               //¶ÁÈ¡Æßµç¸ĞADCÖµ£¨ÓÃÓÚµ÷ÊÔ£©
-                               value[0] = adc_once(ADC_HL,  ADC_10BIT);
-                               value[1] = adc_once(ADC_VL,  ADC_10BIT);
-                               value[2] = adc_once(ADC_HML, ADC_10BIT);
-                               value[3] = adc_once(ADC_HC,  ADC_10BIT); 
-                               value[4] = adc_once(ADC_HMR, ADC_10BIT);
-                               value[5] = adc_once(ADC_VR,  ADC_10BIT);
-                               value[6] = adc_once(ADC_HR,  ADC_10BIT);        
+                   //è¯»å–ä¸ƒç”µæ„ŸADCå€¼ï¼ˆç”¨äºè°ƒè¯•ï¼‰
+                   value[0] = adc_once(ADC_HL,  ADC_10BIT);
+                   value[1] = adc_once(ADC_VL,  ADC_10BIT);
+                   value[2] = adc_once(ADC_HML, ADC_10BIT);
+                   value[3] = adc_once(ADC_HC,  ADC_10BIT); 
+                   value[4] = adc_once(ADC_HMR, ADC_10BIT);
+                   value[5] = adc_once(ADC_VR,  ADC_10BIT);
+                   value[6] = adc_once(ADC_HR,  ADC_10BIT);  
                
-                               // ¼ÆËãËùÓĞµç¸ĞÖµµÄ×ÜºÍ
-               //              sum_value = (uint16)normalized_data[SENSOR_HL] + (uint16)normalized_data[SENSOR_VL] + 
-               //                          (uint16)normalized_data[SENSOR_HML] + (uint16)normalized_data[SENSOR_HC] + 
-               //                          (uint16)normalized_data[SENSOR_HMR] + (uint16)normalized_data[SENSOR_VR] + 
-               //                          (uint16)normalized_data[SENSOR_HR];
+                   // è®¡ç®—æ‰€æœ‰ç”µæ„Ÿå€¼çš„æ€»å’Œ
+               //    sum_value = (uint16)normalized_data[SENSOR_HL] + (uint16)normalized_data[SENSOR_VL] + 
+               //                (uint16)normalized_data[SENSOR_HML] + (uint16)normalized_data[SENSOR_HC] + 
+               //                (uint16)normalized_data[SENSOR_HMR] + (uint16)normalized_data[SENSOR_VR] + 
+               //                (uint16)normalized_data[SENSOR_HR];
                
-                                // Í¨¹ı´®¿ÚÊä³öÆßµç¸ĞÔ­Ê¼Êı¾İ
-                                 sprintf(g_TxData, "%d,%d,%d,%d,%d,%d,%d\n",
-                                                       value[0], 
-                                                       value[1], 
-                                                       value[2], 
-                                                       value[3], 
-                                                       value[4],
-                                                       value[5],
+                    // é€šè¿‡ä¸²å£è¾“å‡ºä¸ƒç”µæ„ŸåŸå§‹æ•°æ®
+                     sprintf(g_TxData, "%d,%d,%d,%d,%d,%d,%d\n",
+                         value[0], 
+                         value[1], 
+                         value[2], 
+                         value[3], 
+                         value[4],
+                         value[5],
                          value[6]);
-                                 uart_putstr(UART_4, g_TxData);
+                     uart_putstr(UART_4, g_TxData);
                
-                                 delay_ms(5);
+                     delay_ms(5);
                #endif  
-  111   2                      
+  111   2          
   112   2          }
   113   1      }
   114          
@@ -135,7 +135,7 @@ Module Information          Static   Overlayable
   idata size           =    ------     ------
   pdata size           =    ------     ------
   xdata size           =        18     ------
-C251 COMPILER V5.60.0,  main                                                               06/07/25  11:17:02  PAGE 3   
+C251 COMPILER V5.60.0,  main                                                               06/07/25  14:38:23  PAGE 3   
 
   xdata-const size     =    ------     ------
   edata size           =    ------     ------

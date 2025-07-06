@@ -1,19 +1,19 @@
 #ifndef __HEADFILE_H_
 #define __HEADFILE_H_
 
-//------STC32G SDKµÈ
+//------STC32G SDKç­‰
 #include "STC32Gxx.h"
 #include "board.h"
 #include "common.h"
 #include "isr.h"
 #include "intrins.h"
 
-//------C±ê×¼¿âÍ·ÎÄ¼ş
+//------Cæ ‡å‡†åº“å¤´æ–‡ä»¶
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-//------×Ô¶¨ÒåÎÄ¼ş
+//------è‡ªå®šä¹‰æ–‡ä»¶
 #include "at24c16.h"
 #include "electromagnetic_tracking.h"
 #include "encoder.h"
@@ -25,7 +25,7 @@
 #include "transfer.h"
 #include "uart.h"
 
-//------Öğ·É¿Æ¼¼µ¥Æ¬»úÍâÉèÇı¶¯Í·ÎÄ¼ş
+//------é€é£ç§‘æŠ€å•ç‰‡æœºå¤–è®¾é©±åŠ¨å¤´æ–‡ä»¶
 #include "zf_uart.h"
 #include "zf_gpio.h"
 #include "zf_iic.h"
@@ -39,7 +39,7 @@
 #include "zf_mdu16.h"
 #include "zf_function.h"
 
-//------Öğ·É¿Æ¼¼²úÆ·Çı¶¯Í·ÎÄ¼ş
+//------é€é£ç§‘æŠ€äº§å“é©±åŠ¨å¤´æ–‡ä»¶
 //#include "SEEKFREE_FONT.h"
 //#include "SEEKFREE_CONFIG.h"
 //#include "SEEKFREE_FUNCTION.h"

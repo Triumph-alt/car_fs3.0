@@ -1,7 +1,7 @@
 #include "pid.h"
 
-PID_t SpeedPID; //ËÙ¶ÈPID
-PID_t TurnPID;  //Î»ÖÃPID
+PID_t SpeedPID; //é€Ÿåº¦PID
+PID_t TurnPID;  //ä½ç½®PID
 
 void pid_init(PID_t* pid, float kp, float ki, float kd, float i_limit, float o_limit)
 {
@@ -23,13 +23,13 @@ void pid_init(PID_t* pid, float kp, float ki, float kd, float i_limit, float o_l
 	pid->output = 0.0f;
 }
 
-//Î»ÖÃÊ½PID
+//ä½ç½®å¼PID
 float pid_poisitional(PID_t* pid, float real, float target)
 {
 	pid->error = target - real;
 	pid->interror += pid->error;
 	
-	//»ı·ÖÏŞ·ù
+	//ç§¯åˆ†é™å¹…
 	if (pid->interror > pid->i_limit)
 	{
 		pid->interror = pid->i_limit;
@@ -39,7 +39,7 @@ float pid_poisitional(PID_t* pid, float real, float target)
 		pid->interror = -pid->i_limit;
 	}
 	
-	//ÏßĞÔ¡¢»ı·Ö¡¢Î¢·Ö¡¢Ç°À¡¹²Í¬×÷ÓÃ
+	//çº¿æ€§ã€ç§¯åˆ†ã€å¾®åˆ†ã€å‰é¦ˆå…±åŒä½œç”¨
 	pid->p_out = pid->kp * pid->error;
 	pid->i_out = pid->ki * pid->interror;
 	pid->d_out = pid->kd * (pid->error - pid->lasterror);
@@ -48,7 +48,7 @@ float pid_poisitional(PID_t* pid, float real, float target)
 	
 	pid->lasterror = pid->error;
 	
-	//Êä³öÏŞ·ù
+	//è¾“å‡ºé™å¹…
 	if (pid->output > pid->o_limit)
 	{
 		pid->output = pid->o_limit;
@@ -61,7 +61,7 @@ float pid_poisitional(PID_t* pid, float real, float target)
 	return pid->output; 
 }
 
-//ÔöÁ¿Ê½PID£¨´øÇ°À¡£©
+//å¢é‡å¼PIDï¼ˆå¸¦å‰é¦ˆï¼‰
 float pid_increment(PID_t* pid, float real, float target)
 {
 	pid->error = target - real;
@@ -87,7 +87,7 @@ float pid_increment(PID_t* pid, float real, float target)
 	return pid->output;
 }
 
-//×ªÏò»·pid£¨¼Ó¶ş´ÎÏî£©
+//è½¬å‘ç¯pidï¼ˆåŠ äºŒæ¬¡é¡¹ï¼‰
 float pid_poisitional_turnning(PID_t* pid, float position, float GyroZ)
 {
 	pid->p_out = pid->kp * position;
@@ -96,7 +96,7 @@ float pid_poisitional_turnning(PID_t* pid, float position, float GyroZ)
 	pid->output = pid->p_out + pid->d_out;
 	pid->lasterror = position;
 	
-	//Êä³öÏŞ·ù
+	//è¾“å‡ºé™å¹…
 	if (pid->output > pid->o_limit)
 	{
 		pid->output = pid->o_limit;

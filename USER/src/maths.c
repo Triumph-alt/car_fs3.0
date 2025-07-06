@@ -11,15 +11,15 @@ float myfabs(float num)
 }
 
 ///**
-//  * @brief  ¾ØÕó³Ë·¨º¯Êı
-//  * @param  A: µÚÒ»¸ö¾ØÕó£¬rowsA x colsA
-//  * @param  rowsA: µÚÒ»¸ö¾ØÕóµÄĞĞÊı
-//  * @param  colsA: µÚÒ»¸ö¾ØÕóµÄÁĞÊı
-//  * @param  B: µÚ¶ş¸ö¾ØÕó£¬rowsB x colsB
-//  * @param  rowsB: µÚ¶ş¸ö¾ØÕóµÄĞĞÊı
-//  * @param  colsB: µÚ¶ş¸ö¾ØÕóµÄÁĞÊı
-//  * @param  C: ½á¹û¾ØÕó£¬rowsA x colsB
-//  * @retval ÎŞ
+//  * @brief  çŸ©é˜µä¹˜æ³•å‡½æ•°
+//  * @param  A: ç¬¬ä¸€ä¸ªçŸ©é˜µï¼ŒrowsA x colsA
+//  * @param  rowsA: ç¬¬ä¸€ä¸ªçŸ©é˜µçš„è¡Œæ•°
+//  * @param  colsA: ç¬¬ä¸€ä¸ªçŸ©é˜µçš„åˆ—æ•°
+//  * @param  B: ç¬¬äºŒä¸ªçŸ©é˜µï¼ŒrowsB x colsB
+//  * @param  rowsB: ç¬¬äºŒä¸ªçŸ©é˜µçš„è¡Œæ•°
+//  * @param  colsB: ç¬¬äºŒä¸ªçŸ©é˜µçš„åˆ—æ•°
+//  * @param  C: ç»“æœçŸ©é˜µï¼ŒrowsA x colsB
+//  * @retval æ— 
 //  */
 //void Matrix_Mult(float* A, uint8_t rowsA, uint8_t colsA,
 //                 float* B, uint8_t rowsB, uint8_t colsB,
@@ -27,7 +27,7 @@ float myfabs(float num)
 //{
 //	uint8_t i = 0, j = 0, k = 0;
 //	
-//    if (colsA != rowsB) // ´íÎó£º¾ØÕóÎ¬¶È²»Æ¥Åä
+//    if (colsA != rowsB) // é”™è¯¯ï¼šçŸ©é˜µç»´åº¦ä¸åŒ¹é…
 //	{
 //        return;
 //    }
@@ -49,13 +49,13 @@ float myfabs(float num)
 //}
 
 ///**
-//  * @brief  ¾ØÕóËõ·Åº¯Êı
-//  * @param  A: ÊäÈë¾ØÕó£¬rowsA x colsA
-//  * @param  rowsA: ¾ØÕóµÄĞĞÊı
-//  * @param  colsA: ¾ØÕóµÄÁĞÊı
-//  * @param  scalar: Ëõ·ÅÒò×Ó
-//  * @param  C: Êä³ö¾ØÕó£¬rowsA x colsA
-//  * @retval ÎŞ
+//  * @brief  çŸ©é˜µç¼©æ”¾å‡½æ•°
+//  * @param  A: è¾“å…¥çŸ©é˜µï¼ŒrowsA x colsA
+//  * @param  rowsA: çŸ©é˜µçš„è¡Œæ•°
+//  * @param  colsA: çŸ©é˜µçš„åˆ—æ•°
+//  * @param  scalar: ç¼©æ”¾å› å­
+//  * @param  C: è¾“å‡ºçŸ©é˜µï¼ŒrowsA x colsA
+//  * @retval æ— 
 //  */
 //void Matrix_Scale(float* A, uint8_t rowsA, uint8_t colsA, float scalar, float* C) 
 //{

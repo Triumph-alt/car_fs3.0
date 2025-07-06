@@ -1,74 +1,75 @@
-C251 COMPILER V5.60.0,  zf_nvic                                                            06/07/25  11:17:10  PAGE 1   
+C251 COMPILER V5.60.0,  zf_nvic                                                            06/07/25  14:38:35  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE zf_nvic
 OBJECT MODULE PLACED IN .\Out_File\zf_nvic.obj
-COMPILER INVOKED BY: D:\keil5\C251\BIN\C251.EXE ..\seekfree_libraries\zf_nvic.c LARGE INTR2 WARNINGLEVEL(3) OPTIMIZE(0,S
-                    -PEED) BROWSE INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral) DEBUG PRINT(.\Out
-                    -_File\zf_nvic.lst) OBJECT(.\Out_File\zf_nvic.obj) 
+COMPILER INVOKED BY: D:\Software\Keil5\c251v560\C251\BIN\C251.EXE ..\seekfree_libraries\zf_nvic.c LARGE INTR2 WARNINGLEV
+                    -EL(3) OPTIMIZE(0,SPEED) BROWSE INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral)
+                    - DEBUG PRINT(.\Out_File\zf_nvic.lst) TABS(2) OBJECT(.\Out_File\zf_nvic.obj) 
 
 stmt  level    source
 
     1          /********************************************************************************************************
              -*************
     2           * COPYRIGHT NOTICE
-    3           * Copyright (c) 2020,Öð·É¿Æ¼¼
+    3           * Copyright (c) 2020,é€é£žç§‘æŠ€
     4           * All rights reserved.
-    5           * ¼¼ÊõÌÖÂÛQQÈº£ºÒ»Èº£º179029047(ÒÑÂú)  ¶þÈº£º244861897(ÒÑÂú)  ÈýÈº£º824575535
+    5           * æŠ€æœ¯è®¨è®ºQQç¾¤ï¼šä¸€ç¾¤ï¼š179029047(å·²æ»¡)  äºŒç¾¤ï¼š244861897(å·²æ»¡)  ä¸‰ç¾¤ï¼š824575535
     6           *
-    7           * ÒÔÏÂËùÓÐÄÚÈÝ°æÈ¨¾ùÊôÖð·É¿Æ¼¼ËùÓÐ£¬Î´¾­ÔÊÐí²»µÃÓÃÓÚÉÌÒµÓÃÍ¾£¬
-    8           * »¶Ó­¸÷Î»Ê¹ÓÃ²¢´«²¥±¾³ÌÐò£¬ÐÞ¸ÄÄÚÈÝÊ±±ØÐë±£ÁôÖð·É¿Æ¼¼µÄ°æÈ¨ÉùÃ÷¡£
+    7           * ä»¥ä¸‹æ‰€æœ‰å†…å®¹ç‰ˆæƒå‡å±žé€é£žç§‘æŠ€æ‰€æœ‰ï¼Œæœªç»å…è®¸ä¸å¾—ç”¨äºŽå•†ä¸šç”¨é€”ï¼Œ
+    8           * æ¬¢è¿Žå„ä½ä½¿ç”¨å¹¶ä¼ æ’­æœ¬ç¨‹åºï¼Œä¿®æ”¹å†…å®¹æ—¶å¿…é¡»ä¿ç•™é€é£žç§‘æŠ€çš„ç‰ˆæƒå£°æ˜Žã€‚
     9           *
-   10           * @file                apic(ÖÐ¶ÏÓÅÏÈ¼¶¹ÜÀí)
-   11           * @company                     ³É¶¼Öð·É¿Æ¼¼ÓÐÏÞ¹«Ë¾
-   12           * @author              Öð·É¿Æ¼¼(QQ790875685)
-   13           * @version             ²é¿´docÄÚversionÎÄ¼þ °æ±¾ËµÃ÷
-   14           * @Software            MDK FOR C251 V5.60
-   15           * @Target core         STC32G12K128
-   16           * @Taobao              https://seekfree.taobao.com/
-   17           * @date                2020-4-14
+   10           * @file          apic(ä¸­æ–­ä¼˜å…ˆçº§ç®¡ç†)
+   11           * @company       æˆéƒ½é€é£žç§‘æŠ€æœ‰é™å…¬å¸
+   12           * @author        é€é£žç§‘æŠ€(QQ790875685)
+   13           * @version       æŸ¥çœ‹docå†…versionæ–‡ä»¶ ç‰ˆæœ¬è¯´æ˜Ž
+   14           * @Software    MDK FOR C251 V5.60
+   15           * @Target core   STC32G12K128
+   16           * @Taobao      https://seekfree.taobao.com/
+   17           * @date          2020-4-14
    18           ********************************************************************************************************
              -************/
    19          #include "zf_nvic.h"
    20          
    21          //-------------------------------------------------------------------------------------------------------
              -------------
-   22          //  @brief      ÖÐ¶ÏÓÅÏÈ¼¶¹ÜÀí
-   23          //  @param      irqn         Ñ¡ÔñIRQnÄ£¿é
-   24          //  @param      priority     ´Ó0µ½3£¬ÓÅÏÈ¼¶ÒÀ´ÎÔö¼Ó
+   22          //  @brief      ä¸­æ–­ä¼˜å…ˆçº§ç®¡ç†
+   23          //  @param      irqn         é€‰æ‹©IRQnæ¨¡å—
+   24          //  @param      priority     ä»Ž0åˆ°3ï¼Œä¼˜å…ˆçº§ä¾æ¬¡å¢žåŠ 
    25          //  @return     void
-   26          //  Sample usage:                NVIC_SetPriority(UART1_IRQn, 3);       //ÉèÖÃ´®¿Ú 1 ÖÐ¶ÏÓÅÏÈ¼¶Îª 3 ¼¶£¨×î¸ß¼¶£©
-   27          //  @note                                        Èç¹ûÔÚÖÜÆÚÖÐ¶ÏÖÐ£¬Í¨¹ý´®¿Ú·¢ËÍÊý¾Ý¡£
-   28          //                                                       ÄÇÃ´´®¿ÚÖÐ¶ÏµÄÓÅÏÈ¼¶Ò»¶¨Òª¸ßÓÚÖÜÆÚÖÐ¶ÏµÄÓÅÏÈ¼¶
-   29          //                                                       ÕâÑù²ÅÄÜÕý³£·¢ËÍÊý¾Ý¡£ 
+   26          //  Sample usage:            NVIC_SetPriority(UART1_IRQn, 3); //è®¾ç½®ä¸²å£ 1 ä¸­æ–­ä¼˜å…ˆçº§ä¸º 3 çº§ï¼ˆ
+             -æœ€é«˜çº§ï¼‰
+   27          //  @note          å¦‚æžœåœ¨å‘¨æœŸä¸­æ–­ä¸­ï¼Œé€šè¿‡ä¸²å£å‘é€æ•°æ®ã€‚
+   28          //               é‚£ä¹ˆä¸²å£ä¸­æ–­çš„ä¼˜å…ˆçº§ä¸€å®šè¦é«˜äºŽå‘¨æœŸä¸­æ–­çš„ä¼˜å…ˆçº§
+   29          //               è¿™æ ·æ‰èƒ½æ­£å¸¸å‘é€æ•°æ®ã€‚  
    30          //-------------------------------------------------------------------------------------------------------
              -------------
    31          void NVIC_SetPriority(NVIC_IRQn_enum irqn,uint8 priority)
    32          {
-   33   1              if((irqn >> 4) == 0)
-   34   1              {
-   35   2                      IP  |= (priority & 0x01) << (irqn & 0x0F);
-   36   2                      IPH |= ((priority >> 1) & 0x01) << (irqn & 0x0F);
-   37   2              }
-   38   1              else if((irqn >> 4) == 1)
-   39   1              {
-   40   2                      IP2  |= (priority & 0x01) << (irqn & 0x0F);
-   41   2                      IP2H |= ((priority >> 1) & 0x01) << (irqn & 0x0F);
-   42   2              }
-   43   1              else if((irqn >> 4) == 2)
-   44   1              {
-   45   2      //              IP3  |= (priority & 0x01) << (irqn & 0x0F);
-   46   2      //              IP3H |= ((priority >> 1) & 0x01) << (irqn & 0x0F);
-   47   2              }
+   33   1        if((irqn >> 4) == 0)
+   34   1        {
+   35   2          IP  |= (priority & 0x01) << (irqn & 0x0F);
+   36   2          IPH |= ((priority >> 1) & 0x01) << (irqn & 0x0F);
+   37   2        }
+   38   1        else if((irqn >> 4) == 1)
+   39   1        {
+   40   2          IP2  |= (priority & 0x01) << (irqn & 0x0F);
+   41   2          IP2H |= ((priority >> 1) & 0x01) << (irqn & 0x0F);
+   42   2        }
+   43   1        else if((irqn >> 4) == 2)
+   44   1        {
+   45   2      //    IP3  |= (priority & 0x01) << (irqn & 0x0F);
+   46   2      //    IP3H |= ((priority >> 1) & 0x01) << (irqn & 0x0F);
+   47   2        }
    48   1      }
    49          
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =       205     ------
-C251 COMPILER V5.60.0,  zf_nvic                                                            06/07/25  11:17:10  PAGE 2   
+C251 COMPILER V5.60.0,  zf_nvic                                                            06/07/25  14:38:35  PAGE 2   
 
+  code size            =       205     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------

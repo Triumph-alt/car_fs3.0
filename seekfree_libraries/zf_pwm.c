@@ -1,16 +1,16 @@
 /*********************************************************************************************************************
  * COPYRIGHT NOTICE
- * Copyright (c) 2020,Öğ·É¿Æ¼¼
+ * Copyright (c) 2020,é€é£ç§‘æŠ€
  * All rights reserved.
- * ¼¼ÊõÌÖÂÛQQÈº£ºÒ»Èº£º179029047(ÒÑÂú)  ¶şÈº£º244861897(ÒÑÂú)  ÈıÈº£º824575535
+ * æŠ€æœ¯è®¨è®ºQQç¾¤ï¼šä¸€ç¾¤ï¼š179029047(å·²æ»¡)  äºŒç¾¤ï¼š244861897(å·²æ»¡)  ä¸‰ç¾¤ï¼š824575535
  *
- * ÒÔÏÂËùÓĞÄÚÈİ°æÈ¨¾ùÊôÖğ·É¿Æ¼¼ËùÓĞ£¬Î´¾­ÔÊĞí²»µÃÓÃÓÚÉÌÒµÓÃÍ¾£¬
- * »¶Ó­¸÷Î»Ê¹ÓÃ²¢´«²¥±¾³ÌĞò£¬ĞŞ¸ÄÄÚÈİÊ±±ØĞë±£ÁôÖğ·É¿Æ¼¼µÄ°æÈ¨ÉùÃ÷¡£
+ * ä»¥ä¸‹æ‰€æœ‰å†…å®¹ç‰ˆæƒå‡å±é€é£ç§‘æŠ€æ‰€æœ‰ï¼Œæœªç»å…è®¸ä¸å¾—ç”¨äºå•†ä¸šç”¨é€”ï¼Œ
+ * æ¬¢è¿å„ä½ä½¿ç”¨å¹¶ä¼ æ’­æœ¬ç¨‹åºï¼Œä¿®æ”¹å†…å®¹æ—¶å¿…é¡»ä¿ç•™é€é£ç§‘æŠ€çš„ç‰ˆæƒå£°æ˜ã€‚
  *
  * @file       		pwm
- * @company	   		³É¶¼Öğ·É¿Æ¼¼ÓĞÏŞ¹«Ë¾
- * @author     		Öğ·É¿Æ¼¼(QQ790875685)
- * @version    		²é¿´docÄÚversionÎÄ¼ş °æ±¾ËµÃ÷
+ * @company	   		æˆéƒ½é€é£ç§‘æŠ€æœ‰é™å…¬å¸
+ * @author     		é€é£ç§‘æŠ€(QQ790875685)
+ * @version    		æŸ¥çœ‹docå†…versionæ–‡ä»¶ ç‰ˆæœ¬è¯´æ˜
  * @Software 		MDK5.27
  * @Target core		STC32G12K128
  * @Taobao   		https://seekfree.taobao.com/
@@ -27,22 +27,22 @@
 //#pragma warning disable = 208
 
 
-//²¶»ñ±È½ÏÄ£Ê½¼Ä´æÆ÷
+//æ•è·æ¯”è¾ƒæ¨¡å¼å¯„å­˜å™¨
 const uint32 PWM_CCMR_ADDR[] = {0x7efec8, 0x7efec9, 0x7efeca ,0x7efecb, 
 								0x7efee8, 0x7efee9, 0x7efeea, 0x7efeeb};
-//²¶»ñ±È½ÏÊ¹ÄÜ¼Ä´æÆ÷
+//æ•è·æ¯”è¾ƒä½¿èƒ½å¯„å­˜å™¨
 const uint32 PWM_CCER_ADDR[] = {0x7efecc, 0x7efecd, 
 								0x7efeec ,0x7efeed};
-//¿ØÖÆ¼Ä´æÆ÷,¸ß8Î»µØÖ·  µÍ8Î»µØÖ· + 1¼´¿É
+//æ§åˆ¶å¯„å­˜å™¨,é«˜8ä½åœ°å€  ä½8ä½åœ°å€ + 1å³å¯
 const uint32 PWM_CCR_ADDR[] = {0x7efed5, 0x7efed7, 0x7efed9, 0x7efedb,
 							   0x7efef5, 0x7efef7, 0x7efef9, 0x7efefb};
 	
-							   //¿ØÖÆ¼Ä´æÆ÷,¸ß8Î»µØÖ·  µÍ8Î»µØÖ· + 1¼´¿É
+							   //æ§åˆ¶å¯„å­˜å™¨,é«˜8ä½åœ°å€  ä½8ä½åœ°å€ + 1å³å¯
 const uint32 PWM_ARR_ADDR[] = {0x7efed2,0x7efef2};
 
 //-------------------------------------------------------------------------------------------------------------------
-//  @brief      PWM_gpio³õÊ¼»¯£¨ÄÚ²¿Ê¹ÓÃÓÃ»§ÎŞĞè¹ØĞÄ£©
-//  @param      pwmch       PWMÍ¨µÀºÅ¼°Òı½Å
+//  @brief      PWM_gpioåˆå§‹åŒ–ï¼ˆå†…éƒ¨ä½¿ç”¨ç”¨æˆ·æ— éœ€å…³å¿ƒï¼‰
+//  @param      pwmch       PWMé€šé“å·åŠå¼•è„š
 //  @return     void
 //  Sample usage:           
 //-------------------------------------------------------------------------------------------------------------------
@@ -278,14 +278,14 @@ void pwm_set_gpio(PWMCH_enum pwmch)
 	
 		
 //-------------------------------------------------------------------------------------------------------------------
-//  @brief      PWM³õÊ¼»¯
-//  @param      pwmch       PWMÍ¨µÀºÅ¼°Òı½Å
-//  @param      freq        PWMÆµÂÊ(10Hz-3MHz)
-//  @param      duty        PWMÕ¼¿Õ±È
+//  @brief      PWMåˆå§‹åŒ–
+//  @param      pwmch       PWMé€šé“å·åŠå¼•è„š
+//  @param      freq        PWMé¢‘ç‡(10Hz-3MHz)
+//  @param      duty        PWMå ç©ºæ¯”
 //  @return     void
 //  Sample usage:           
-//							pwm_init(PWM0_P00, 100, 5000);     //³õÊ¼»¯PWM0  Ê¹ÓÃÒı½ÅP0.0  Êä³öPWMÆµÂÊ100HZ   Õ¼¿Õ±ÈÎª°Ù·ÖÖ® 5000/PWM_DUTY_MAX*100
-//							PWM_DUTY_MAXÔÚzf_pwm.hÎÄ¼şÖĞ Ä¬ÈÏÎª10000
+//							pwm_init(PWM0_P00, 100, 5000);     //åˆå§‹åŒ–PWM0  ä½¿ç”¨å¼•è„šP0.0  è¾“å‡ºPWMé¢‘ç‡100HZ   å ç©ºæ¯”ä¸ºç™¾åˆ†ä¹‹ 5000/PWM_DUTY_MAX*100
+//							PWM_DUTY_MAXåœ¨zf_pwm.hæ–‡ä»¶ä¸­ é»˜è®¤ä¸º10000
 //-------------------------------------------------------------------------------------------------------------------
 void pwm_init(PWMCH_enum pwmch,uint32 freq, uint32 duty)
 {
@@ -297,69 +297,69 @@ void pwm_init(PWMCH_enum pwmch,uint32 freq, uint32 duty)
 	
 	P_SW2 |= 0x80;
 	
-	//GPIOĞèÒªÉèÖÃÎªÍÆÍìÊä³ö
+	//GPIOéœ€è¦è®¾ç½®ä¸ºæ¨æŒ½è¾“å‡º
 	pwm_set_gpio(pwmch);
 
 
-	//·ÖÆµ¼ÆËã£¬ÖÜÆÚ¼ÆËã£¬Õ¼¿Õ±È¼ÆËã
-	freq_div = (sys_clk / freq) >> 16;							//¶àÉÙ·ÖÆµ
+	//åˆ†é¢‘è®¡ç®—ï¼Œå‘¨æœŸè®¡ç®—ï¼Œå ç©ºæ¯”è®¡ç®—
+	freq_div = (sys_clk / freq) >> 16;							//å¤šå°‘åˆ†é¢‘
 	period_temp = sys_clk / freq ;			
-	period_temp = period_temp / (freq_div + 1) - 1;				//ÖÜÆÚ
+	period_temp = period_temp / (freq_div + 1) - 1;				//å‘¨æœŸ
 
 	if(duty != PWM_DUTY_MAX)
 	{
-		match_temp = period_temp * ((float)duty / PWM_DUTY_MAX);	// Õ¼¿Õ±È			
+		match_temp = period_temp * ((float)duty / PWM_DUTY_MAX);	// å ç©ºæ¯”			
 	}
 	else
 	{
-		match_temp = period_temp + 1;								// dutyÎª100%
+		match_temp = period_temp + 1;								// dutyä¸º100%
 	}
 
 	
 	if(PWMB_CH1_P20 <= pwmch)				//PWM5-8
 	{
-		//Í¨µÀÑ¡Ôñ£¬Òı½ÅÑ¡Ôñ
-		PWMB_ENO |= (1 << ((2 * ((pwmch >> 4) - 4))));					//Ê¹ÄÜÍ¨µÀ	
-		PWMB_PS |= ((pwmch & 0x03) << ((2 * ((pwmch >> 4) - 4))));		//Êä³ö½ÅÑ¡Ôñ
+		//é€šé“é€‰æ‹©ï¼Œå¼•è„šé€‰æ‹©
+		PWMB_ENO |= (1 << ((2 * ((pwmch >> 4) - 4))));					//ä½¿èƒ½é€šé“	
+		PWMB_PS |= ((pwmch & 0x03) << ((2 * ((pwmch >> 4) - 4))));		//è¾“å‡ºè„šé€‰æ‹©
 		
-		// ÅäÖÃÍ¨µÀÊä³öÊ¹ÄÜºÍ¼«ĞÔ	
+		// é…ç½®é€šé“è¾“å‡ºä½¿èƒ½å’Œææ€§	
 		(*(unsigned char volatile far *) (PWM_CCER_ADDR[pwmch>>5])) |= (uint8)(1 << (((pwmch >> 4) & 0x01) * 4));
 		
-		//ÉèÖÃÔ¤·ÖÆµ
+		//è®¾ç½®é¢„åˆ†é¢‘
 		PWMB_PSCRH = (uint8)(freq_div>>8);
 		PWMB_PSCRL = (uint8)freq_div;
 		
-		PWMB_BKR = 0x80; 	//Ö÷Êä³öÊ¹ÄÜ Ïàµ±ÓÚ×Ü¿ª¹Ø
-		PWMB_CR1 = 0x01;	//PWM¿ªÊ¼¼ÆÊı
+		PWMB_BKR = 0x80; 	//ä¸»è¾“å‡ºä½¿èƒ½ ç›¸å½“äºæ€»å¼€å…³
+		PWMB_CR1 = 0x01;	//PWMå¼€å§‹è®¡æ•°
 	}
 	else
 	{
-		PWMA_ENO |= (1 << (pwmch & 0x01)) << ((pwmch >> 4) * 2);	//Ê¹ÄÜÍ¨µÀ	
-		PWMA_PS  |= ((pwmch & 0x07) >> 1) << ((pwmch >> 4) * 2);    //Êä³ö½ÅÑ¡Ôñ
+		PWMA_ENO |= (1 << (pwmch & 0x01)) << ((pwmch >> 4) * 2);	//ä½¿èƒ½é€šé“	
+		PWMA_PS  |= ((pwmch & 0x07) >> 1) << ((pwmch >> 4) * 2);    //è¾“å‡ºè„šé€‰æ‹©
 		
-		// ÅäÖÃÍ¨µÀÊä³öÊ¹ÄÜºÍ¼«ĞÔ	
+		// é…ç½®é€šé“è¾“å‡ºä½¿èƒ½å’Œææ€§	
 		(*(unsigned char volatile far *) (PWM_CCER_ADDR[pwmch>>5])) |= (1 << ((pwmch & 0x01) * 2 + ((pwmch >> 4) & 0x01) * 0x04));
 
 		
-		//ÉèÖÃÔ¤·ÖÆµ
+		//è®¾ç½®é¢„åˆ†é¢‘
 		PWMA_PSCRH = (uint8)(freq_div>>8);
 		PWMA_PSCRL = (uint8)freq_div;
 
-		PWMA_BKR = 0x80; 	// Ö÷Êä³öÊ¹ÄÜ Ïàµ±ÓÚ×Ü¿ª¹Ø
-		PWMA_CR1 = 0x01;	//PWM¿ªÊ¼¼ÆÊı
+		PWMA_BKR = 0x80; 	// ä¸»è¾“å‡ºä½¿èƒ½ ç›¸å½“äºæ€»å¼€å…³
+		PWMA_CR1 = 0x01;	//PWMå¼€å§‹è®¡æ•°
 	}
 	
-	//ÖÜÆÚ
-	(*(unsigned char volatile far *) (PWM_ARR_ADDR[pwmch>>6])) = (uint8)(period_temp>>8);		//¸ß8Î»
-	(*(unsigned char volatile far *) (PWM_ARR_ADDR[pwmch>>6] + 1)) = (uint8)period_temp;		//µÍ8Î»
+	//å‘¨æœŸ
+	(*(unsigned char volatile far *) (PWM_ARR_ADDR[pwmch>>6])) = (uint8)(period_temp>>8);		//é«˜8ä½
+	(*(unsigned char volatile far *) (PWM_ARR_ADDR[pwmch>>6] + 1)) = (uint8)period_temp;		//ä½8ä½
 
-	//ÉèÖÃ²¶»ñÖµ|±È½ÏÖµ
-	(*(unsigned char volatile far *) (PWM_CCR_ADDR[pwmch>>4]))		= match_temp>>8;			//¸ß8Î»
-	(*(unsigned char volatile far *) (PWM_CCR_ADDR[pwmch>>4] + 1))  = (uint8)match_temp;		//µÍ8Î»
+	//è®¾ç½®æ•è·å€¼|æ¯”è¾ƒå€¼
+	(*(unsigned char volatile far *) (PWM_CCR_ADDR[pwmch>>4]))		= match_temp>>8;			//é«˜8ä½
+	(*(unsigned char volatile far *) (PWM_CCR_ADDR[pwmch>>4] + 1))  = (uint8)match_temp;		//ä½8ä½
 	
-	//¹¦ÄÜÉèÖÃ
-	(*(unsigned char volatile far *) (PWM_CCMR_ADDR[pwmch>>4])) |= 0x06<<4;		//ÉèÖÃÎªPWMÄ£Ê½1
-	(*(unsigned char volatile far *) (PWM_CCMR_ADDR[pwmch>>4])) |= 1<<3;		//¿ªÆôPWM¼Ä´æÆ÷µÄÔ¤×°ÔØ¹¦
+	//åŠŸèƒ½è®¾ç½®
+	(*(unsigned char volatile far *) (PWM_CCMR_ADDR[pwmch>>4])) |= 0x06<<4;		//è®¾ç½®ä¸ºPWMæ¨¡å¼1
+	(*(unsigned char volatile far *) (PWM_CCMR_ADDR[pwmch>>4])) |= 1<<3;		//å¼€å¯PWMå¯„å­˜å™¨çš„é¢„è£…è½½åŠŸ
 	
 
 //	P_SW2 &= 0x7F;
@@ -367,12 +367,12 @@ void pwm_init(PWMCH_enum pwmch,uint32 freq, uint32 duty)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-//  @brief      PWMÕ¼¿Õ±ÈÉèÖÃ
-//  @param      pwmch       PWMÍ¨µÀºÅ¼°Òı½Å
-//  @param      duty        PWMÕ¼¿Õ±È
+//  @brief      PWMå ç©ºæ¯”è®¾ç½®
+//  @param      pwmch       PWMé€šé“å·åŠå¼•è„š
+//  @param      duty        PWMå ç©ºæ¯”
 //  @return     void
-//  Sample usage:           pwm_duty(PWM0_P00, 5000);     //³õÊ¼»¯PWM0  Ê¹ÓÃÒı½ÅP0.0  Êä³öPWMÆµÂÊ50HZ   Õ¼¿Õ±ÈÎª°Ù·ÖÖ® 5000/PWM_DUTY_MAX*100
-//							PWM_DUTY_MAXÔÚfsl_pwm.hÎÄ¼şÖĞ Ä¬ÈÏÎª10000
+//  Sample usage:           pwm_duty(PWM0_P00, 5000);     //åˆå§‹åŒ–PWM0  ä½¿ç”¨å¼•è„šP0.0  è¾“å‡ºPWMé¢‘ç‡50HZ   å ç©ºæ¯”ä¸ºç™¾åˆ†ä¹‹ 5000/PWM_DUTY_MAX*100
+//							PWM_DUTY_MAXåœ¨fsl_pwm.hæ–‡ä»¶ä¸­ é»˜è®¤ä¸º10000
 //-------------------------------------------------------------------------------------------------------------------
 void pwm_duty(PWMCH_enum pwmch, uint32 duty)
 {
@@ -383,7 +383,7 @@ void pwm_duty(PWMCH_enum pwmch, uint32 duty)
 
 	if(duty != PWM_DUTY_MAX)
 	{
-		match_temp = arr * ((float)duty/PWM_DUTY_MAX);				//Õ¼¿Õ±È
+		match_temp = arr * ((float)duty/PWM_DUTY_MAX);				//å ç©ºæ¯”
 	}
 	else
 	{
@@ -392,9 +392,9 @@ void pwm_duty(PWMCH_enum pwmch, uint32 duty)
 	
 							
 	
-	//ÉèÖÃ²¶»ñÖµ|±È½ÏÖµ
-	(*(unsigned char volatile far *) (PWM_CCR_ADDR[pwmch>>4]))		= match_temp>>8;			//¸ß8Î»
-	(*(unsigned char volatile far *) (PWM_CCR_ADDR[pwmch>>4] + 1))  = (uint8)match_temp;		//µÍ8Î»
+	//è®¾ç½®æ•è·å€¼|æ¯”è¾ƒå€¼
+	(*(unsigned char volatile far *) (PWM_CCR_ADDR[pwmch>>4]))		= match_temp>>8;			//é«˜8ä½
+	(*(unsigned char volatile far *) (PWM_CCR_ADDR[pwmch>>4] + 1))  = (uint8)match_temp;		//ä½8ä½
 
 //	P_SW2 &= ~0x80;
 	
@@ -402,12 +402,12 @@ void pwm_duty(PWMCH_enum pwmch, uint32 duty)
 
 
 //-------------------------------------------------------------------------------------------------------------------
-//  @brief      PWMÆµÂÊÉèÖÃ
-//  @param      pwmch       PWMÍ¨µÀºÅ¼°Òı½Å
-//  @param      freq        PWMÆµÂÊ(10Hz-3MHz)
-//  @param      duty        PWMÕ¼¿Õ±È
+//  @brief      PWMé¢‘ç‡è®¾ç½®
+//  @param      pwmch       PWMé€šé“å·åŠå¼•è„š
+//  @param      freq        PWMé¢‘ç‡(10Hz-3MHz)
+//  @param      duty        PWMå ç©ºæ¯”
 //  @return     void
-//  Sample usage:           pwm_freq(PWM0_P00, 50, 5000);     //ĞŞ¸Ä»¯PWM0  Ê¹ÓÃÒı½ÅP0.0  Êä³öPWMÆµÂÊ50HZ   Õ¼¿Õ±ÈÎª°Ù·ÖÖ® 5000/PWM_DUTY_MAX*100
+//  Sample usage:           pwm_freq(PWM0_P00, 50, 5000);     //ä¿®æ”¹åŒ–PWM0  ä½¿ç”¨å¼•è„šP0.0  è¾“å‡ºPWMé¢‘ç‡50HZ   å ç©ºæ¯”ä¸ºç™¾åˆ†ä¹‹ 5000/PWM_DUTY_MAX*100
 //-------------------------------------------------------------------------------------------------------------------
 void pwm_freq(PWMCH_enum pwmch, uint32 freq, uint32 duty)
 {
@@ -417,18 +417,18 @@ void pwm_freq(PWMCH_enum pwmch, uint32 freq, uint32 duty)
 
 	
 
-	//·ÖÆµ¼ÆËã£¬ÖÜÆÚ¼ÆËã£¬Õ¼¿Õ±È¼ÆËã
-	freq_div = (sys_clk / freq) >> 16;								// ¶àÉÙ·ÖÆµ
+	//åˆ†é¢‘è®¡ç®—ï¼Œå‘¨æœŸè®¡ç®—ï¼Œå ç©ºæ¯”è®¡ç®—
+	freq_div = (sys_clk / freq) >> 16;								// å¤šå°‘åˆ†é¢‘
 	period_temp = sys_clk / freq;			
-	period_temp = period_temp / (freq_div + 1) - 1;					// ÖÜÆÚ
+	period_temp = period_temp / (freq_div + 1) - 1;					// å‘¨æœŸ
 	
 	if(duty != PWM_DUTY_MAX)
 	{
-		match_temp = period_temp * ((float)duty / PWM_DUTY_MAX);	// Õ¼¿Õ±È			
+		match_temp = period_temp * ((float)duty / PWM_DUTY_MAX);	// å ç©ºæ¯”			
 	}
 	else
 	{
-		match_temp = period_temp + 1;								// dutyÎª100%
+		match_temp = period_temp + 1;								// dutyä¸º100%
 	}
 	
 	
@@ -438,24 +438,24 @@ void pwm_freq(PWMCH_enum pwmch, uint32 freq, uint32 duty)
 	
 	if(PWMB_CH1_P20 <= pwmch)				//PWM5-8
 	{
-		//ÉèÖÃÔ¤·ÖÆµ
+		//è®¾ç½®é¢„åˆ†é¢‘
 		PWMB_PSCRH = (uint8)(freq_div>>8);
 		PWMB_PSCRL = (uint8)freq_div;
 	}
 	else
 	{
-		//ÉèÖÃÔ¤·ÖÆµ
+		//è®¾ç½®é¢„åˆ†é¢‘
 		PWMA_PSCRH = (uint8)(freq_div>>8);
 		PWMA_PSCRL = (uint8)freq_div;
 	}
 	
-	//ÖÜÆÚ
-	(*(unsigned char volatile far *) (PWM_ARR_ADDR[pwmch>>6])) = (uint8)(period_temp>>8);		//¸ß8Î»
-	(*(unsigned char volatile far *) (PWM_ARR_ADDR[pwmch>>6] + 1)) = (uint8)period_temp;		//µÍ8Î»
+	//å‘¨æœŸ
+	(*(unsigned char volatile far *) (PWM_ARR_ADDR[pwmch>>6])) = (uint8)(period_temp>>8);		//é«˜8ä½
+	(*(unsigned char volatile far *) (PWM_ARR_ADDR[pwmch>>6] + 1)) = (uint8)period_temp;		//ä½8ä½
 	
-		//ÉèÖÃ²¶»ñÖµ|±È½ÏÖµ
-	(*(unsigned char volatile far *) (PWM_CCR_ADDR[pwmch>>4]))		= match_temp>>8;			//¸ß8Î»
-	(*(unsigned char volatile far *) (PWM_CCR_ADDR[pwmch>>4] + 1))  = (uint8)match_temp;		//µÍ8Î»
+		//è®¾ç½®æ•è·å€¼|æ¯”è¾ƒå€¼
+	(*(unsigned char volatile far *) (PWM_CCR_ADDR[pwmch>>4]))		= match_temp>>8;			//é«˜8ä½
+	(*(unsigned char volatile far *) (PWM_CCR_ADDR[pwmch>>4] + 1))  = (uint8)match_temp;		//ä½8ä½
 	
 //	P_SW2 &= ~0x80;
 }
