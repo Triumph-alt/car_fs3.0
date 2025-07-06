@@ -74,8 +74,7 @@ extern uint8 track_route;      // 赛道路径：1-左转，2-右转
 extern uint8 track_route_status;
 extern uint8 track_type_zj;
 extern uint8 track_ten_flag;
-// 调试相关函数
-void display_electromagnetic_data(void);       // 显示电磁传感器数据
+
 
 // 电磁保护逻辑变量
 extern uint8 protection_flag;

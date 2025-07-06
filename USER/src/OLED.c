@@ -230,9 +230,9 @@ void oled_init(void)
 	
 	OLED_WriteCommand(0x40);	//设置显示开始行
 	
-	OLED_WriteCommand(0xA1);	//设置左右方向，0xA1正常 0xA0左右反置
+	OLED_WriteCommand(0xA0);	//设置左右方向，0xA1正常 0xA0左右反置
 	
-	OLED_WriteCommand(0xC8);	//设置上下方向，0xC8正常 0xC0上下反置
+	OLED_WriteCommand(0xC0);	//设置上下方向，0xC8正常 0xC0上下反置
 
 	OLED_WriteCommand(0xDA);	//设置COM引脚硬件配置
 	OLED_WriteCommand(0x12);
@@ -256,4 +256,50 @@ void oled_init(void)
 	OLED_WriteCommand(0xAF);	//开启显示
 		
 	oled_clear();				//OLED清屏
+}
+
+// 新增：OLED显示浮点数，保留两位小数，格式±xxx.xx
+typedef union { float f; uint32_t u32; } _f32u32;
+void oled_show_float(uint8_t Line, uint8_t Column, float Number)
+{
+    /* 该函数在OLED上以固定格式显示带符号的浮点数，保留两位小数。
+       显示格式示例："+123.45" 或 "-  0.25"，总长度7个字符。
+       参数说明：
+         Line   - 起始行位置 (1~8)
+         Column - 起始列位置 (1~21)，指示要显示的第一个字符
+         Number - 要显示的浮点数
+    */
+    int32_t int_part;
+    int32_t dec_part;
+
+    // 处理符号
+    if (Number < 0)
+    {
+        oled_show_char(Line, Column, '-');
+        Number = -Number;
+    }
+    else
+    {
+        oled_show_char(Line, Column, '+');
+    }
+
+    // 拆分整数和小数部分（两位小数，四舍五入）
+    int_part = (int32_t)Number;
+    dec_part = (int32_t)((Number - int_part) * 100 + 0.5f);
+
+    // 进位处理，例如 1.999 -> 2.00
+    if (dec_part >= 100)
+    {
+        dec_part -= 100;
+        int_part += 1;
+    }
+
+    // 显示整数部分（3位，不足补0）
+    oled_show_num(Line, (uint8_t)(Column + 1), (uint32_t)int_part, 3);
+
+    // 显示小数点
+    oled_show_char(Line, (uint8_t)(Column + 4), '.');
+
+    // 显示小数部分（2位，不足补0）
+    oled_show_num(Line, (uint8_t)(Column + 5), (uint32_t)dec_part, 2);
 }

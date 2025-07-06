@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  transfer                                                           06/07/25  14:38:25  PAGE 1   
+C251 COMPILER V5.60.0,  transfer                                                           06/07/25  16:08:53  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE transfer
@@ -11,89 +11,189 @@ stmt  level    source
 
     1          #include "transfer.h"
     2          #include "OLED.h"
-    3          
-    4          Key_t key[4] = {0, 0, 0};
-    5          enum state car_state; 
-    6          
-    7          void key_task(void)
-    8          {
-    9   1        if (key[0].flag == 1)
-   10   1        {
-   11   2              if (car_state < RUNNING)
-   12   2              {
-   13   3                  car_state++;
-   14   3                  oled_clear();
-   15   3              }
-   16   2          
-   17   2          key[0].flag = 0;
-   18   2        }
-   19   1      
-   20   1        if (key[1].flag == 1)
-   21   1        {
-   22   2      
-   23   2          
-   24   2          key[1].flag = 0;
-   25   2        }
-   26   1      
-   27   1        if (key[2].flag == 1)
-   28   1        {
-   29   2      
-   30   2          
-   31   2          key[2].flag = 0;
-   32   2        }
-   33   1      
-   34   1        if (key[3].flag == 1)
-   35   1        {
-   36   2      
-   37   2          
-   38   2          key[3].flag = 0;
-   39   2        }
-   40   1      }
-   41          
-   42          void display_task(void)
-   43          {
-   44   1          switch (car_state)
-   45   1          {
-   46   2              case ELECT_PARA:
-   47   2                  {
-   48   3                      oled_show_string(1, 1, "electpara");
-   49   3                  }
-   50   2                  break;
-   51   2      
-   52   2              case PID_PARA:
-   53   2                  {
-   54   3                      oled_show_string(1, 1, "pidpara");
-   55   3                  }
-   56   2                  break;
-   57   2      
-C251 COMPILER V5.60.0,  transfer                                                           06/07/25  14:38:25  PAGE 2   
+    3          #include "electromagnetic_tracking.h"
+    4          #include "pid.h"
+    5          
+    6          Key_t key[4] = {0, 0, 0, 0};
+    7          enum state car_state; 
+    8          uint8 selected_item = 0; // 当前选中的项目索引
+    9          
+   10          void key_task(void)
+   11          {
+   12   1        if (key[0].flag == 1)
+   13   1        {
+   14   2              if (car_state < RUNNING)
+   15   2              {
+   16   3                  car_state++;
+   17   3                  oled_clear();
+   18   3                  selected_item = 0; // 切换状态时重置选中项
+   19   3              }
+   20   2          
+   21   2          key[0].flag = 0;
+   22   2        }
+   23   1      
+   24   1        if (key[1].flag == 1)
+   25   1        {
+   26   2              // 按键1作为选择按键
+   27   2              switch (car_state)
+   28   2              {
+   29   3                  case ELECT_PARA:
+   30   3                      // 在电感参数界面，最多7个选项(max_value数组)
+   31   3                      selected_item = (selected_item + 1) % 7;
+   32   3                      break;
+   33   3                      
+   34   3                  case PID_PARA:
+   35   3                      // 在PID参数界面，最多6个选项(SpeedPID和TurnPID的kp,ki,kd)
+   36   3                      selected_item = (selected_item + 1) % 6;
+   37   3                      break;
+   38   3                      
+   39   3                  default:
+   40   3                      break;
+   41   3              }
+   42   2          
+   43   2          key[1].flag = 0;
+   44   2        }
+   45   1      
+   46   1        if (key[2].flag == 1)
+   47   1        {
+   48   2              // 按键2作为增加值的按键
+   49   2              switch (car_state)
+   50   2              {
+   51   3                  case ELECT_PARA:
+   52   3                      // 增加选中的max_value值
+   53   3                      if (selected_item < 7)
+   54   3                      {
+   55   4                          max_value[selected_item] += 10; // 每次增加10
+   56   4                      }
+   57   3                      break;
+C251 COMPILER V5.60.0,  transfer                                                           06/07/25  16:08:53  PAGE 2   
 
-   58   2              case CHARGE:
-   59   2                  {
-   60   3                      oled_show_string(1, 1, "charge");
-   61   3                  }
-   62   2                  break;
-   63   2      
-   64   2              case RUNNING:
-   65   2                  {
-   66   3                      oled_show_string(1, 1, "running");
-   67   3                  }
-   68   2                  break;
-   69   2              
-   70   2              default:
-   71   2                  break;
-   72   2          }
-   73   1      }
+   58   3                      
+   59   3                  case PID_PARA:
+   60   3                      // 增加选中的PID参数
+   61   3                      if (selected_item == 0) SpeedPID.kp += 0.1f;
+   62   3                      else if (selected_item == 1) SpeedPID.ki += 0.1f;
+   63   3                      else if (selected_item == 2) SpeedPID.kd += 0.1f;
+   64   3                      else if (selected_item == 3) TurnPID.kp += 0.1f;
+   65   3                      else if (selected_item == 4) TurnPID.ki += 0.1f;
+   66   3                      else if (selected_item == 5) TurnPID.kd += 0.1f;
+   67   3                      break;
+   68   3                      
+   69   3                  default:
+   70   3                      break;
+   71   3              }
+   72   2          
+   73   2          key[2].flag = 0;
+   74   2        }
+   75   1      
+   76   1        if (key[3].flag == 1)
+   77   1        {
+   78   2              // 按键3作为减少值的按键
+   79   2              switch (car_state)
+   80   2              {
+   81   3                  case ELECT_PARA:
+   82   3                      // 减少选中的max_value值
+   83   3                      if (selected_item < 7 && max_value[selected_item] >= 10)
+   84   3                      {
+   85   4                          max_value[selected_item] -= 10; // 每次减少10
+   86   4                      }
+   87   3                      break;
+   88   3                      
+   89   3                  case PID_PARA:
+   90   3                      // 减少选中的PID参数
+   91   3                      if (selected_item == 0 && SpeedPID.kp >= 0.1f) SpeedPID.kp -= 0.1f;
+   92   3                      else if (selected_item == 1 && SpeedPID.ki >= 0.1f) SpeedPID.ki -= 0.1f;
+   93   3                      else if (selected_item == 2 && SpeedPID.kd >= 0.1f) SpeedPID.kd -= 0.1f;
+   94   3                      else if (selected_item == 3 && TurnPID.kp >= 0.1f) TurnPID.kp -= 0.1f;
+   95   3                      else if (selected_item == 4 && TurnPID.ki >= 0.1f) TurnPID.ki -= 0.1f;
+   96   3                      else if (selected_item == 5 && TurnPID.kd >= 0.1f) TurnPID.kd -= 0.1f;
+   97   3                      break;
+   98   3                      
+   99   3                  default:
+  100   3                      break;
+  101   3              }
+  102   2          
+  103   2          key[3].flag = 0;
+  104   2        }
+  105   1      }
+  106          
+  107          /* 8行，21列*/
+  108          void display_task(void)
+  109          {
+  110   1          switch (car_state)
+  111   1          {
+  112   2              case ELECT_PARA:
+  113   2                  {
+  114   3                      oled_show_string(1, 8, "max_v:");
+  115   3                      
+  116   3                      // 显示电感名称，选中项前添加'>'标记
+  117   3                      oled_show_string(2, 1, selected_item == 0 ? ">HL :" : "HL :");
+  118   3                      oled_show_string(3, 1, selected_item == 1 ? ">HML:" : "HML:");
+  119   3                      oled_show_string(4, 1, selected_item == 2 ? ">HC :" : "HC :");
+  120   3                      oled_show_string(5, 1, selected_item == 3 ? ">HMR:" : "HMR:");
+  121   3                      oled_show_string(6, 1, selected_item == 4 ? ">VR :" : "VR :");
+  122   3                      oled_show_string(7, 1, selected_item == 5 ? ">HR :" : "HR :");
+  123   3                      oled_show_string(8, 1, selected_item == 6 ? ">VL :" : "VL :");
+C251 COMPILER V5.60.0,  transfer                                                           06/07/25  16:08:53  PAGE 3   
+
+  124   3      
+  125   3                      oled_show_num(2, 8, max_value[0], 4);
+  126   3                      oled_show_num(3, 8, max_value[1], 4);
+  127   3                      oled_show_num(4, 8, max_value[2], 4);
+  128   3                      oled_show_num(5, 8, max_value[3], 4);
+  129   3                      oled_show_num(6, 8, max_value[4], 4);
+  130   3                      oled_show_num(7, 8, max_value[5], 4);
+  131   3                      oled_show_num(8, 8, max_value[6], 4);
+  132   3                  }
+  133   2                  break;
+  134   2      
+  135   2              case PID_PARA:
+  136   2                  {
+  137   3                      oled_show_string(1, 8, "pidpara");
+  138   3                      
+  139   3                      // 显示PID参数名称，选中项前添加'>'标记
+  140   3                      oled_show_string(2, 1, selected_item == 0 ? ">S_Kp:" : "S_Kp:");
+  141   3                      oled_show_string(3, 1, selected_item == 1 ? ">S_Ki:" : "S_Ki:");
+  142   3                      oled_show_string(4, 1, selected_item == 2 ? ">S_Kd:" : "S_Kd:");
+  143   3                      oled_show_string(5, 1, selected_item == 3 ? ">T_Kp:" : "T_Kp:");
+  144   3                      oled_show_string(6, 1, selected_item == 4 ? ">T_Ki:" : "T_Ki:");
+  145   3                      oled_show_string(7, 1, selected_item == 5 ? ">T_Kd:" : "T_Kd:");
+  146   3      
+  147   3                      oled_show_float(2, 8, SpeedPID.kp);
+  148   3                      oled_show_float(3, 8, SpeedPID.ki);
+  149   3                      oled_show_float(4, 8, SpeedPID.kd);
+  150   3                      oled_show_float(5, 8, TurnPID.kp);
+  151   3                      oled_show_float(6, 8, TurnPID.ki);
+  152   3                      oled_show_float(7, 8, TurnPID.kd);
+  153   3                  }
+  154   2                  break;
+  155   2      
+  156   2              case CHARGE:
+  157   2                  {
+  158   3                      oled_show_string(1, 1, "charge");
+  159   3                  }
+  160   2                  break;
+  161   2      
+  162   2              case RUNNING:
+  163   2                  {
+  164   3                      oled_show_string(1, 1, "running");
+  165   3                  }
+  166   2                  break;
+  167   2              
+  168   2              default:
+  169   2                  break;
+  170   2          }
+  171   1      }
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =       184     ------
+  code size            =      1789     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
   pdata size           =    ------     ------
-  xdata size           =        14     ------
+  xdata size           =        15     ------
   xdata-const size     =    ------     ------
   edata size           =    ------     ------
   bit size             =    ------     ------
@@ -103,7 +203,9 @@ Module Information          Static   Overlayable
   far data size        =    ------     ------
   huge data size       =    ------     ------
   const size           =    ------     ------
-  hconst size          =        50     ------
+C251 COMPILER V5.60.0,  transfer                                                           06/07/25  16:08:53  PAGE 4   
+
+  hconst size          =       208     ------
 End of Module Information.
 
 

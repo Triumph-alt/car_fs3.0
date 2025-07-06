@@ -25,7 +25,7 @@ void main(void)
 	imu963ra_init();
 	oled_init();
 
-	pid_init(&SpeedPID, 0.0f, 0.0f, 0.0f, 5000.0f, 6000.0f); //初始化速度PID
+	pid_init(&SpeedPID, 1.0f, 2.0f, 3.0f, 5000.0f, 6000.0f); //初始化速度PID
 	pid_init(&TurnPID, 0.0f, 0.0f, 0.0f, 0.0f, 6000.0f);  //初始化位置PID
 	
 	lowpass_init(&leftSpeedFilt, 0.556);   //初始化低通滤波器
@@ -41,7 +41,7 @@ void main(void)
 		key_task();         // 处理按键任务
 		display_task();     // OLED显示任务
 		
-		uart4_recv_task();  // 串口4接收任务
+//		uart4_recv_task();  // 串口4接收任务
 		
 //		sprintf(g_TxData, "%f,%f\n",Gyro_Z,filtered_GyroZ);
 //		uart_putstr(UART_4, g_TxData);
@@ -63,7 +63,7 @@ void main(void)
 		  track_route_status,
 		  track_type_zj);
 		 uart_putstr(UART_4, g_TxData);
-#endif
+
 
 		// 获取滤波后的ADC数据		
 		mid_filter();      // 使用中位值滤波获取电感数据
@@ -76,7 +76,7 @@ void main(void)
 		
 		//检查电磁保护
 		protection_flag = check_electromagnetic_protection();
-		
+#endif		
 		
 		/* 调试功能 */
 #if 0

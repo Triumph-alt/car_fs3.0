@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "electromagnetic_tracking.h": "c",
+        "transfer.h": "c",
+        "headfile.h": "c",
+        "stc32gxx.h": "c"
+    }
+}
