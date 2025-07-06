@@ -23,6 +23,5 @@ extern enum state car_state;
 
 void key_task(void);
 void display_task(void);
-void save_parameters_to_eeprom(void);
 
 #endif

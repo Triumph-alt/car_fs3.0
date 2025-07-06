@@ -8,5 +8,6 @@ uint8_t at24c16_read_byte(uint8_t page, uint8_t addr);
 void at24c16_write_twobytes(uint8_t page, uint8_t addr, uint16_t w_data);
 uint16_t at24c16_read_twobytes(uint8_t page, uint8_t addr);
 void load_parameters_from_eeprom(void);
+void save_parameters_to_eeprom(void);
 
 #endif

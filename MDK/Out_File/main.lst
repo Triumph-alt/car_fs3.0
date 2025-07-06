@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  main                                                               06/07/25  17:12:32  PAGE 1   
+C251 COMPILER V5.60.0,  main                                                               06/07/25  17:17:49  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE main
@@ -51,24 +51,23 @@ stmt  level    source
    40   1        
    41   1          /* 从EEPROM加载max_value及PID参数，覆盖默认值 */
    42   1          load_parameters_from_eeprom();
-   43   1      //      save_parameters_to_eeprom();
+   43   1      //  save_parameters_to_eeprom();
    44   1      
    45   1      
-   46   1      
-   47   1          while(1)
-   48   1        {
-   49   2           key_task();         // 处理按键任务
-   50   2           display_task();     // OLED显示任务
-   51   2          
-   52   2      //    uart4_recv_task();  // 串口4接收任务
-   53   2          
-   54   2      //    sprintf(g_TxData, "%f,%f\n",Gyro_Z,filtered_GyroZ);
-   55   2      //    uart_putstr(UART_4, g_TxData);
-   56   2          
-   57   2      #if 0
-C251 COMPILER V5.60.0,  main                                                               06/07/25  17:12:32  PAGE 2   
-
+   46   1          while(1)
+   47   1        {
+   48   2           key_task();         // 处理按键任务
+   49   2           display_task();     // OLED显示任务
+   50   2          
+   51   2      //    uart4_recv_task();  // 串口4接收任务
+   52   2          
+   53   2      //    sprintf(g_TxData, "%f,%f\n",Gyro_Z,filtered_GyroZ);
+   54   2      //    uart_putstr(UART_4, g_TxData);
+   55   2          
+   56   2      #if 0
                    // 通过串口输出七电感数据
+C251 COMPILER V5.60.0,  main                                                               06/07/25  17:17:49  PAGE 2   
+
                    sprintf(g_TxData, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",
                     (uint16)normalized_data[SENSOR_HL], 
                     (uint16)normalized_data[SENSOR_VL], 
@@ -98,9 +97,9 @@ stmt  level    source
                    //检查电磁保护
                    protection_flag = check_electromagnetic_protection();
                #endif    
-   88   2          
-   89   2          /* 调试功能 */
-   90   2      #if 0
+   87   2          
+   88   2          /* 调试功能 */
+   89   2      #if 0
                    //读取七电感ADC值（用于调试）
                    value[0] = adc_once(ADC_HL,  ADC_10BIT);
                    value[1] = adc_once(ADC_VL,  ADC_10BIT);
@@ -129,13 +128,13 @@ stmt  level    source
                
                      delay_ms(5);
                #endif  
-  119   2          
-  120   2          }
-  121   1      }
+  118   2          
+  119   2          }
+  120   1      }
+  121          
   122          
-  123          
-C251 COMPILER V5.60.0,  main                                                               06/07/25  17:12:32  PAGE 3   
 
+C251 COMPILER V5.60.0,  main                                                               06/07/25  17:17:49  PAGE 3   
 
 
 Module Information          Static   Overlayable
