@@ -2,20 +2,76 @@
 #include "OLED.h"
 #include "electromagnetic_tracking.h"
 #include "pid.h"
+#include "at24c16.h"
 
 Key_t key[4] = {0, 0, 0, 0};
 enum state car_state; 
 uint8 selected_item = 0; // 当前选中的项目索引
 
+//----------------------------------------------------------------------------- 
+// @brief    保存 max_value 数组与 PID 参数到 AT24C16 EEPROM
+// @note     采用如下地址映射：
+//           Page0  Addr0~13   -> max_value[0..6]   (每个 uint16 占 2 字节)
+//           Page1  Addr0~11   -> SpeedPID  kp,ki,kd (每个 float 占 4 字节)
+//           Page2  Addr0~11   -> TurnPID   kp,ki,kd (每个 float 占 4 字节)
+//           如需调整映射，请同步修改读取函数
+//-----------------------------------------------------------------------------
+void save_parameters_to_eeprom(void)
+{
+    uint8_t i;
+    /* 1. 写入 max_value (uint16) */
+    for(i = 0; i < 7; i++)
+    {
+        /* Page0 起始地址按 2*i */
+        at24c16_write_twobytes(0, (uint8_t)(i * 2), max_value[i]);
+    }
+
+    /* 工具宏：将 float 拆分为 4 个字节并写入 */
+    #define WRITE_FLOAT_TO_EEPROM(base_page, base_offset, fval)                 \
+        do{                                                                    \
+            union { float f; uint8_t b[4]; } _u;                               \
+            uint8_t  _k;                                                       \
+            uint16_t _off;                                                     \
+            uint8_t  _pg, _ad;                                                 \
+            _u.f = (fval);                                                     \
+            for(_k = 0; _k < 4; _k++)                                          \
+            {                                                                  \
+                _off = (base_offset) + _k;                                     \
+                _pg  = (uint8_t)((base_page) + (_off / 16));                  \
+                _ad  = (uint8_t)(_off % 16);                                   \
+                at24c16_write_byte(_pg, _ad, _u.b[_k]);                        \
+            }                                                                  \
+        }while(0)
+
+    /* 2. 写入 SpeedPID 参数到 Page1 起始偏移 0 */
+    WRITE_FLOAT_TO_EEPROM(1, 0, SpeedPID.kp);
+    WRITE_FLOAT_TO_EEPROM(1, 4, SpeedPID.ki);
+    WRITE_FLOAT_TO_EEPROM(1, 8, SpeedPID.kd);
+
+    /* 3. 写入 TurnPID 参数到 Page2 起始偏移 0 */
+    WRITE_FLOAT_TO_EEPROM(2, 0, TurnPID.kp);
+    WRITE_FLOAT_TO_EEPROM(2, 4, TurnPID.ki);
+    WRITE_FLOAT_TO_EEPROM(2, 8, TurnPID.kd);
+
+    #undef WRITE_FLOAT_TO_EEPROM
+}
+
 void key_task(void)
 {
 	if (key[0].flag == 1)
 	{
+        enum state prev_state = car_state;   // 记录切换前状态
         if (car_state < RUNNING)
         {
             car_state++;
             oled_clear();
             selected_item = 0; // 切换状态时重置选中项
+
+            /* 若从 PID_PARA 切换到 CHARGE，保存参数 */
+            if(prev_state == PID_PARA && car_state == CHARGE)
+            {
+                save_parameters_to_eeprom();
+            }
         }
 		
 		key[0].flag = 0;

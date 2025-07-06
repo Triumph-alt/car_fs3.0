@@ -3,6 +3,7 @@
         "electromagnetic_tracking.h": "c",
         "transfer.h": "c",
         "headfile.h": "c",
-        "stc32gxx.h": "c"
+        "stc32gxx.h": "c",
+        "at24c16.h": "c"
     }
 }

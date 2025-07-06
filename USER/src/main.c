@@ -1,4 +1,6 @@
 #include "headfile.h"
+#include "at24c16.h"
+
 
 /*
  * 系统频率，可查看board.h中的 FOSC 宏定义修改。
@@ -26,7 +28,7 @@ void main(void)
 	oled_init();
 
 	pid_init(&SpeedPID, 1.0f, 2.0f, 3.0f, 5000.0f, 6000.0f); //初始化速度PID
-	pid_init(&TurnPID, 0.0f, 0.0f, 0.0f, 0.0f, 6000.0f);  //初始化位置PID
+	pid_init(&TurnPID, 1.0f, 2.0f, 3.0f, 0.0f, 6000.0f);  //初始化位置PID
 	
 	lowpass_init(&leftSpeedFilt, 0.556);   //初始化低通滤波器
 	lowpass_init(&rightSpeedFilt, 0.556);
@@ -36,10 +38,15 @@ void main(void)
 	pit_timer_ms(TIM_1, 10);
 	pit_timer_ms(TIM_2, 5);
 	
+    /* 从EEPROM加载max_value及PID参数，覆盖默认值 */
+    load_parameters_from_eeprom();
+//	save_parameters_to_eeprom();
+
+
     while(1)
 	{
-		key_task();         // 处理按键任务
-		display_task();     // OLED显示任务
+		 key_task();         // 处理按键任务
+		 display_task();     // OLED显示任务
 		
 //		uart4_recv_task();  // 串口4接收任务
 		
@@ -111,4 +118,5 @@ void main(void)
 		
     }
 }
+
 

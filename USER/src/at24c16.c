@@ -83,3 +83,52 @@ uint16_t at24c16_read_twobytes(uint8_t page, uint8_t addr)
 	
 	return r_data;
 }
+
+
+/*--------------------------------------------------------------
+ * @brief   上电后从AT24C16 EEPROM读取参数
+ *          1. max_value[0..6]  (Page0  Addr0~13)
+ *          2. SpeedPID kp,ki,kd (Page1  Addr0~11)
+ *          3. TurnPID  kp,ki,kd (Page2  Addr0~11)
+ *-------------------------------------------------------------*/
+
+/* 辅助函数: 读取4字节并转换为float */
+float eeprom_read_float(uint8_t base_page, uint8_t base_offset)
+{
+    union { float f; uint8_t b[4]; } _u;
+
+    uint8_t  k;
+    uint16_t off;
+    uint8_t  pg, ad;
+
+    for(k = 0; k < 4; k++)
+    {
+        off = base_offset + k;
+        pg  = (uint8_t)(base_page + (off / 16));
+        ad  = (uint8_t)(off % 16);
+        _u.b[k] = at24c16_read_byte(pg, ad);
+    }
+
+    return _u.f;
+}
+
+void load_parameters_from_eeprom(void)
+{
+    uint8_t i;
+
+    /* 1. 读取 max_value 数组 */
+    for(i = 0; i < 7; i++)
+    {
+        max_value[i] = at24c16_read_twobytes(0, (uint8_t)(i * 2));
+    }
+
+    /* 2. 读取 SpeedPID 参数 */
+    SpeedPID.kp = eeprom_read_float(1, 0);
+    SpeedPID.ki = eeprom_read_float(1, 4);
+    SpeedPID.kd = eeprom_read_float(1, 8);
+
+    /* 3. 读取 TurnPID 参数 */
+    TurnPID.kp = eeprom_read_float(2, 0);
+    TurnPID.ki = eeprom_read_float(2, 4);
+    TurnPID.kd = eeprom_read_float(2, 8);
+}
