@@ -13,6 +13,7 @@ void main(void)
 	int state = 5;
 	uint16 sum_value = 0;    
 	uint16 value[7] = {0};   //调试用数组
+  uint8_t g_TxData[200] = {0};
 	
 	board_init();			 // 初始化寄存器,勿删除此句代码
 	
@@ -45,8 +46,9 @@ void main(void)
 
     while(1)
 	{
-		 key_task();         // 处理按键任务
-		 display_task();     // OLED显示任务
+//		 key_task();         // 处理按键任务
+//		 display_task();     // OLED显示任务
+		
 		
 //		uart4_recv_task();  // 串口4接收任务
 		
@@ -86,7 +88,7 @@ void main(void)
 #endif		
 		
 		/* 调试功能 */
-#if 0
+#if 1
 		//读取七电感ADC值（用于调试）
 		value[0] = adc_once(ADC_HL,  ADC_10BIT);
 		value[1] = adc_once(ADC_VL,  ADC_10BIT);
@@ -113,7 +115,7 @@ void main(void)
           value[6]);
 		  uart_putstr(UART_4, g_TxData);
 
-		  delay_ms(5);
+		  delay_ms(10);
 #endif	
 		
     }

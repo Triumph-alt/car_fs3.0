@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  transfer                                                           06/07/25  17:17:50  PAGE 1   
+C251 COMPILER V5.60.0,  transfer                                                           08/07/25  20:54:18  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE transfer
@@ -66,7 +66,7 @@ stmt  level    source
    55   1        if (key[2].flag == 1)
    56   1        {
    57   2              // 按键2作为增加值的按键
-C251 COMPILER V5.60.0,  transfer                                                           06/07/25  17:17:50  PAGE 2   
+C251 COMPILER V5.60.0,  transfer                                                           08/07/25  20:54:18  PAGE 2   
 
    58   2              switch (car_state)
    59   2              {
@@ -134,7 +134,7 @@ stmt  level    source
   121   2              case ELECT_PARA:
   122   2                  {
   123   3                      oled_show_string(1, 8, "max_v:");
-C251 COMPILER V5.60.0,  transfer                                                           06/07/25  17:17:50  PAGE 3   
+C251 COMPILER V5.60.0,  transfer                                                           08/07/25  20:54:18  PAGE 3   
 
   124   3                      
   125   3                      // 显示电感名称，选中项前添加'>'标记
@@ -203,7 +203,7 @@ Module Information          Static   Overlayable
   idata size           =    ------     ------
   pdata size           =    ------     ------
   xdata size           =        17     ------
-C251 COMPILER V5.60.0,  transfer                                                           06/07/25  17:17:50  PAGE 4   
+C251 COMPILER V5.60.0,  transfer                                                           08/07/25  20:54:18  PAGE 4   
 
   xdata-const size     =    ------     ------
   edata size           =    ------     ------

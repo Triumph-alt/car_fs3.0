@@ -4,6 +4,7 @@
         "transfer.h": "c",
         "headfile.h": "c",
         "stc32gxx.h": "c",
-        "at24c16.h": "c"
+        "at24c16.h": "c",
+        "common.h": "c"
     }
 }
