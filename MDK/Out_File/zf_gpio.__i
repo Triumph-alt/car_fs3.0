@@ -1,1 +1,1 @@
-"..\seekfree_libraries\zf_gpio.c" LARGE INTR2 WARNINGLEVEL (3) OPTIMIZE (0,SPEED) BROWSE INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral) DEBUG PRINT(.\Out_File\zf_gpio.lst) TABS (2) OBJECT(.\Out_File\zf_gpio.obj)
+"..\seekfree_libraries\zf_gpio.c" LARGE INTR2 WARNINGLEVEL (3) OPTIMIZE (0,SPEED) BROWSE INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral) DEBUG PRINT(.\Out_File\zf_gpio.lst) OBJECT(.\Out_File\zf_gpio.obj)

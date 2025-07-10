@@ -1,11 +1,11 @@
-C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  21:09:21  PAGE 1   
+C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  23:18:32  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE zf_fifo
 OBJECT MODULE PLACED IN .\Out_File\zf_fifo.obj
 COMPILER INVOKED BY: D:\Software\Keil5\c251v560\C251\BIN\C251.EXE ..\seekfree_libraries\zf_fifo.c LARGE INTR2 WARNINGLEV
                     -EL(3) OPTIMIZE(0,SPEED) BROWSE INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral)
-                    - DEBUG PRINT(.\Out_File\zf_fifo.lst) TABS(2) OBJECT(.\Out_File\zf_fifo.obj) 
+                    - DEBUG PRINT(.\Out_File\zf_fifo.lst) OBJECT(.\Out_File\zf_fifo.obj) 
 
 stmt  level    source
 
@@ -19,14 +19,14 @@ stmt  level    source
     7           * 以下所有内容版权均属逐飞科技所有，未经允许不得用于商业用途，
     8           * 欢迎各位使用并传播本程序，修改内容时必须保留逐飞科技的版权声明。
     9           *
-   10           * @file          fifo
-   11           * @company       成都逐飞科技有限公司
-   12           * @author        逐飞科技(QQ790875685)
-   13           * @version       查看doc内version文件 版本说明
-   14           * @Software    MDK FOR C251 V5.60
-   15           * @Target core   STC32F12K
-   16           * @Taobao      https://seekfree.taobao.com/
-   17           * @date          2020-4-14
+   10           * @file                fifo
+   11           * @company                     成都逐飞科技有限公司
+   12           * @author              逐飞科技(QQ790875685)
+   13           * @version             查看doc内version文件 版本说明
+   14           * @Software            MDK FOR C251 V5.60
+   15           * @Target core         STC32F12K
+   16           * @Taobao              https://seekfree.taobao.com/
+   17           * @date                2020-4-14
    18           ********************************************************************************************************
              -************/
    19          
@@ -66,7 +66,7 @@ stmt  level    source
    50   1      }
    51          
    52          //-------------------------------------------------------------------------------------------------------
-C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  21:09:21  PAGE 2   
+C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  23:18:32  PAGE 2   
 
              -------------
    53          // 函数简介     FIFO 尾指针位移
@@ -134,7 +134,7 @@ stmt  level    source
   105          // 参数说明     *fifo               FIFO 对象指针
   106          // 返回参数     uint32              已使用长度
   107          // 使用示例     uint32 len = fifo_used(fifo);
-C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  21:09:21  PAGE 3   
+C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  23:18:32  PAGE 3   
 
   108          // 备注信息
   109          //-------------------------------------------------------------------------------------------------------
@@ -202,7 +202,7 @@ stmt  level    source
   162          // 参数说明     *dat                数据来源缓冲区指针
   163          // 参数说明     length              需要写入的数据长度
   164          // 返回参数     fifo_state_enum     操作状态
-C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  21:09:21  PAGE 4   
+C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  23:18:32  PAGE 4   
 
   165          // 使用示例     zf_log(fifo_write_buffer(&fifo, data, 32) == FIFO_SUCCESS, "fifo_write_buffer error")
              -;
@@ -270,7 +270,7 @@ stmt  level    source
   220   5                          case FIFO_DATA_32BIT:
   221   5                          {
   222   6                              memcpy(
-C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  21:09:21  PAGE 5   
+C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  23:18:32  PAGE 5   
 
   223   6                                  &(((uint32 *)fifo->buffer)[fifo->head]),
   224   6                                  dat, temp_length * 4);                              // 拷贝第一段数据
@@ -338,7 +338,7 @@ stmt  level    source
   281          // 备注信息
   282          //-------------------------------------------------------------------------------------------------------
              -------------
-C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  21:09:21  PAGE 6   
+C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  23:18:32  PAGE 6   
 
   283          fifo_state_enum fifo_read_element (fifo_struct *fifo, void *dat, fifo_operation_enum flag)
   284          {
@@ -406,7 +406,7 @@ stmt  level    source
              -��
   340          // 参数说明     flag                是否变更 FIFO 状态 可选择是否清空读取的数据
   341          // 返回参数     fifo_state_enum     操作状态
-C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  21:09:21  PAGE 7   
+C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  23:18:32  PAGE 7   
 
   342          // 使用示例     zf_log(fifo_read_buffer(&fifo, data, &length, FIFO_READ_ONLY) == FIFO_SUCCESS, "fifo_
              -read_buffer error");
@@ -474,7 +474,7 @@ stmt  level    source
   394   4                      {
   395   5                          case FIFO_DATA_8BIT:
   396   5                          {
-C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  21:09:21  PAGE 8   
+C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  23:18:32  PAGE 8   
 
   397   6                              memcpy(dat, &(((uint8 *)fifo->buffer)[fifo->end]), (uint16)temp_length);
   398   6                              memcpy(&(((uint8 *)dat)[temp_length]), fifo->buffer, (uint16)(*length - temp_leng
@@ -542,7 +542,7 @@ stmt  level    source
   449   1          uint32 temp_length = 0;
   450   1          uint32 fifo_data_length = 0;
   451   1      
-C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  21:09:21  PAGE 9   
+C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  23:18:32  PAGE 9   
 
   452   1          do
   453   1          {
@@ -610,7 +610,7 @@ stmt  level    source
   503   6                          }break;
   504   5                          case FIFO_DATA_32BIT:
   505   5                          {
-C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  21:09:21  PAGE 10  
+C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  23:18:32  PAGE 10  
 
   506   6                              memcpy(dat, &(((uint32 *)fifo->buffer)[fifo->max - temp_length]), temp_length * 4
              -);
@@ -656,13 +656,13 @@ stmt  level    source
   541   1          fifo_state_enum return_state = FIFO_SUCCESS;
   542   1          do
   543   1          {
-  544   2              fifo->buffer      = buffer_addr;
-  545   2              fifo->execution   = FIFO_IDLE;
-  546   2              fifo->type        = type;
-  547   2              fifo->head        = 0;
-  548   2              fifo->end         = 0;
-  549   2              fifo->reamin_size   = len;
-  550   2              fifo->max         = len;
+  544   2              fifo->buffer            = buffer_addr;
+  545   2              fifo->execution         = FIFO_IDLE;
+  546   2              fifo->type              = type;
+  547   2              fifo->head              = 0;
+  548   2              fifo->end               = 0;
+  549   2              fifo->reamin_size       = len;
+  550   2              fifo->max               = len;
   551   2          }while(0);
   552   1          return return_state;
   553   1      }
@@ -679,7 +679,7 @@ Module Information          Static   Overlayable
   xdata-const size     =    ------     ------
   edata size           =    ------     ------
   bit size             =    ------     ------
-C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  21:09:21  PAGE 11  
+C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  23:18:32  PAGE 11  
 
   ebit size            =    ------     ------
   bitaddressable size  =    ------     ------

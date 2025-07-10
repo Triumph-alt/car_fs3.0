@@ -1,11 +1,11 @@
-C251 COMPILER V5.60.0,  at24c16                                                            10/07/25  21:53:29  PAGE 1   
+C251 COMPILER V5.60.0,  at24c16                                                            10/07/25  23:18:21  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE at24c16
 OBJECT MODULE PLACED IN .\Out_File\at24c16.obj
 COMPILER INVOKED BY: D:\Software\Keil5\c251v560\C251\BIN\C251.EXE ..\USER\src\at24c16.c LARGE INTR2 WARNINGLEVEL(3) OPTI
                     -MIZE(0,SPEED) BROWSE INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral) DEBUG PRI
-                    -NT(.\Out_File\at24c16.lst) TABS(2) OBJECT(.\Out_File\at24c16.obj) 
+                    -NT(.\Out_File\at24c16.lst) OBJECT(.\Out_File\at24c16.obj) 
 
 stmt  level    source
 
@@ -21,16 +21,16 @@ stmt  level    source
    10          //----------------------------------------------------------------------------- 
    11          void at24c16_write_byte(uint8_t page, uint8_t addr, uint8_t w_data)
    12          {
-   13   1        uint8_t ret = 1;
-   14   1        uint8_t device_addr = 0x00, data_addr = 0x00;
-   15   1        
-   16   1        /* 计算设备地址和字节地址 */
-   17   1        device_addr = ((0x0A << 3) | ((page >> 4) & (0x07)));
-   18   1        data_addr = (((page & 0x0F) << 4) | (addr & 0x0F));
-   19   1        
-   20   1        ret = iic_write_reg(device_addr, data_addr, w_data);
+   13   1              uint8_t ret = 1;
+   14   1              uint8_t device_addr = 0x00, data_addr = 0x00;
+   15   1              
+   16   1              /* 计算设备地址和字节地址 */
+   17   1              device_addr = ((0x0A << 3) | ((page >> 4) & (0x07)));
+   18   1              data_addr = (((page & 0x0F) << 4) | (addr & 0x0F));
+   19   1              
+   20   1              ret = iic_write_reg(device_addr, data_addr, w_data);
    21   1      
-   22   1        delay_ms(5);
+   22   1              delay_ms(5);
    23   1      }
    24          //----------------------------------------------------------------------------- 
    25          // @brief    从 AT24C16 EEPROM 读取一个字节
@@ -42,17 +42,17 @@ stmt  level    source
    31          //----------------------------------------------------------------------------- 
    32          uint8_t at24c16_read_byte(uint8_t page, uint8_t addr)
    33          {
-   34   1        uint8_t ret = 1;
-   35   1        uint8_t device_addr = 0x00, data_addr = 0x00;
-   36   1        uint8_t r_data = 0;
-   37   1        
-   38   1        /* 计算设备地址和字节地址 */
-   39   1        device_addr = ((0x0A << 3) | ((page >> 4) & (0x07)));
-   40   1        data_addr = (((page & 0x0F) << 4) | (addr & 0x0F));
-   41   1        
-   42   1        ret = iic_read_reg(device_addr, data_addr, &r_data);
-   43   1        
-   44   1        return r_data;
+   34   1              uint8_t ret = 1;
+   35   1              uint8_t device_addr = 0x00, data_addr = 0x00;
+   36   1              uint8_t r_data = 0;
+   37   1              
+   38   1              /* 计算设备地址和字节地址 */
+   39   1              device_addr = ((0x0A << 3) | ((page >> 4) & (0x07)));
+   40   1              data_addr = (((page & 0x0F) << 4) | (addr & 0x0F));
+   41   1              
+   42   1              ret = iic_read_reg(device_addr, data_addr, &r_data);
+   43   1              
+   44   1              return r_data;
    45   1      }
    46          //----------------------------------------------------------------------------- 
    47          // @brief    连续写入 2 字节到 AT24C16 EEPROM (高字节在前)
@@ -65,16 +65,16 @@ stmt  level    source
    54          //----------------------------------------------------------------------------- 
    55          void at24c16_write_twobytes(uint8_t page, uint8_t addr, uint16_t w_data)
    56          {
-   57   1        uint8_t h_data = 0, l_data = 0;
-C251 COMPILER V5.60.0,  at24c16                                                            10/07/25  21:53:29  PAGE 2   
+   57   1              uint8_t h_data = 0, l_data = 0;
+C251 COMPILER V5.60.0,  at24c16                                                            10/07/25  23:18:21  PAGE 2   
 
-   58   1        
-   59   1        /* 拆成高低8位分别写入 */
-   60   1        h_data = w_data >> 8;
-   61   1        l_data = w_data & 0xff;
-   62   1        
-   63   1        at24c16_write_byte(page, addr, h_data);
-   64   1        at24c16_write_byte(page, (uint8_t)(addr + 1), l_data);
+   58   1              
+   59   1              /* 拆成高低8位分别写入 */
+   60   1              h_data = w_data >> 8;
+   61   1              l_data = w_data & 0xff;
+   62   1              
+   63   1              at24c16_write_byte(page, addr, h_data);
+   64   1              at24c16_write_byte(page, (uint8_t)(addr + 1), l_data);
    65   1      }
    66          //----------------------------------------------------------------------------- 
    67          // @brief    连续读取 2 字节数据 (高字节在前)
@@ -86,15 +86,15 @@ stmt  level    source
    73          //----------------------------------------------------------------------------- 
    74          uint16_t at24c16_read_twobytes(uint8_t page, uint8_t addr)
    75          {
-   76   1        uint8_t h_data = 0, l_data = 0;
-   77   1        uint16_t r_data = 0;
-   78   1        
-   79   1        h_data = at24c16_read_byte(page, addr);
-   80   1        l_data = at24c16_read_byte(page, (uint8_t)(addr + 1));
-   81   1        
-   82   1        r_data = ((h_data << 8) | l_data);
-   83   1        
-   84   1        return r_data;
+   76   1              uint8_t h_data = 0, l_data = 0;
+   77   1              uint16_t r_data = 0;
+   78   1              
+   79   1              h_data = at24c16_read_byte(page, addr);
+   80   1              l_data = at24c16_read_byte(page, (uint8_t)(addr + 1));
+   81   1              
+   82   1              r_data = ((h_data << 8) | l_data);
+   83   1              
+   84   1              return r_data;
    85   1      }
    86          
    87          
@@ -134,7 +134,7 @@ stmt  level    source
   121   1         {
   122   2             max_value[i] = at24c16_read_twobytes(0, (uint8_t)(i * 2));
   123   2         }
-C251 COMPILER V5.60.0,  at24c16                                                            10/07/25  21:53:29  PAGE 3   
+C251 COMPILER V5.60.0,  at24c16                                                            10/07/25  23:18:21  PAGE 3   
 
   124   1      
   125   1         /* 2. 读取 SpeedPID 参数 */
@@ -203,7 +203,7 @@ Module Information          Static   Overlayable
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
-C251 COMPILER V5.60.0,  at24c16                                                            10/07/25  21:53:29  PAGE 4   
+C251 COMPILER V5.60.0,  at24c16                                                            10/07/25  23:18:21  PAGE 4   
 
   pdata size           =    ------     ------
   xdata size           =        46     ------

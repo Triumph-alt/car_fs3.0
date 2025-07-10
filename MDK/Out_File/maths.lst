@@ -1,11 +1,11 @@
-C251 COMPILER V5.60.0,  maths                                                              10/07/25  21:53:32  PAGE 1   
+C251 COMPILER V5.60.0,  maths                                                              10/07/25  23:18:24  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE maths
 OBJECT MODULE PLACED IN .\Out_File\maths.obj
 COMPILER INVOKED BY: D:\Software\Keil5\c251v560\C251\BIN\C251.EXE ..\USER\src\maths.c LARGE INTR2 WARNINGLEVEL(3) OPTIMI
                     -ZE(0,SPEED) BROWSE INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral) DEBUG PRINT
-                    -(.\Out_File\maths.lst) TABS(2) OBJECT(.\Out_File\maths.obj) 
+                    -(.\Out_File\maths.lst) OBJECT(.\Out_File\maths.obj) 
 
 stmt  level    source
 
@@ -13,12 +13,12 @@ stmt  level    source
     2          
     3          int myabs(int num)
     4          {
-    5   1        return (num > 0) ? num : -num;
+    5   1              return (num > 0) ? num : -num;
     6   1      }
     7          
     8          float myfabs(float num)
     9          {
-   10   1        return (num > 0) ? num : -num;
+   10   1              return (num > 0) ? num : -num;
    11   1      }
    12          
    13          ///**
@@ -36,21 +36,21 @@ stmt  level    source
    25          //                 float* B, uint8_t rowsB, uint8_t colsB,
    26          //                 float* C) 
    27          //{
-   28          //  uint8_t i = 0, j = 0, k = 0;
-   29          //  
+   28          //      uint8_t i = 0, j = 0, k = 0;
+   29          //      
    30          //    if (colsA != rowsB) // 错误：矩阵维度不匹配
-   31          //  {
+   31          //      {
    32          //        return;
    33          //    }
    34          
    35          //    for (i = 0; i < rowsA; i++)
-   36          //  {
+   36          //      {
    37          //        for (j = 0; j < colsB; j++) 
-   38          //    {
+   38          //              {
    39          //            float sum = 0.0f;
    40          
    41          //            for (k = 0; k < colsA; k++) 
-   42          //      {
+   42          //                      {
    43          //                sum += A[i * colsA + k] * B[k * colsB + j];
    44          //            }
    45          
@@ -66,26 +66,26 @@ stmt  level    source
    55          //  * @param  colsA: 矩阵的列数
    56          //  * @param  scalar: 缩放因子
    57          //  * @param  C: 输出矩阵，rowsA x colsA
-C251 COMPILER V5.60.0,  maths                                                              10/07/25  21:53:32  PAGE 2   
+C251 COMPILER V5.60.0,  maths                                                              10/07/25  23:18:24  PAGE 2   
 
    58          //  * @retval 无
    59          //  */
    60          //void Matrix_Scale(float* A, uint8_t rowsA, uint8_t colsA, float scalar, float* C) 
    61          //{
-   62          //  uint16_t i = 0;
-   63          //  
+   62          //      uint16_t i = 0;
+   63          //      
    64          //    for (i = 0; i < rowsA * colsA; i++) 
-   65          //  {
+   65          //      {
    66          //        C[i] = A[i] * scalar;
    67          //    }
    68          //}
    69          
    70          //void Matrix_Negate(float* A, uint8_t rowsA, uint8_t colsA, float* C)
    71          //{
-   72          //  uint16_t i = 0;
-   73          //  
+   72          //      uint16_t i = 0;
+   73          //      
    74          //    for (i = 0; i < rowsA * colsA; i++) 
-   75          //  {
+   75          //      {
    76          //        C[i] = -A[i];
    77          //    }
    78          //}

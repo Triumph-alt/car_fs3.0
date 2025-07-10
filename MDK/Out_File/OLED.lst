@@ -1,11 +1,11 @@
-C251 COMPILER V5.60.0,  OLED                                                               10/07/25  21:53:29  PAGE 1   
+C251 COMPILER V5.60.0,  OLED                                                               10/07/25  23:18:21  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE OLED
 OBJECT MODULE PLACED IN .\Out_File\OLED.obj
 COMPILER INVOKED BY: D:\Software\Keil5\c251v560\C251\BIN\C251.EXE ..\USER\src\OLED.c LARGE INTR2 WARNINGLEVEL(3) OPTIMIZ
                     -E(0,SPEED) BROWSE INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral) DEBUG PRINT(
-                    -.\Out_File\OLED.lst) TABS(2) OBJECT(.\Out_File\OLED.obj) 
+                    -.\Out_File\OLED.lst) OBJECT(.\Out_File\OLED.obj) 
 
 stmt  level    source
 
@@ -20,7 +20,7 @@ stmt  level    source
     9            */
    10          void OLED_WriteCommand(uint8_t Command)
    11          {
-   12   1        iic_write_reg(0x3C, 0x00, Command);
+   12   1              iic_write_reg(0x3C, 0x00, Command);
    13   1      }
    14          
    15          /**
@@ -30,7 +30,7 @@ stmt  level    source
    19            */
    20          void OLED_WriteData(uint8_t Data)
    21          {
-   22   1        iic_write_reg(0x3C, 0x40, Data);
+   22   1              iic_write_reg(0x3C, 0x40, Data);
    23   1      }
    24          
    25          /**
@@ -41,9 +41,9 @@ stmt  level    source
    30            */
    31          void OLED_SetCursor(uint8_t Y, uint8_t X)
    32          {
-   33   1        OLED_WriteCommand(0xB0 | Y);          //设置Y位置
-   34   1        OLED_WriteCommand(0x10 | ((X & 0xF0) >> 4));  //设置X位置高4位
-   35   1        OLED_WriteCommand(0x00 | (X & 0x0F));     //设置X位置低4位
+   33   1              OLED_WriteCommand(0xB0 | Y);                                    //设置Y位置
+   34   1              OLED_WriteCommand(0x10 | ((X & 0xF0) >> 4));    //设置X位置高4位
+   35   1              OLED_WriteCommand(0x00 | (X & 0x0F));                   //设置X位置低4位
    36   1      }
    37          
    38          /**
@@ -53,20 +53,20 @@ stmt  level    source
    42            */
    43          void oled_clear(void)
    44          {  
-   45   1        uint8_t i, j;
-   46   1        for (j = 0; j < 8; j++)
-   47   1        {
-   48   2          OLED_SetCursor(j, 0);
-   49   2          for(i = 0; i < 128; i++)
-   50   2          {
-   51   3            OLED_WriteData(0x00);
-   52   3          }
-   53   2        }
+   45   1              uint8_t i, j;
+   46   1              for (j = 0; j < 8; j++)
+   47   1              {
+   48   2                      OLED_SetCursor(j, 0);
+   49   2                      for(i = 0; i < 128; i++)
+   50   2                      {
+   51   3                              OLED_WriteData(0x00);
+   52   3                      }
+   53   2              }
    54   1      }
    55          
    56          /**
    57            * @brief  OLED显示一个字符
-C251 COMPILER V5.60.0,  OLED                                                               10/07/25  21:53:29  PAGE 2   
+C251 COMPILER V5.60.0,  OLED                                                               10/07/25  23:18:21  PAGE 2   
 
    58            * @param  Line 行位置，范围：1~4
    59            * @param  Column 列位置，范围：1~16
@@ -75,30 +75,30 @@ stmt  level    source
    62            */
    63          void oled_show_char(uint8_t Line, uint8_t Column, char Char)
    64          {       
-   65   1        uint8_t i;
-   66   1        
-   67   1      //  OLED_SetCursor((uint8_t)((Line - 1) * 2), (uint8_t)((Column - 1) * 8));   //设置光标位置在上半
+   65   1              uint8_t i;
+   66   1              
+   67   1      //      OLED_SetCursor((uint8_t)((Line - 1) * 2), (uint8_t)((Column - 1) * 8));         //设置光标位置在上半
              -部分
-   68   1      //  
-   69   1      //  for (i = 0; i < 8; i++)
-   70   1      //  {
-   71   1      //    OLED_WriteData(OLED_F8x16[Char - ' '][i]);      //显示上半部分内容
-   72   1      //  }
-   73   1        
-   74   1      //  OLED_SetCursor((uint8_t)((Line - 1) * 2 + 1), (uint8_t)((Column - 1) * 8)); //设置光标位置在下
+   68   1      //      
+   69   1      //      for (i = 0; i < 8; i++)
+   70   1      //      {
+   71   1      //              OLED_WriteData(OLED_F8x16[Char - ' '][i]);                      //显示上半部分内容
+   72   1      //      }
+   73   1              
+   74   1      //      OLED_SetCursor((uint8_t)((Line - 1) * 2 + 1), (uint8_t)((Column - 1) * 8));     //设置光标位置在下
              -半部分
-   75   1      //  
-   76   1      //  for (i = 0; i < 8; i++)
-   77   1      //  {
-   78   1      //    OLED_WriteData(OLED_F8x16[Char - ' '][i + 8]);    //显示下半部分内容
-   79   1      //  }
-   80   1        
-   81   1        OLED_SetCursor((uint8_t)(Line - 1), (uint8_t)((Column - 1) * 6));   //设置光标位置在上半部分
-   82   1        
-   83   1        for (i = 0; i < 6; i++)
-   84   1        {
-   85   2          OLED_WriteData(OLED_F6x8[Char - ' '][i]);     //显示上半部分内容
-   86   2        }
+   75   1      //      
+   76   1      //      for (i = 0; i < 8; i++)
+   77   1      //      {
+   78   1      //              OLED_WriteData(OLED_F8x16[Char - ' '][i + 8]);          //显示下半部分内容
+   79   1      //      }
+   80   1              
+   81   1              OLED_SetCursor((uint8_t)(Line - 1), (uint8_t)((Column - 1) * 6));               //设置光标位置在上半部分
+   82   1              
+   83   1              for (i = 0; i < 6; i++)
+   84   1              {
+   85   2                      OLED_WriteData(OLED_F6x8[Char - ' '][i]);                       //显示上半部分内容
+   86   2              }
    87   1      }
    88          
    89          /**
@@ -110,11 +110,11 @@ stmt  level    source
    95            */
    96          void oled_show_string(uint8_t Line, uint8_t Column, char *String)
    97          {
-   98   1        uint8_t i;
-   99   1        for (i = 0; String[i] != '\0'; i++)
-  100   1        {
-  101   2          oled_show_char(Line, (uint8_t)(Column + i), String[i]);
-  102   2        }
+   98   1              uint8_t i;
+   99   1              for (i = 0; String[i] != '\0'; i++)
+  100   1              {
+  101   2                      oled_show_char(Line, (uint8_t)(Column + i), String[i]);
+  102   2              }
   103   1      }
   104          
   105          /**
@@ -123,18 +123,18 @@ stmt  level    source
   108            */
   109          uint32_t OLED_Pow(uint32_t X, uint32_t Y)
   110          {
-  111   1        uint32_t Result = 1;
-  112   1        while (Y--)
-  113   1        {
-  114   2          Result *= X;
-  115   2        }
-  116   1        return Result;
+  111   1              uint32_t Result = 1;
+  112   1              while (Y--)
+  113   1              {
+  114   2                      Result *= X;
+  115   2              }
+  116   1              return Result;
   117   1      }
   118          
   119          /**
   120            * @brief  OLED显示数字（十进制，正数）
   121            * @param  Line 起始行位置，范围：1~4
-C251 COMPILER V5.60.0,  OLED                                                               10/07/25  21:53:29  PAGE 3   
+C251 COMPILER V5.60.0,  OLED                                                               10/07/25  23:18:21  PAGE 3   
 
   122            * @param  Column 起始列位置，范围：1~16
   123            * @param  Number 要显示的数字，范围：0~4294967295
@@ -143,12 +143,12 @@ stmt  level    source
   126            */
   127          void oled_show_num(uint8_t Line, uint8_t Column, uint32_t Number, uint8_t Length)
   128          {
-  129   1        uint8_t i;
-  130   1        for (i = 0; i < Length; i++)              
-  131   1        {
-  132   2          oled_show_char(Line, (uint8_t)(Column + i), (uint8_t)(Number / OLED_Pow(10, Length - i - 1) % 10 + '0')
+  129   1              uint8_t i;
+  130   1              for (i = 0; i < Length; i++)                                                    
+  131   1              {
+  132   2                      oled_show_char(Line, (uint8_t)(Column + i), (uint8_t)(Number / OLED_Pow(10, Length - i - 1) % 10 + '0')
              -);
-  133   2        }
+  133   2              }
   134   1      }
   135          
   136          /**
@@ -161,23 +161,23 @@ stmt  level    source
   143            */
   144          void oled_show_signednum(uint8_t Line, uint8_t Column, int32_t Number, uint8_t Length)
   145          {
-  146   1        uint8_t i;
-  147   1        uint32_t Number1;
-  148   1        if (Number >= 0)
-  149   1        {
-  150   2          oled_show_char(Line, Column, '+');
-  151   2          Number1 = Number;
-  152   2        }
-  153   1        else
-  154   1        {
-  155   2          oled_show_char(Line, Column, '-');
-  156   2          Number1 = -Number;
-  157   2        }
-  158   1        for (i = 0; i < Length; i++)              
-  159   1        {
-  160   2          oled_show_char(Line, (uint8_t)(Column + i + 1), (uint8_t)(Number1 / OLED_Pow(10, Length - i - 1) % 10 +
+  146   1              uint8_t i;
+  147   1              uint32_t Number1;
+  148   1              if (Number >= 0)
+  149   1              {
+  150   2                      oled_show_char(Line, Column, '+');
+  151   2                      Number1 = Number;
+  152   2              }
+  153   1              else
+  154   1              {
+  155   2                      oled_show_char(Line, Column, '-');
+  156   2                      Number1 = -Number;
+  157   2              }
+  158   1              for (i = 0; i < Length; i++)                                                    
+  159   1              {
+  160   2                      oled_show_char(Line, (uint8_t)(Column + i + 1), (uint8_t)(Number1 / OLED_Pow(10, Length - i - 1) % 10 +
              - '0'));
-  161   2        }
+  161   2              }
   162   1      }
   163          
   164          /**
@@ -190,21 +190,21 @@ stmt  level    source
   171            */
   172          void oled_show_hexnum(uint8_t Line, uint8_t Column, uint32_t Number, uint8_t Length)
   173          {
-  174   1        uint8_t i, SingleNumber;
-  175   1        for (i = 0; i < Length; i++)              
-  176   1        {
-  177   2          SingleNumber = Number / OLED_Pow(16, Length - i - 1) % 16;
-  178   2          if (SingleNumber < 10)
-  179   2          {
-  180   3            oled_show_char(Line, (uint8_t)(Column + i), (uint8_t)(SingleNumber + '0'));
-  181   3          }
-  182   2          else
-  183   2          {
-  184   3            oled_show_char(Line, (uint8_t)(Column + i), (uint8_t)(SingleNumber - 10 + 'A'));
-  185   3          }
-C251 COMPILER V5.60.0,  OLED                                                               10/07/25  21:53:29  PAGE 4   
+  174   1              uint8_t i, SingleNumber;
+  175   1              for (i = 0; i < Length; i++)                                                    
+  176   1              {
+  177   2                      SingleNumber = Number / OLED_Pow(16, Length - i - 1) % 16;
+  178   2                      if (SingleNumber < 10)
+  179   2                      {
+  180   3                              oled_show_char(Line, (uint8_t)(Column + i), (uint8_t)(SingleNumber + '0'));
+  181   3                      }
+  182   2                      else
+  183   2                      {
+  184   3                              oled_show_char(Line, (uint8_t)(Column + i), (uint8_t)(SingleNumber - 10 + 'A'));
+  185   3                      }
+C251 COMPILER V5.60.0,  OLED                                                               10/07/25  23:18:21  PAGE 4   
 
-  186   2        }
+  186   2              }
   187   1      }
   188          
   189          /**
@@ -217,11 +217,11 @@ stmt  level    source
   196            */
   197          void oled_show_binnum(uint8_t Line, uint8_t Column, uint32_t Number, uint8_t Length)
   198          {
-  199   1        uint8_t i;
-  200   1        for (i = 0; i < Length; i++)              
-  201   1        {
-  202   2          oled_show_char(Line, (uint8_t)(Column + i), (uint8_t)(Number / OLED_Pow(2, Length - i - 1) % 2 + '0'));
-  203   2        }
+  199   1              uint8_t i;
+  200   1              for (i = 0; i < Length; i++)                                                    
+  201   1              {
+  202   2                      oled_show_char(Line, (uint8_t)(Column + i), (uint8_t)(Number / OLED_Pow(2, Length - i - 1) % 2 + '0'));
+  203   2              }
   204   1      }
   205          
   206          /**
@@ -231,54 +231,54 @@ stmt  level    source
   210            */
   211          void oled_init(void)
   212          {
-  213   1      //  uint32_t i, j;
-  214   1      //  
-  215   1      //  for (i = 0; i < 1000; i++)      //上电延时
-  216   1      //  {
-  217   1      //    for (j = 0; j < 1000; j++);
-  218   1      //  }
-  219   1        
-  220   1        OLED_WriteCommand(0xAE);  //关闭显示
-  221   1        
-  222   1        OLED_WriteCommand(0xD5);  //设置显示时钟分频比/振荡器频率
-  223   1        OLED_WriteCommand(0x80);
-  224   1        
-  225   1        OLED_WriteCommand(0xA8);  //设置多路复用率
-  226   1        OLED_WriteCommand(0x3F);
-  227   1        
-  228   1        OLED_WriteCommand(0xD3);  //设置显示偏移
-  229   1        OLED_WriteCommand(0x00);
-  230   1        
-  231   1        OLED_WriteCommand(0x40);  //设置显示开始行
-  232   1        
-  233   1        OLED_WriteCommand(0xA0);  //设置左右方向，0xA1正常 0xA0左右反置
-  234   1        
-  235   1        OLED_WriteCommand(0xC0);  //设置上下方向，0xC8正常 0xC0上下反置
+  213   1      //      uint32_t i, j;
+  214   1      //      
+  215   1      //      for (i = 0; i < 1000; i++)                      //上电延时
+  216   1      //      {
+  217   1      //              for (j = 0; j < 1000; j++);
+  218   1      //      }
+  219   1              
+  220   1              OLED_WriteCommand(0xAE);        //关闭显示
+  221   1              
+  222   1              OLED_WriteCommand(0xD5);        //设置显示时钟分频比/振荡器频率
+  223   1              OLED_WriteCommand(0x80);
+  224   1              
+  225   1              OLED_WriteCommand(0xA8);        //设置多路复用率
+  226   1              OLED_WriteCommand(0x3F);
+  227   1              
+  228   1              OLED_WriteCommand(0xD3);        //设置显示偏移
+  229   1              OLED_WriteCommand(0x00);
+  230   1              
+  231   1              OLED_WriteCommand(0x40);        //设置显示开始行
+  232   1              
+  233   1              OLED_WriteCommand(0xA0);        //设置左右方向，0xA1正常 0xA0左右反置
+  234   1              
+  235   1              OLED_WriteCommand(0xC0);        //设置上下方向，0xC8正常 0xC0上下反置
   236   1      
-  237   1        OLED_WriteCommand(0xDA);  //设置COM引脚硬件配置
-  238   1        OLED_WriteCommand(0x12);
-  239   1        
-  240   1        OLED_WriteCommand(0x81);  //设置对比度控制
-  241   1        OLED_WriteCommand(0xCF);
+  237   1              OLED_WriteCommand(0xDA);        //设置COM引脚硬件配置
+  238   1              OLED_WriteCommand(0x12);
+  239   1              
+  240   1              OLED_WriteCommand(0x81);        //设置对比度控制
+  241   1              OLED_WriteCommand(0xCF);
   242   1      
-  243   1        OLED_WriteCommand(0xD9);  //设置预充电周期
-  244   1        OLED_WriteCommand(0xF1);
+  243   1              OLED_WriteCommand(0xD9);        //设置预充电周期
+  244   1              OLED_WriteCommand(0xF1);
   245   1      
-  246   1        OLED_WriteCommand(0xDB);  //设置VCOMH取消选择级别
-  247   1        OLED_WriteCommand(0x30);
+  246   1              OLED_WriteCommand(0xDB);        //设置VCOMH取消选择级别
+  247   1              OLED_WriteCommand(0x30);
   248   1      
-  249   1        OLED_WriteCommand(0xA4);  //设置整个显示打开/关闭
+  249   1              OLED_WriteCommand(0xA4);        //设置整个显示打开/关闭
   250   1      
-  251   1        OLED_WriteCommand(0xA6);  //设置正常/倒转显示
-C251 COMPILER V5.60.0,  OLED                                                               10/07/25  21:53:29  PAGE 5   
+  251   1              OLED_WriteCommand(0xA6);        //设置正常/倒转显示
+C251 COMPILER V5.60.0,  OLED                                                               10/07/25  23:18:21  PAGE 5   
 
   252   1      
-  253   1        OLED_WriteCommand(0x8D);  //设置充电泵
-  254   1        OLED_WriteCommand(0x14);
+  253   1              OLED_WriteCommand(0x8D);        //设置充电泵
+  254   1              OLED_WriteCommand(0x14);
   255   1      
-  256   1        OLED_WriteCommand(0xAF);  //开启显示
-  257   1          
-  258   1        oled_clear();       //OLED清屏
+  256   1              OLED_WriteCommand(0xAF);        //开启显示
+  257   1                      
+  258   1              oled_clear();                           //OLED清屏
   259   1      }
   260          
   261          // 新增：OLED显示浮点数，保留两位小数，格式±xxx.xx
@@ -339,7 +339,7 @@ Module Information          Static   Overlayable
   xdata-const size     =    ------     ------
   edata size           =    ------     ------
   bit size             =    ------     ------
-C251 COMPILER V5.60.0,  OLED                                                               10/07/25  21:53:29  PAGE 6   
+C251 COMPILER V5.60.0,  OLED                                                               10/07/25  23:18:21  PAGE 6   
 
   ebit size            =    ------     ------
   bitaddressable size  =    ------     ------

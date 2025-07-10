@@ -316,35 +316,35 @@ u8 NVIC_RTC_Init(u8 State, u8 Priority)
 // 返回: 执行结果 SUCCESS/FAIL.
 // 版本: V1.0, 2020-09-29
 //========================================================================
-#ifndef PWMA
-#define	PWMA	9
-#endif
-#ifndef PWMB
-#define	PWMB	10
-#endif
-u8 NVIC_PWM_Init(u8 Channel, u8 State, u8 Priority)
-{
-	if(Channel > PWMB) return FAIL;
-	if(Priority > Priority_3) return FAIL;
-	switch(Channel)
-	{
-		case PWMA:
-			PWMA_IER = State;
-			PWMA_Priority(Priority);
-		break;
+//#ifndef PWMA
+//#define	PWMA	9
+//#endif
+//#ifndef PWMB
+//#define	PWMB	10
+//#endif
+//u8 NVIC_PWM_Init(u8 Channel, u8 State, u8 Priority)
+//{
+//	if(Channel > PWMB) return FAIL;
+//	if(Priority > Priority_3) return FAIL;
+//	switch(Channel)
+//	{
+//		case PWMA:
+//			PWMA_IER = State;
+//			PWMA_Priority(Priority);
+//		break;
 
-		case PWMB:
-			PWMB_IER = State;
-			PWMB_Priority(Priority);
-		break;
+//		case PWMB:
+//			PWMB_IER = State;
+//			PWMB_Priority(Priority);
+//		break;
 
-		default:
-			PWMB_IER = State;
-			Priority = NULL;
-		break;
-	}
-	return SUCCESS;
-}
+//		default:
+//			PWMB_IER = State;
+//			Priority = NULL;
+//		break;
+//	}
+//	return SUCCESS;
+//}
 
 //========================================================================
 // 函数: NVIC_DMA_ADC_Init

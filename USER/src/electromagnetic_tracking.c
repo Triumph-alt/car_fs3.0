@@ -11,7 +11,7 @@ u8 xdata DmaAdBuffer[ADC_CH][ADC_DATA];
 TrackWeights track_weights[4] = {
     // 普通直道
 
-    {0.20f, 0.35f, 0.30f, 0.20f, 0.70f, 30, "直道"},
+    {0.00f, 0.75f, 0.30f, 0.0f, 0.70f, 30, "直道"},
     
     // 直角弯道
     {0.25f, 0.30f, 0.35f, 0.40f, 1.00f, 50, "直角弯道"},
@@ -38,7 +38,7 @@ float normalized_data[SENSOR_COUNT] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f}
 // uint16 min_value[SENSOR_COUNT] = {0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF};  // 每个电感的最小值
 // uint16 max_value[SENSOR_COUNT] = {0, 0, 0, 0, 0, 0, 0};  // 每个电感的最大值
 uint16 min_value[SENSOR_COUNT] = {0, 0, 0, 0, 0, 0, 0};  // 每个电感的最小值
-uint16 max_value[SENSOR_COUNT] = {3400, 3700, 3800, 2800, 3700, 3700, 3000};  // 每个电感的最大值
+uint16 max_value[SENSOR_COUNT] = {3100, 3800, 3500, 2800, 3500, 3800, 3300};  // 每个电感的最大值
 
 // 电感位置计算相关变量
 float signal_strength_value = 0;   // 信号强度指标

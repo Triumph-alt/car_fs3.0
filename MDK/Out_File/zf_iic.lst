@@ -1,11 +1,11 @@
-C251 COMPILER V5.60.0,  zf_iic                                                             10/07/25  21:09:17  PAGE 1   
+C251 COMPILER V5.60.0,  zf_iic                                                             10/07/25  23:18:30  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE zf_iic
 OBJECT MODULE PLACED IN .\Out_File\zf_iic.obj
 COMPILER INVOKED BY: D:\Software\Keil5\c251v560\C251\BIN\C251.EXE ..\seekfree_libraries\zf_iic.c LARGE INTR2 WARNINGLEVE
                     -L(3) OPTIMIZE(0,SPEED) BROWSE INCDIR(..\USER\inc;..\USER\src;..\libraries;..\seekfree_libraries;..\seekfree_peripheral) 
-                    -DEBUG PRINT(.\Out_File\zf_iic.lst) TABS(2) OBJECT(.\Out_File\zf_iic.obj) 
+                    -DEBUG PRINT(.\Out_File\zf_iic.lst) OBJECT(.\Out_File\zf_iic.obj) 
 
 stmt  level    source
 
@@ -19,14 +19,14 @@ stmt  level    source
     7           * 以下所有内容版权均属逐飞科技所有，未经允许不得用于商业用途，
     8           * 欢迎各位使用并传播本程序，修改内容时必须保留逐飞科技的版权声明。
     9           *
-   10           * @file          iic
-   11           * @company       成都逐飞科技有限公司
-   12           * @author        逐飞科技(QQ790875685)
-   13           * @version       查看doc内version文件 版本说明
-   14           * @Software    MDK FOR C251 V5.60
-   15           * @Target core   STC32G12K128
-   16           * @Taobao      https://seekfree.taobao.com/
-   17           * @date          2020-4-14
+   10           * @file                iic
+   11           * @company                     成都逐飞科技有限公司
+   12           * @author              逐飞科技(QQ790875685)
+   13           * @version             查看doc内version文件 版本说明
+   14           * @Software            MDK FOR C251 V5.60
+   15           * @Target core         STC32G12K128
+   16           * @Taobao              https://seekfree.taobao.com/
+   17           * @date                2020-4-14
    18           ********************************************************************************************************
              -************/
    19          #pragma warning disable = 47
@@ -37,18 +37,18 @@ stmt  level    source
    24          //-------------------------------------------------------------------------------------------------------
              -------------
    25          //  @brief      内部使用用户无需关心
-   26          //  @param      NULL              
+   26          //  @param      NULL                    
    27          //  @return     void
    28          //  Sample usage:               无需用户调用，用户请使用h文件中的宏定义
    29          //-------------------------------------------------------------------------------------------------------
              -------------
-   30          void iic_delay_us(uint16 x) //33.1776Mhz
+   30          void iic_delay_us(uint16 x)     //33.1776Mhz
    31          {
    32   1          uint8 i;
    33   1          while(x--)
    34   1          {
-   35   2          i = 9;
-   36   2          while (--i);
+   35   2                      i = 9;
+   36   2                      while (--i);
    37   2          }
    38   1      }
    39          
@@ -56,7 +56,7 @@ stmt  level    source
    41          //-------------------------------------------------------------------------------------------------------
              -------------
    42          //  @brief      内部使用用户无需关心
-   43          //  @param      NULL              
+   43          //  @param      NULL                    
    44          //  @return     void
    45          //  Sample usage:               无需用户调用，用户请使用h文件中的宏定义
    46          //-------------------------------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ stmt  level    source
    49   1          uint16 count = 0;
    50   1          uint8 ret = IIC_SEND_OK;
    51   1          while (!(I2CMSST & 0x40))
-C251 COMPILER V5.60.0,  zf_iic                                                             10/07/25  21:09:17  PAGE 2   
+C251 COMPILER V5.60.0,  zf_iic                                                             10/07/25  23:18:30  PAGE 2   
 
    52   1          {
    53   2              iic_delay_us(1);
@@ -83,7 +83,7 @@ stmt  level    source
    64          //-------------------------------------------------------------------------------------------------------
              -------------
    65          //  @brief      内部使用用户无需关心
-   66          //  @param      NULL              
+   66          //  @param      NULL                    
    67          //  @return     void
    68          //  Sample usage:               无需用户调用，用户请使用h文件中的宏定义
    69          //-------------------------------------------------------------------------------------------------------
@@ -99,7 +99,7 @@ stmt  level    source
    78          //-------------------------------------------------------------------------------------------------------
              -------------
    79          //  @brief      内部使用用户无需关心
-   80          //  @param      NULL              
+   80          //  @param      NULL                    
    81          //  @return     void
    82          //  Sample usage:               无需用户调用，用户请使用h文件中的宏定义
    83          //-------------------------------------------------------------------------------------------------------
@@ -116,7 +116,7 @@ stmt  level    source
    93          //-------------------------------------------------------------------------------------------------------
              -------------
    94          //  @brief      内部使用用户无需关心
-   95          //  @param      NULL              
+   95          //  @param      NULL                    
    96          //  @return     void
    97          //  Sample usage:               无需用户调用，用户请使用h文件中的宏定义
    98          //-------------------------------------------------------------------------------------------------------
@@ -132,14 +132,14 @@ stmt  level    source
   107          //-------------------------------------------------------------------------------------------------------
              -------------
   108          //  @brief      内部使用用户无需关心
-  109          //  @param      NULL              
+  109          //  @param      NULL                    
   110          //  @return     void
-C251 COMPILER V5.60.0,  zf_iic                                                             10/07/25  21:09:17  PAGE 3   
+C251 COMPILER V5.60.0,  zf_iic                                                             10/07/25  23:18:30  PAGE 3   
 
   111          //  Sample usage:               无需用户调用，用户请使用h文件中的宏定义
   112          //-------------------------------------------------------------------------------------------------------
              -------------
-  113          char recv_data(void)              //接收数据
+  113          char recv_data(void)                                                    //接收数据
   114          {
   115   1          I2CMSCR = 0x04;                             //发送RECV命令
   116   1          wait();
@@ -149,14 +149,14 @@ stmt  level    source
   120          //-------------------------------------------------------------------------------------------------------
              -------------
   121          //  @brief      内部使用用户无需关心
-  122          //  @param      NULL              
+  122          //  @param      NULL                    
   123          //  @return     void
   124          //  Sample usage:               无需用户调用，用户请使用h文件中的宏定义
   125          //-------------------------------------------------------------------------------------------------------
              -------------
   126          uint8 send_ack(void)
   127          {
-  128   1        uint8 ret;
+  128   1              uint8 ret;
   129   1          I2CMSST = 0x00;                             //设置ACK信号
   130   1          I2CMSCR = 0x05;                             //发送ACK命令
   131   1          ret = wait();
@@ -166,7 +166,7 @@ stmt  level    source
   135          //-------------------------------------------------------------------------------------------------------
              -------------
   136          //  @brief      内部使用用户无需关心
-  137          //  @param      NULL              
+  137          //  @param      NULL                    
   138          //  @return     void
   139          //  Sample usage:               无需用户调用，用户请使用h文件中的宏定义
   140          //-------------------------------------------------------------------------------------------------------
@@ -181,7 +181,7 @@ stmt  level    source
   148          //-------------------------------------------------------------------------------------------------------
              -------------
   149          //  @brief      内部使用用户无需关心
-  150          //  @param      NULL              
+  150          //  @param      NULL                    
   151          //  @return     void
   152          //  Sample usage:               无需用户调用，用户请使用h文件中的宏定义
   153          //-------------------------------------------------------------------------------------------------------
@@ -202,7 +202,7 @@ stmt  level    source
              -------------
   167          //  @brief      硬件IIC初始化
   168          //  @param      iic_n           选择IIC模块
-C251 COMPILER V5.60.0,  zf_iic                                                             10/07/25  21:09:17  PAGE 4   
+C251 COMPILER V5.60.0,  zf_iic                                                             10/07/25  23:18:30  PAGE 4   
 
   169          //  @param      wait_time       I2C总线速度（等待时钟数）控制: 速度设置为等待wait_tim
              -e*2+1个时钟
@@ -212,33 +212,33 @@ stmt  level    source
              -------------
   173          void iic_init(IICN_enum iic_n, IIC_PIN_enum scl_pin, IIC_PIN_enum sda_pin, uint32 wait_time)
   174          {
-  175   1        //UNUSED(scl_pin);
-  176   1        //__attribute__ ((unused))(sda_pin);
-  177   1        //UNUSED(scl_pin, sda_pin);
+  175   1              //UNUSED(scl_pin);
+  176   1              //__attribute__ ((unused))(sda_pin);
+  177   1              //UNUSED(scl_pin, sda_pin);
   178   1      
   179   1          P_SW2 &= ~(0x03<<4);
-  180   1          P_SW2 |= 1<<7;  //将EAXFR寄存器置1，这样才能使用特殊功能寄存器为扩展SFR，访问
+  180   1          P_SW2 |= 1<<7;      //将EAXFR寄存器置1，这样才能使用特殊功能寄存器为扩展SFR，访问
              -逻辑地址位于 XDATA 区域
   181   1          switch(iic_n)
   182   1          {
   183   2          case IIC_1:
-  184   2              P_SW2 |= (0x00<<4); //SCL:P1.5  SDA:P1.4
+  184   2              P_SW2 |= (0x00<<4);     //SCL:P1.5      SDA:P1.4
   185   2              break;
   186   2          case IIC_2:
-  187   2              P_SW2 |= (0x01<<4); //SCL:P2.5  SDA:P2.4
+  187   2              P_SW2 |= (0x01<<4);     //SCL:P2.5      SDA:P2.4
   188   2              break;
   189   2          case IIC_3:
-  190   2              P_SW2 |= (0x02<<4); //SCL:P7.7  SDA:P7.6
+  190   2              P_SW2 |= (0x02<<4);     //SCL:P7.7      SDA:P7.6
   191   2              break;
   192   2          case IIC_4:
-  193   2              P_SW2 |= (0x03<<4); //SCL:P3.2  SDA:P3.3
+  193   2              P_SW2 |= (0x03<<4);     //SCL:P3.2      SDA:P3.3
   194   2              break;
   195   2          }
   196   1      
-  197   1          I2CCFG |= 1<<6;   //主机模式
-  198   1          I2CCFG |= 1<<7;   //使能IIC
+  197   1          I2CCFG |= 1<<6;             //主机模式
+  198   1          I2CCFG |= 1<<7;             //使能IIC
   199   1          I2CCFG |= wait_time;//速度设置为等待wait_time*2+1个时钟
-  200   1          I2CMSST = 0x00;   //主机状态寄存器
+  200   1          I2CMSST = 0x00;             //主机状态寄存器
   201   1      
   202   1      }
   203          
@@ -251,7 +251,7 @@ stmt  level    source
   209          //  @param      dat         需要发送的数据
   210          //  @return                 返回的状态值 0：成功  1：失败
   211          //  @since      v2.0
-  212          //  Sample usage:         iic_write_reg(0x2D, 0x50,2);     //写入数据2到0x50地址，从机地址为0
+  212          //  Sample usage:               iic_write_reg(0x2D, 0x50,2);     //写入数据2到0x50地址，从机地址为0
              -x2D
   213          //-------------------------------------------------------------------------------------------------------
              -------------
@@ -270,7 +270,7 @@ stmt  level    source
   226   1          if(send_data(dat) != IIC_SEND_OK)
   227   1              return IIC_SEND_FAIL;
   228   1          if(recv_ack() != IIC_SEND_OK)
-C251 COMPILER V5.60.0,  zf_iic                                                             10/07/25  21:09:17  PAGE 5   
+C251 COMPILER V5.60.0,  zf_iic                                                             10/07/25  23:18:30  PAGE 5   
 
   229   1              return IIC_SEND_FAIL;
   230   1          if(stop() != IIC_SEND_OK)
@@ -289,36 +289,36 @@ stmt  level    source
   242          //  @param      dat         数据地址
   243          //  @return                 读取的寄存器值
   244          //  @since      v1.0
-  245          //  Sample usage:         uint8 value = iic_read_reg(i2c0, 0x2D, 0x50);//读取0x50地址的数据，从�
+  245          //  Sample usage:               uint8 value = iic_read_reg(i2c0, 0x2D, 0x50);//读取0x50地址的数据，从�
              -�地址为0x2D
   246          //-------------------------------------------------------------------------------------------------------
              -------------
   247          uint8 iic_read_reg(uint8 dev_add, uint8 reg, uint8 *dat)
   248          {
-  249   1        if(start() != IIC_SEND_OK)
+  249   1              if(start() != IIC_SEND_OK)
   250   1              return IIC_SEND_FAIL;
   251   1          if(send_data((dev_add<<1) | 0x00) != IIC_SEND_OK)
   252   1              return IIC_SEND_FAIL;
   253   1          if(recv_ack() != IIC_SEND_OK)
   254   1              return IIC_SEND_FAIL;
-  255   1        
+  255   1              
   256   1          if(send_data(reg) != IIC_SEND_OK)
   257   1              return IIC_SEND_FAIL;
   258   1          if(recv_ack() != IIC_SEND_OK)
   259   1              return IIC_SEND_FAIL;
-  260   1        
+  260   1              
   261   1          if(start() != IIC_SEND_OK)
   262   1              return IIC_SEND_FAIL;
   263   1          if(send_data((dev_add<<1) | 0x01) != IIC_SEND_OK)
   264   1              return IIC_SEND_FAIL;
   265   1          if(recv_ack() != IIC_SEND_OK)
   266   1              return IIC_SEND_FAIL;
-  267   1        
+  267   1              
   268   1          *dat = recv_data(); //读取数据
-  269   1        send_nak();
+  269   1              send_nak();
   270   1          if(stop() != IIC_SEND_OK)
   271   1              return IIC_SEND_FAIL;
-  272   1        
+  272   1              
   273   1          return IIC_SEND_OK;
   274   1      }
   275          
@@ -332,90 +332,90 @@ stmt  level    source
   282          //  @param      num         读取字节数
   283          //  @return     void
   284          //  @since      v1.0
-  285          //  Sample usage:         uint8 value = i2c_read_reg(i2c0, 0x2D, 0x50, 10, buf);//读取0x50地址的数�
+  285          //  Sample usage:               uint8 value = i2c_read_reg(i2c0, 0x2D, 0x50, 10, buf);//读取0x50地址的数�
              -�，从机地址为0x2D开始的10个字节
   286          //-------------------------------------------------------------------------------------------------------
              -------------
   287          uint8 iic_read_reg_bytes(uint8 dev_add, uint8 reg
-  288                      , uint8 *dat, uint8 num)
-C251 COMPILER V5.60.0,  zf_iic                                                             10/07/25  21:09:17  PAGE 6   
+  288                                                          , uint8 *dat, uint8 num)
+C251 COMPILER V5.60.0,  zf_iic                                                             10/07/25  23:18:30  PAGE 6   
 
   289          {
   290   1      
-  291   1        if(start() != IIC_SEND_OK)
+  291   1              if(start() != IIC_SEND_OK)
   292   1              return IIC_SEND_FAIL;
-  293   1        
+  293   1              
   294   1          if(send_data((dev_add<<1) | 0x00) != IIC_SEND_OK)
   295   1              return IIC_SEND_FAIL;
   296   1          if(recv_ack() != IIC_SEND_OK)
   297   1              return IIC_SEND_FAIL;
-  298   1        
+  298   1              
   299   1          if(send_data(reg) != IIC_SEND_OK)
   300   1              return IIC_SEND_FAIL;
   301   1          if(recv_ack() != IIC_SEND_OK)
   302   1              return IIC_SEND_FAIL;
   303   1      
-  304   1        if(send_data((dev_add<<1) | 0x01) != IIC_SEND_OK)
-  305   1          return IIC_SEND_FAIL;
-  306   1        if(recv_ack() != IIC_SEND_OK)
-  307   1          return IIC_SEND_FAIL;
+  304   1              if(send_data((dev_add<<1) | 0x01) != IIC_SEND_OK)
+  305   1                      return IIC_SEND_FAIL;
+  306   1              if(recv_ack() != IIC_SEND_OK)
+  307   1                      return IIC_SEND_FAIL;
   308   1      
   309   1          while(--num)
   310   1          {
   311   2              *dat = recv_data(); //读取数据
-  312   2          if(send_ack() != IIC_SEND_OK)
-  313   2          {
-  314   3            return IIC_SEND_FAIL;
-  315   3          }
+  312   2                      if(send_ack() != IIC_SEND_OK)
+  313   2                      {
+  314   3                              return IIC_SEND_FAIL;
+  315   3                      }
   316   2              dat++;
   317   2          }
-  318   1        
-  319   1        *dat = recv_data();
-  320   1        
-  321   1        if(send_ack() != IIC_SEND_OK)
-  322   1          return IIC_SEND_FAIL;
-  323   1        
-  324   1        if(stop() != IIC_SEND_OK)
-  325   1          return IIC_SEND_FAIL;
-  326   1        
-  327   1        return IIC_SEND_OK;
+  318   1              
+  319   1              *dat = recv_data();
+  320   1              
+  321   1              if(send_ack() != IIC_SEND_OK)
+  322   1                      return IIC_SEND_FAIL;
+  323   1              
+  324   1              if(stop() != IIC_SEND_OK)
+  325   1                      return IIC_SEND_FAIL;
+  326   1              
+  327   1              return IIC_SEND_OK;
   328   1      }
   329          
   330          
   331          //-------------------------------------------------------------------------------------------------------
              -------------
   332          //  @brief      硬件IIC引脚切换函数
-  333          //  @param      iic_n         I2C通道号及引脚
+  333          //  @param      iic_n           I2C通道号及引脚
   334          //  @param      scl_pin         选择SCL引脚
   335          //  @param      sda_pin         选择SDA引脚
-  336          //  Sample usage:       
+  336          //  Sample usage:                               
   337          //-------------------------------------------------------------------------------------------------------
              -------------
   338          void iic_change_pin(IICN_enum iic_n,IIC_PIN_enum scl_pin,IIC_PIN_enum sda_pin)
   339          {
-  340   1          P_SW2 |= 1<<7;  //将EAXFR寄存器置1，这样才能使用特殊功能寄存器为扩展SFR，访问
+  340   1          P_SW2 |= 1<<7;      //将EAXFR寄存器置1，这样才能使用特殊功能寄存器为扩展SFR，访问
              -逻辑地址位于 XDATA 区域
-  341   1        
-  342   1        P_SW2 &= ~(0x03<<4);  //清除引脚切换位
-  343   1          switch(iic_n) 
+  341   1              
+  342   1              P_SW2 &= ~(0x03<<4);    //清除引脚切换位
+  343   1          switch(iic_n)       
   344   1          {
   345   2          case IIC_1:
-  346   2              P_SW2 |= (0x00<<4); //SCL:P1.5  SDA:P1.4
+  346   2              P_SW2 |= (0x00<<4);     //SCL:P1.5      SDA:P1.4
   347   2              break;
   348   2          case IIC_2:
-  349   2              P_SW2 |= (0x01<<4); //SCL:P2.5  SDA:P2.4
+  349   2              P_SW2 |= (0x01<<4);     //SCL:P2.5      SDA:P2.4
   350   2              break;
   351   2          case IIC_3:
-C251 COMPILER V5.60.0,  zf_iic                                                             10/07/25  21:09:17  PAGE 7   
+C251 COMPILER V5.60.0,  zf_iic                                                             10/07/25  23:18:30  PAGE 7   
 
   352   2              P_SW2 |= (0x02<<4); //SCL:P7.7  SDA:P7.6 STC8H 48脚核心板没有该组引脚。
   353   2              break;
   354   2          case IIC_4:
-  355   2              P_SW2 |= (0x03<<4); //SCL:P3.2  SDA:P3.3
+  355   2              P_SW2 |= (0x03<<4);     //SCL:P3.2      SDA:P3.3
   356   2              break;
   357   2          }
-  358   1        
-  359   1        P_SW2 &= ~(1<<7);
+  358   1              
+  359   1              P_SW2 &= ~(1<<7);
   360   1      
   361   1      }
 
