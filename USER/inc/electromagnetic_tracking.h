@@ -4,13 +4,14 @@
 #include "headfile.h"
 
 // 电感通道定义
-#define ADC_HL  ADC_P06  // 左侧横向电感
-#define ADC_VL  ADC_P05  // 左侧纵向电感
-#define ADC_HML ADC_P01  // 左中横向电感
-#define ADC_HC  ADC_P11  // 中间横向电感
-#define ADC_HMR ADC_P13  // 右中横向电感
-#define ADC_VR  ADC_P14  // 右侧纵向电感
-#define ADC_HR  ADC_P00  // 右侧横向电感
+// #define ADC_HL  ADC_P06  // 左侧横向电感
+// #define ADC_VL  ADC_P05  // 左侧纵向电感
+// #define ADC_HML ADC_P01  // 左中横向电感
+// #define ADC_HC  ADC_P11  // 中间横向电感
+// #define ADC_HMR ADC_P13  // 右中横向电感
+// #define ADC_VR  ADC_P14  // 右侧纵向电感
+// #define ADC_HR  ADC_P00  // 右侧横向电感
+
 
 // 电感数组定义
 #define SENSOR_COUNT 7   // 电感个数
@@ -56,7 +57,7 @@ int16 calculate_position_improved(void);      // 改进版计算位置
 uint8 check_electromagnetic_protection(void);  // 电磁保护逻辑函数
 
 // 外部变量声明
-extern uint16 adc_fliter_data[SENSOR_COUNT][HISTORY_COUNT]; // 滤波后的值
+extern u16 adc_fliter_data[SENSOR_COUNT][HISTORY_COUNT]; // 滤波后的值
 extern float result[SENSOR_COUNT];                // 电感结果数据
 extern float normalized_data[SENSOR_COUNT];       // 归一化后的电感数据，数组形式
 extern uint16 min_value[SENSOR_COUNT];            // 每个电感的最小值

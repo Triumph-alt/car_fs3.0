@@ -87,10 +87,10 @@ EMAP EQU 1 ;  1 = Map internal ROM only to region FF:xxxx
 ;  at processor reset can be defined:
 ;
 ;		; the absolute start-address of EDATA memory is always 0
-EDATALEN	EQU	800H	; the length of EDATA memory in bytes.
+EDATALEN	EQU	420H	; the length of EDATA memory in bytes.
 ;
 XDATASTART	EQU	10000H	; the absolute start-address of XDATA memory
-XDATALEN	EQU	8000H	; the length of XDATA memory in bytes.
+XDATALEN	EQU	0	; the length of XDATA memory in bytes.
 ;
 HDATASTART	EQU	10000H	; the absolute start-address of HDATA memory
 HDATALEN	EQU	0	; the length of HDATA memory in bytes.
@@ -106,7 +106,7 @@ HDATALEN	EQU	0	; the length of HDATA memory in bytes.
 ;  251 application program.  It should be noted that the stack space must
 ;  be adjusted according the actual requirements of the application.
 ;
-STACKSIZE	EQU	800H	; set to 800H Bytes.
+STACKSIZE	EQU	100H	; set to 100H Bytes.
 ;
 ;------------------------------------------------------------------------------
 ;
@@ -171,7 +171,7 @@ $ENDIF
 ?STACK		SEGMENT   EDATA
 
 		RSEG	?STACK
-		DS	STACKSIZE	; Stack Space 700H Bytes
+		DS	STACKSIZE	; Stack Space 100H Bytes
 
 		EXTRN PRSeg (MAIN{Prefix})
 		PUBLIC	?C_STARTUP{Prefix}

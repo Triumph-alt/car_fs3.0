@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  main                                                               09/07/25  20:29:27  PAGE 1   
+C251 COMPILER V5.60.0,  main                                                               10/07/25  15:35:29  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE main
@@ -9,66 +9,105 @@ COMPILER INVOKED BY: D:\Software\Keil5\c251v560\C251\BIN\C251.EXE ..\USER\src\ma
 
 stmt  level    source
 
-    1          #include "headfile.h"
-    2          #include "at24c16.h"
-    3          
-    4          
-    5          /*
-    6           * 系统频率，可查看board.h中的 FOSC 宏定义修改。
-    7           * board.h文件中FOSC的值设置为0,则程序自动设置系统频率为33.1776MHZ
-    8           * 在board_init中,已经将P54引脚设置为复位
-    9           * 如果需要使用P54引脚,可以在board.c文件中的board_init()函数中删除SET_P54_RESRT即可
-   10           */
-   11          void main(void)
-   12          {
-   13   1        int state = 5;
-   14   1        uint16 sum_value = 0;    
-   15   1        uint16 value[7] = {0};   //调试用数组
-   16   1        uint8_t g_TxData[200] = {0};
-   17   1        
-   18   1        board_init();      // 初始化寄存器,勿删除此句代码
-   19   1        
-   20   1        electromagnetic_init();  //初始化电磁传感器
-   21   1        
-   22   1        iic_init(IIC_2, IIC2_SCL_P25, IIC2_SDA_P24, 0);
-   23   1        uart_init(UART_4, UART4_RX_P02, UART4_TX_P03, 115200, TIM_4);
-   24   1        
-   25   1        motor_init();
-   26   1        encoder_init();
-   27   1        
-   28   1        imu963ra_init();
-   29   1        oled_init();
-   30   1      
-   31   1        pid_init(&SpeedPID, 1.0f, 2.0f, 3.0f, 5000.0f, 6000.0f); //初始化速度PID
-   32   1        pid_init(&TurnPID, 1.0f, 2.0f, 3.0f, 0.0f, 6000.0f);  //初始化位置PID
-   33   1        
-   34   1        lowpass_init(&leftSpeedFilt, 0.556);   //初始化低通滤波器
-   35   1        lowpass_init(&rightSpeedFilt, 0.556);
-   36   1        
-   37   1        kalman_init(&imu693_kf, 0.98, 0.02, imu693kf_Q, imu693kf_R, 0.0);
-   38   1        
-   39   1        pit_timer_ms(TIM_1, 10);
-   40   1        pit_timer_ms(TIM_2, 5);
-   41   1        
-   42   1          /* 从EEPROM加载max_value及PID参数，覆盖默认值 */
-   43   1          load_parameters_from_eeprom();
-   44   1      //  save_parameters_to_eeprom();
-   45   1      
-   46   1      
-   47   1          while(1)
-   48   1        {
-   49   2      //     key_task();         // 处理按键任务
-   50   2      //     display_task();     // OLED显示任务
-   51   2          
-   52   2          
-   53   2      //    uart4_recv_task();  // 串口4接收任务
-   54   2          
-   55   2      //    sprintf(g_TxData, "%f,%f\n",Gyro_Z,filtered_GyroZ);
-   56   2      //    uart_putstr(UART_4, g_TxData);
-   57   2          
-C251 COMPILER V5.60.0,  main                                                               09/07/25  20:29:27  PAGE 2   
+    1          /*************  头文件 **************/
+    2          #include "headfile.h"
+    3          #include "at24c16.h"
+    4          #include "STC32G_ADC.h"
+    5          #include "STC32G_DMA.h"
+    6          #include "STC32G_Switch.h"
+    7          
+    8          /*************  宏定义 **************/
+    9          #define ADC_HL  14  // 左侧横向电感-P0.6
+   10          #define ADC_VL  13  // 左侧纵向电感-P0.5
+   11          #define ADC_HML 9   // 左中横向电感-P0.1
+   12          #define ADC_HC  1   // 中间横向电感-P1.1
+   13          #define ADC_HMR 3   // 右中横向电感-P1.3
+   14          #define ADC_VR  4   // 右侧纵向电感-P1.4
+   15          #define ADC_HR  8   // 右侧横向电感-P0.0
+   16          
+   17          #define ADC_CH    7     /* 1~16, ADC转换通道数, 需同步修改转换通道 */
+   18          #define ADC_DATA  6     /* 6~n, 每个通道ADC转换数据总数, 2*转换次数+4, 需同步修改转换�
+             -�数 */
+   19          
+   20          
+   21          /*************  全局变量  **************/
+   22          u8 chn = 0;
+   23          u8 xdata DmaAdBuffer[ADC_CH][ADC_DATA];
+   24          uint8_t g_TxData[200] = {0};
+   25          
+   26          
+   27          /*************  函数声明  **************/
+   28          void PrintChAvg7(void);
+   29          void ADC_config(void);
+   30          void DMA_config(void);
+   31          void GPIO_config(void);
+   32          
+   33          
+   34          
+   35          /*************  主函数 **************/
+   36          void main(void)
+   37          {
+   38   1        /*************  本地变量声明  **************/
+   39   1        int state = 5;
+   40   1        uint16 sum_value = 0;    
+   41   1        uint16 value[7] = {0};   //调试用数组
+   42   1      
+   43   1        /*************  系统初始化 **************/
+   44   1        board_init();      // 初始化寄存器
+   45   1        GPIO_config();
+   46   1        ADC_config();
+   47   1        DMA_config();
+   48   1        
+   49   1        iic_init(IIC_2, IIC2_SCL_P25, IIC2_SDA_P24, 0);
+   50   1        uart_init(UART_4, UART4_RX_P02, UART4_TX_P03, 115200, TIM_4);
+   51   1        
+   52   1        motor_init();
+   53   1        encoder_init();
+   54   1        
+   55   1        imu963ra_init();
+   56   1        oled_init();
+C251 COMPILER V5.60.0,  main                                                               10/07/25  15:35:29  PAGE 2   
 
-   58   2      #if 0
+   57   1      
+   58   1        pid_init(&SpeedPID, 1.0f, 2.0f, 3.0f, 5000.0f, 6000.0f); //初始化速度PID
+   59   1        pid_init(&TurnPID, 1.0f, 2.0f, 3.0f, 0.0f, 6000.0f);  //初始化位置PID
+   60   1        
+   61   1        lowpass_init(&leftSpeedFilt, 0.556);   //初始化低通滤波器
+   62   1        lowpass_init(&rightSpeedFilt, 0.556);
+   63   1        
+   64   1        kalman_init(&imu693_kf, 0.98, 0.02, imu693kf_Q, imu693kf_R, 0.0);
+   65   1        
+   66   1        pit_timer_ms(TIM_1, 10);
+   67   1        pit_timer_ms(TIM_2, 5);
+   68   1        
+   69   1          /* 从EEPROM加载max_value及PID参数，覆盖默认值 */
+   70   1         load_parameters_from_eeprom();
+   71   1      //  save_parameters_to_eeprom();  //保存max_value及PID参数到EEPROM（初始化）
+   72   1      
+   73   1        /*************  主循环 **************/
+   74   1          while(1)
+   75   1        {
+   76   2      //     key_task();         // 处理按键任务
+   77   2      //     display_task();     // OLED显示任务
+   78   2          
+   79   2          
+   80   2      //    uart4_recv_task();  // 串口4接收任务
+   81   2          
+   82   2      //    sprintf(g_TxData, "%f,%f\n",Gyro_Z,filtered_GyroZ);
+   83   2      //    uart_putstr(UART_4, g_TxData);
+   84   2      
+   85   2      
+   86   2          /*************  ADC DMA采样完成 **************/
+   87   2          if(DmaADCFlag)  //判断ADC DMA采样是否完成
+   88   2          {
+   89   3            DmaADCFlag = 0; //清除完成标志
+   90   3      
+   91   3            PrintChAvg7();
+   92   3      
+   93   3            DMA_ADC_TRIG();   //重新触发启动下一次转换
+   94   3          }
+   95   2          
+   96   2      #if 0
                    // 通过串口输出七电感数据
                    sprintf(g_TxData, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",
                     (uint16)normalized_data[SENSOR_HL], 
@@ -95,58 +134,126 @@ stmt  level    source
                    
                    // 计算位置偏差
                    position = calculate_position_improved();
+C251 COMPILER V5.60.0,  main                                                               10/07/25  15:35:29  PAGE 3   
+
                    
                    //检查电磁保护
                    protection_flag = check_electromagnetic_protection();
                #endif    
-   89   2          
-   90   2          /* 调试功能 */
-   91   2      #if 1
-   92   2          //读取七电感ADC值（用于调试）
-   93   2          value[0] = adc_once(ADC_HL,  ADC_10BIT);
-   94   2          value[1] = adc_once(ADC_VL,  ADC_10BIT);
-   95   2          value[2] = adc_once(ADC_HML, ADC_10BIT);
-   96   2          value[3] = adc_once(ADC_HC,  ADC_10BIT); 
-   97   2          value[4] = adc_once(ADC_HMR, ADC_10BIT);
-   98   2          value[5] = adc_once(ADC_VR,  ADC_10BIT);
-   99   2          value[6] = adc_once(ADC_HR,  ADC_10BIT);  
-  100   2      
-  101   2          // 计算所有电感值的总和
-  102   2      //    sum_value = (uint16)normalized_data[SENSOR_HL] + (uint16)normalized_data[SENSOR_VL] + 
-  103   2      //                (uint16)normalized_data[SENSOR_HML] + (uint16)normalized_data[SENSOR_HC] + 
-  104   2      //                (uint16)normalized_data[SENSOR_HMR] + (uint16)normalized_data[SENSOR_VR] + 
-  105   2      //                (uint16)normalized_data[SENSOR_HR];
-  106   2      
-  107   2           // 通过串口输出七电感原始数据
-  108   2            sprintf(g_TxData, "%d,%d,%d,%d,%d,%d,%d\n",
-  109   2                value[0], 
-  110   2                value[1], 
-  111   2                value[2], 
-  112   2                value[3], 
-  113   2                value[4],
-  114   2                value[5],
-  115   2                value[6]);
-  116   2            uart_putstr(UART_4, g_TxData);
-  117   2      
-  118   2            delay_ms(10);
-  119   2      #endif  
-  120   2          
-  121   2          }
-  122   1      }
-  123          
-C251 COMPILER V5.60.0,  main                                                               09/07/25  20:29:27  PAGE 3   
+  127   2          
+  128   2          /* 调试功能 */
+  129   2      #if 0
+                   //读取七电感ADC值（用于调试）
+                   value[0] = adc_once(ADC_HL,  ADC_10BIT);
+                   value[1] = adc_once(ADC_VL,  ADC_10BIT);
+                   value[2] = adc_once(ADC_HML, ADC_10BIT);
+                   value[3] = adc_once(ADC_HC,  ADC_10BIT); 
+                   value[4] = adc_once(ADC_HMR, ADC_10BIT);
+                   value[5] = adc_once(ADC_VR,  ADC_10BIT);
+                   value[6] = adc_once(ADC_HR,  ADC_10BIT);  
+               
+                   // 计算所有电感值的总和
+               //    sum_value = (uint16)normalized_data[SENSOR_HL] + (uint16)normalized_data[SENSOR_VL] + 
+               //                (uint16)normalized_data[SENSOR_HML] + (uint16)normalized_data[SENSOR_HC] + 
+               //                (uint16)normalized_data[SENSOR_HMR] + (uint16)normalized_data[SENSOR_VR] + 
+               //                (uint16)normalized_data[SENSOR_HR];
+               
+                    // 通过串口输出七电感原始数据
+                     sprintf(g_TxData, "%d,%d,%d,%d,%d,%d,%d\n",
+                         value[0], 
+                         value[1], 
+                         value[2], 
+                         value[3], 
+                         value[4],
+                         value[5],
+                         value[6]);
+                     uart_putstr(UART_4, g_TxData);
+               
+                     delay_ms(10);
+               #endif  
+  158   2          
+  159   2          }
+  160   1      }
+  161          
+  162          /*************  GPIO 配置 **************/
+  163          void GPIO_config(void)
+  164          {
+  165   1        gpio_mode(P0_0, GPI_IMPEDANCE);
+  166   1        gpio_mode(P0_1, GPI_IMPEDANCE);
+  167   1        gpio_mode(P0_5, GPI_IMPEDANCE);
+  168   1        gpio_mode(P0_6, GPI_IMPEDANCE);
+  169   1        gpio_mode(P1_1, GPI_IMPEDANCE);
+  170   1        gpio_mode(P1_3, GPI_IMPEDANCE);
+  171   1        gpio_mode(P1_4, GPI_IMPEDANCE);
+  172   1      }
+  173          
+  174          
+  175          /*************  ADC 配置  **************/
+  176          void ADC_config(void)
+  177          {
+  178   1        ADC_InitTypeDef   ADC_InitStructure;    //结构定义
+  179   1      
+  180   1        ADC_InitStructure.ADC_SMPduty   = 31;   //ADC 模拟信号采样时间控制, 0~31（注意： SMPDUTY �
+             -�定不能设置小于 10）
+  181   1        ADC_InitStructure.ADC_CsSetup   = 0;    //ADC 通道选择时间控制 0(默认),1
+  182   1        ADC_InitStructure.ADC_CsHold    = 1;    //ADC 通道选择保持时间控制 0,1(默认),2,3
+  183   1        ADC_InitStructure.ADC_Speed     = ADC_SPEED_2X16T;    //设置 ADC 工作时钟频率 ADC_SPEED_2X1T~ADC_S
+             -PEED_2X16T
+  184   1        ADC_InitStructure.ADC_AdjResult = ADC_RIGHT_JUSTIFIED;  //ADC结果调整,  ADC_LEFT_JUSTIFIED,ADC_RIGHT_J
+             -USTIFIED
+  185   1        ADC_Inilize(&ADC_InitStructure);    //初始化
+C251 COMPILER V5.60.0,  main                                                               10/07/25  15:35:29  PAGE 4   
 
-  124          
+  186   1        ADC_PowerControl(ENABLE);           //ADC电源开关, ENABLE或DISABLE
+  187   1        NVIC_ADC_Init(DISABLE,Priority_0);    //中断使能, ENABLE/DISABLE; 优先级(低到高) Priority_0,Prio
+             -rity_1,Priority_2,Priority_3
+  188   1      }
+  189          
+  190          /*************  DMA 配置  **************/
+  191          void DMA_config(void)
+  192          {
+  193   1        DMA_ADC_InitTypeDef   DMA_ADC_InitStructure;    //结构定义
+  194   1      
+  195   1        DMA_ADC_InitStructure.DMA_Enable = ENABLE;      //DMA使能   ENABLE,DISABLE
+  196   1        // DMA_ADC_InitStructure.DMA_Channel = 0xffff;         //ADC通道使能寄存器, 1:使能, bit15~bit0 
+             -对应 ADC15~ADC0
+  197   1        DMA_ADC_InitStructure.DMA_Channel = 0x631A;     //ADC通道使能: P0.0, P0.1, P0.5, P0.6, P1.1, P1.3, P1.
+             -4
+  198   1        DMA_ADC_InitStructure.DMA_Buffer = (u16)DmaAdBuffer;  //ADC转换数据存储地址
+  199   1        DMA_ADC_InitStructure.DMA_Times = ADC_1_Times;  //每个通道转换次数, ADC_1_Times,ADC_2_Times,ADC_4
+             -_Times,ADC_8_Times,ADC_16_Times,ADC_32_Times,ADC_64_Times,ADC_128_Times,ADC_256_Times
+  200   1        DMA_ADC_Inilize(&DMA_ADC_InitStructure);    //初始化
+  201   1        NVIC_DMA_ADC_Init(ENABLE,Priority_0,Priority_0);    //中断使能, ENABLE/DISABLE; 优先级(低到高) P
+             -riority_0~Priority_3; 总线优先级(低到高) Priority_0~Priority_3
+  202   1        DMA_ADC_TRIG();   //触发启动转换
+  203   1      }
+  204          
+  205          void PrintChAvg7(void)  
+  206          {
+  207   1          // 一次性打印前 7 个通道的平均值 (假设 ADC_CH >= 7)
+  208   1          u16 HC = ((u16)DmaAdBuffer[0][4] << 8) | DmaAdBuffer[0][5];//1
+  209   1          u16 HMR = ((u16)DmaAdBuffer[1][4] << 8) | DmaAdBuffer[1][5];//3
+  210   1          u16 VR = ((u16)DmaAdBuffer[2][4] << 8) | DmaAdBuffer[2][5];//4
+  211   1          u16 HR = ((u16)DmaAdBuffer[3][4] << 8) | DmaAdBuffer[3][5];//8
+  212   1          u16 HML = ((u16)DmaAdBuffer[4][4] << 8) | DmaAdBuffer[4][5];//9
+  213   1          u16 VL = ((u16)DmaAdBuffer[5][4] << 8) | DmaAdBuffer[5][5];//13
+  214   1          u16 HL = ((u16)DmaAdBuffer[6][4] << 8) | DmaAdBuffer[6][5];//14
+  215   1      
+  216   1          sprintf(g_TxData,"%u,%u,%u,%u,%u,%u,%u\r\n",
+  217   1                 HL, VL, HML, HC, HMR, VR, HR);
+  218   1          uart_putstr(UART_4, g_TxData);
+  219   1          delay_ms(20);
+  220   1      }
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =       760     ------
+  code size            =      1019     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
   pdata size           =    ------     ------
-  xdata size           =       218     ------
+  xdata size           =       286     ------
   xdata-const size     =    ------     ------
   edata size           =    ------     ------
   bit size             =    ------     ------
@@ -156,7 +263,7 @@ Module Information          Static   Overlayable
   far data size        =    ------     ------
   huge data size       =    ------     ------
   const size           =    ------     ------
-  hconst size          =       238     ------
+  hconst size          =       250     ------
 End of Module Information.
 
 

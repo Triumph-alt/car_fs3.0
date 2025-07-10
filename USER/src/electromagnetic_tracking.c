@@ -2,20 +2,6 @@
 #include "headfile.h"
 #include "common.h"
 
-// 滤波后数据 - 使用二维数组形式
-// 第一维表示电感编号：0-HL, 1-VL, 2-HML, 3-HC, 4-HMR, 5-VR, 6-HR
-// 第二维保留，可用于存储历史数据
-#define SENSOR_COUNT 7   //电感个数
-#define HISTORY_COUNT 5  //滤波次数
-
-// 赛道类型索引，与track_type对应
-#define WEIGHT_STRAIGHT    0  // 直道
-#define WEIGHT_RIGHT_ANGLE 1  // 直角弯道
-#define WEIGHT_CROSS       2  // 十字圆环
-#define WEIGHT_ROUNDABOUT  3  // 环岛
-#define WEIGHT_SPEED       4  //深度加速 
-
-// 定义电感权重结构体	
 
 // 定义全局权重配置，只保留四种基本元素
 TrackWeights track_weights[4] = {
@@ -33,7 +19,7 @@ TrackWeights track_weights[4] = {
     {0.35f, 0.38f, 0.10f, 0.25f, 1.00f, 50, "环岛"}
 };
 
-uint16 adc_fliter_data[SENSOR_COUNT][HISTORY_COUNT] = {0}; //滤波后的值
+u16 adc_fliter_data[SENSOR_COUNT][HISTORY_COUNT] = {0}; //滤波后的值
 float result[SENSOR_COUNT] = {0};		//电存储每个电感滤波后的最终结果值（尚未归一化），是连接滤波处理和归一化处理的中间变量
 uint16 sum[SENSOR_COUNT][HISTORY_COUNT] = {0};      	//累加的和
 
@@ -82,13 +68,13 @@ void electromagnetic_init(void)
 {
    uint8 i = 0, j = 0;
 
-   adc_init(ADC_HL, 0);   // 左侧横向电感
-   adc_init(ADC_VL, 0);   // 左侧纵向电感
-   adc_init(ADC_HML, 0);  // 左中横向电感
-   adc_init(ADC_HC, 0);   // 中间横向电感
-   adc_init(ADC_HMR, 0);  // 右中横向电感
-   adc_init(ADC_VR, 0);   // 右侧纵向电感
-   adc_init(ADC_HR, 0);   // 右侧横向电感
+//    adc_init(ADC_HL, 0);   // 左侧横向电感
+//    adc_init(ADC_VL, 0);   // 左侧纵向电感
+//    adc_init(ADC_HML, 0);  // 左中横向电感
+//    adc_init(ADC_HC, 0);   // 中间横向电感
+//    adc_init(ADC_HMR, 0);  // 右中横向电感
+//    adc_init(ADC_VR, 0);   // 右侧纵向电感
+//    adc_init(ADC_HR, 0);   // 右侧横向电感
    
    // 初始化二维数组
    for(i = 0; i < SENSOR_COUNT; i++)
@@ -109,27 +95,27 @@ void electromagnetic_init(void)
 // @author  ZP
 // Sample usage: get_adc(1)
 //-----------------------------------------------------------------------------
-uint16 get_adc(uint16 i)
-{
-	switch(i){
-		case 0:
-			return adc_once(ADC_HL, ADC_10BIT);  //ADC_10BIT是电磁寻迹最佳分辨率
-		case 1:
-			return adc_once(ADC_VL, ADC_10BIT);
-		case 2:
-			return adc_once(ADC_HML, ADC_10BIT);
-		case 3:
-			return adc_once(ADC_HC, ADC_10BIT); 
-		case 4:
-			return adc_once(ADC_HMR, ADC_10BIT);
-		case 5:
-			return adc_once(ADC_VR, ADC_10BIT);
-		case 6:
-			return adc_once(ADC_HR, ADC_10BIT);
-		default:
-			return 0;
-	}
-}
+// uint16 get_adc(uint16 i)
+// {
+// 	switch(i){
+// 		case 0:
+// 			return adc_once(ADC_HL, ADC_10BIT);  //ADC_10BIT是电磁寻迹最佳分辨率
+// 		case 1:
+// 			return adc_once(ADC_VL, ADC_10BIT);
+// 		case 2:
+// 			return adc_once(ADC_HML, ADC_10BIT);
+// 		case 3:
+// 			return adc_once(ADC_HC, ADC_10BIT); 
+// 		case 4:
+// 			return adc_once(ADC_HMR, ADC_10BIT);
+// 		case 5:
+// 			return adc_once(ADC_VR, ADC_10BIT);
+// 		case 6:
+// 			return adc_once(ADC_HR, ADC_10BIT);
+// 		default:
+// 			return 0;
+// 	}
+// }
 
 //-----------------------------------------------------------------------------
 // @brief  	递推均值滤波
@@ -160,7 +146,7 @@ void average_filter(void)
         {
             for(b = 0; b < i_num; b++)
             {
-                sum[b][0] += get_adc(b);  // 采集一次ADC并累加
+                // sum[b][0] += get_adc(b);  // 采集一次ADC并累加
             }
             delay_us(5); // 添加短暂延时提高采样稳定性
         }
@@ -180,7 +166,7 @@ void average_filter(void)
         {
             // 递推均值滤波核心算法：减去平均值，加上新值，重新计算平均值
             sum[a][0] -= (sum[a][0] / times);         // 每次去除平均值的贡献
-            sum[a][0] += get_adc(a);              // 加上新值
+            // sum[a][0] += get_adc(a);              // 加上新值
             adc_fliter_data[a][0] = (sum[a][0] / times);  // 求新的平均值
             result[a] = adc_fliter_data[a][0];      // 保存结果
         }

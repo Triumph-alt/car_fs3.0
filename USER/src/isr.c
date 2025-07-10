@@ -17,6 +17,10 @@
 // * @date       		2020-4-14
 // ********************************************************************************************************************/
 #include "headfile.h"
+#include "zf_nvic.h"
+// #include "zf_exti.h"
+#include "zf_uart.h"
+#include "zf_tim.h"
 
 int g_encoder_average = 0;                       //左右编码器的平均值
 float Gyro_Z = 0, filtered_GyroZ = 0;            // 陀螺仪角速度的原始值和卡尔曼滤波之后的值
@@ -127,21 +131,21 @@ void INT1_Isr() interrupt 2
 }
 
 
-void INT2_Isr() interrupt 10
-{
-	INT2_CLEAR_FLAG;  //清除中断标志
-}
+// void INT2_Isr() interrupt 10
+// {
+// 	INT2_CLEAR_FLAG;  //清除中断标志
+// }
 
 
-void INT3_Isr() interrupt 11
-{
-	INT3_CLEAR_FLAG;  //清除中断标志
-}
+// void INT3_Isr() interrupt 11
+// {
+// 	INT3_CLEAR_FLAG;  //清除中断标志
+// }
 
-void INT4_Isr() interrupt 16
-{
-	INT4_CLEAR_FLAG;  //清除中断标志
-}
+// void INT4_Isr() interrupt 16
+// {
+// 	INT4_CLEAR_FLAG;  //清除中断标志
+// }
 
 void TM0_Isr() interrupt 1
 {

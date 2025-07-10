@@ -1,4 +1,4 @@
-A251 MACRO ASSEMBLER  START251                                                              06/07/25 17:17:55 PAGE     1
+A251 MACRO ASSEMBLER  START251                                                              10/07/25 11:57:56 PAGE     1
 
 
 MACRO ASSEMBLER A251 V4.69.13.0
@@ -65,7 +65,7 @@ LOC    OBJ             LINE     SOURCE
                          55     ; INTR       Val  Description
                          56     ; ----       ---  -----------
  0001                    57     INTR EQU 1  ; 1 = Interrupt pushes 4 bytes onto the stack (PC & PSW1)
-A251 MACRO ASSEMBLER  START251                                                              06/07/25 17:17:55 PAGE     2
+A251 MACRO ASSEMBLER  START251                                                              10/07/25 11:57:56 PAGE     2
 
                          58     ;           ; 0 = Interrupt pushes 2 bytes onto the stack (PCL & PCH only)
                          59     ;
@@ -99,10 +99,10 @@ LOC    OBJ             LINE     SOURCE
                          87     ;  at processor reset can be defined:
                          88     ;
                          89     ;               ; the absolute start-address of EDATA memory is always 0
- 0800                    90     EDATALEN        EQU     800H    ; the length of EDATA memory in bytes.
+ 0420                    90     EDATALEN        EQU     420H    ; the length of EDATA memory in bytes.
                          91     ;
  00010000                92     XDATASTART      EQU     10000H  ; the absolute start-address of XDATA memory
- 8000                    93     XDATALEN        EQU     8000H   ; the length of XDATA memory in bytes.
+ 0000                    93     XDATALEN        EQU     0       ; the length of XDATA memory in bytes.
                          94     ;
  00010000                95     HDATASTART      EQU     10000H  ; the absolute start-address of HDATA memory
  0000                    96     HDATALEN        EQU     0       ; the length of HDATA memory in bytes.
@@ -118,7 +118,7 @@ LOC    OBJ             LINE     SOURCE
                         106     ;  251 application program.  It should be noted that the stack space must
                         107     ;  be adjusted according the actual requirements of the application.
                         108     ;
- 0800                   109     STACKSIZE       EQU     800H    ; set to 800H Bytes.
+ 0100                   109     STACKSIZE       EQU     100H    ; set to 100H Bytes.
                         110     ;
                         111     ;------------------------------------------------------------------------------
                         112     ;
@@ -133,7 +133,7 @@ LOC    OBJ             LINE     SOURCE
                         121     ;  The following EQU statements define the stack pointer for reentrant
                         122     ;  functions and initialized it:
                         123     ;
-A251 MACRO ASSEMBLER  START251                                                              06/07/25 17:17:55 PAGE     3
+A251 MACRO ASSEMBLER  START251                                                              10/07/25 11:57:56 PAGE     3
 
                         124     ;  Stack Space for reentrant functions in the SMALL model.
  0000                   125     IBPSTACK        EQU     0       ; set to 1 if small reentrant is used.
@@ -176,7 +176,7 @@ LOC    OBJ             LINE     SOURCE
 ------                  302     ?C_C51STARTUP?3 SEGMENT   CODE
 ------                  303     ?STACK          SEGMENT   EDATA
 ------                  304                     RSEG    ?STACK
-000000                  305                     DS      STACKSIZE       ; Stack Space 700H Bytes
+000000                  305                     DS      STACKSIZE       ; Stack Space 100H Bytes
                         306                     EXTRN CODE (MAIN)
                         307                     PUBLIC  ?C_STARTUP
                         308                     PUBLIC  ?C?STARTUP
@@ -188,23 +188,23 @@ LOC    OBJ             LINE     SOURCE
 000000                  314     STARTUP1:
 000000 758400     E     315                     MOV     DPXL,#?C?XDATASEG
                         316     IF EDATALEN <> 0
-000003 7E4407FF         317                     MOV     WR8,#EDATALEN - 1
+000003 7E44041F         317                     MOV     WR8,#EDATALEN - 1
 000007 E4               318                     CLR     A
 000008 7A49B0           319     EDATALOOP:      MOV     @WR8,R11
 00000B 1B44             320                     DEC     WR8,#1
 00000D 7800       F     321                     JNE     EDATALOOP
                         322     ENDIF
                         323     IF XDATALEN <> 0
-00000F 900000           324                     MOV     DPTR,#WORD0 XDATASTART
-000012 7E348000         325                     MOV     WR6,#XDATALEN
-000016 E4               326                     CLR     A
-000017 F0               327     XDATALOOP:      MOVX    @DPTR,A
-000018 A3               328                     INC     DPTR
-000019 1B34             329                     DEC     WR6,#1
-A251 MACRO ASSEMBLER  START251                                                              06/07/25 17:17:55 PAGE     4
+                                                MOV     DPTR,#WORD0 XDATASTART
+                                                MOV     WR6,#XDATALEN
+                                                CLR     A
+                                XDATALOOP:      MOVX    @DPTR,A
+                                                INC     DPTR
+                                                DEC     WR6,#1
+A251 MACRO ASSEMBLER  START251                                                              10/07/25 11:57:56 PAGE     4
 
-00001B 7800       F     330                     JNE     XDATALOOP
-                        331     ENDIF
+                                                JNE     XDATALOOP
+                                ENDIF
                         332     IF HDATALEN <> 0
                                                 MOV     DR16,#WORD0 HDATALEN
                                 IF (WORD2 HDATALEN) <> 0
@@ -227,11 +227,11 @@ LOC    OBJ             LINE     SOURCE
                                                 MOV     ?C_XBP,#HIGH XBPSTACKTOP
                                                 MOV     ?C_XBP+1,#LOW XBPSTACKTOP
                                 ENDIF
-00001D 7EF80000   F     354                     MOV     DR60,#WORD0 (?STACK-1)
+00000F 7EF80000   F     354                     MOV     DR60,#WORD0 (?STACK-1)
 ------                  355                     RSEG    ?C_C51STARTUP?3
 000000 020000     E     356                     JMP     NEAR MAIN
                         357                     END
-A251 MACRO ASSEMBLER  START251                                                              06/07/25 17:17:55 PAGE     5
+A251 MACRO ASSEMBLER  START251                                                              10/07/25 11:57:56 PAGE     5
 
 SYMBOL TABLE LISTING
 ------ ----- -------
@@ -241,12 +241,12 @@ N A M E          T Y P E  V A L U E     ATTRIBUTES
 
 ?C?STARTUP . . . .  C  ADDR  0000H     R   SEG=?CO?START251?4
 ?C?XDATASEG. . . .  N  NUMB  -------       EXT
-?C_C51STARTUP. . .  C  SEG   000021H       REL=UNIT, ALN=BYTE
+?C_C51STARTUP. . .  C  SEG   000013H       REL=UNIT, ALN=BYTE
 ?C_C51STARTUP?3. .  C  SEG   000003H       REL=UNIT, ALN=BYTE
 ?C_START . . . . .  -- ----  -------       
 ?C_STARTUP . . . .  C  ADDR  0000H     R   SEG=?CO?START251?4
-?STACK . . . . . .  ED SEG   000800H       REL=UNIT, ALN=BYTE
-EDATALEN . . . . .  N  NUMB  0800H     A   
+?STACK . . . . . .  ED SEG   000100H       REL=UNIT, ALN=BYTE
+EDATALEN . . . . .  N  NUMB  0420H     A   
 EDATALOOP. . . . .  C  ADDR  0008H     R   SEG=?C_C51STARTUP
 EDF. . . . . . . .  N  NUMB  0001H     A   
 EMAP . . . . . . .  N  NUMB  0001H     A   
@@ -262,15 +262,14 @@ PREFIX . . . . . .  -- ----  -------
 PRSEG. . . . . . .  -- ----  -------       
 RDRG . . . . . . .  N  NUMB  0003H     A   
 SRCM . . . . . . .  N  NUMB  0001H     A   
-STACKSIZE. . . . .  N  NUMB  0800H     A   
+STACKSIZE. . . . .  N  NUMB  0100H     A   
 STARTUP1 . . . . .  C  ADDR  0000H     R   SEG=?C_C51STARTUP
 WSA. . . . . . . .  N  NUMB  0003H     A   
 WSB. . . . . . . .  N  NUMB  0003H     A   
 XALE . . . . . . .  N  NUMB  0001H     A   
 XBPSTACK . . . . .  N  NUMB  0000H     A   
 XBPSTACKTOP. . . .  N  NUMB  00010000H A   
-XDATALEN . . . . .  N  NUMB  8000H     A   
-XDATALOOP. . . . .  C  ADDR  0017H     R   SEG=?C_C51STARTUP
+XDATALEN . . . . .  N  NUMB  0000H     A   
 XDATASTART . . . .  N  NUMB  00010000H A   
 
 

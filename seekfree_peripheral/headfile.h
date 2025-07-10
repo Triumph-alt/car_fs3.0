@@ -25,16 +25,22 @@
 #include "transfer.h"
 #include "uart.h"
 
+//------STC32G 头文件
+#include "STC32G_ADC.h"
+#include "STC32G_DMA.h"
+#include "STC32G_Switch.h"
+#include "STC32G_NVIC.h"
+
 //------逐飞科技单片机外设驱动头文件
 #include "zf_uart.h"
 #include "zf_gpio.h"
 #include "zf_iic.h"
-#include "zf_adc.h"
+// #include "zf_adc.h"
 #include "zf_spi.h"
 #include "zf_tim.h"
 #include "zf_pwm.h"
 #include "zf_nvic.h"
-#include "zf_exti.h"
+// #include "zf_exti.h"
 #include "zf_delay.h"
 #include "zf_mdu16.h"
 #include "zf_function.h"

@@ -2,7 +2,7 @@
 #define     __STC32G_H__
 
 #include "stdio.h"
-extern void _m(void);//ÐÞÕý±àÒëÆ÷µÄLCALL 0x0000Òì³£
+extern void _m(void);//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½LCALL 0x0000ï¿½ì³£
 #define main(x) main(x){_m();while(P0|!P0);sprintf(0, "0");}; void _m(x)
 
 /////////////////////////////////////////////////
@@ -305,6 +305,9 @@ sbit        T3CT        =           T4T3M^2;
 sbit        T3x12       =           T4T3M^1;
 sbit        T3CLKO      =           T4T3M^0;
 sfr         ADCCFG      =           0xde;
+
+sbit        RESFMT      =           ADCCFG^5; /*---------æ‰‹åŠ¨æ·»åŠ ---------*/
+
 sfr         IP3         =           0xdf;
 sbit        PI2S        =           IP3^3;
 sbit        PRTC        =           IP3^2;
@@ -405,10 +408,10 @@ sfr         RSTCFG      =           0xff;
 sbit        ENLVR       =           RSTCFG^6;
 sbit        P54RST      =           RSTCFG^4;
 
-//ÈçÏÂÌØÊâ¹¦ÄÜ¼Ä´æÆ÷Î»ÓÚÀ©Õ¹RAMÇøÓò
-//·ÃÎÊÕâÐ©¼Ä´æÆ÷,ÐèÏÈ½«EAXFRÉèÖÃÎª1,²Å¿ÉÕý³£¶ÁÐ´
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½â¹¦ï¿½Ü¼Ä´ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½Õ¹RAMï¿½ï¿½ï¿½ï¿½
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð©ï¿½Ä´ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½È½ï¿½EAXFRï¿½ï¿½ï¿½ï¿½Îª1,ï¿½Å¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´
 //    EAXFR = 1;
-//»òÕß
+//ï¿½ï¿½ï¿½ï¿½
 //    P_SW2 |= 0x80;
 
 /////////////////////////////////////////////////
@@ -774,14 +777,14 @@ typedef struct TAG_PWM_STRUCT
 #define     HSSPI_CFG2              (*(unsigned char volatile far *)0x7efbf9)
 #define     HSSPI_STA               (*(unsigned char volatile far *)0x7efbfa)
 
-//Ê¹ÓÃÏÂÃæµÄºê,ÐèÏÈ½«EAXFRÉèÖÃÎª1
-//Ê¹ÓÃ·½·¨:
+//Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äºï¿½,ï¿½ï¿½ï¿½È½ï¿½EAXFRï¿½ï¿½ï¿½ï¿½Îª1
+//Ê¹ï¿½Ã·ï¿½ï¿½ï¿½:
 //      char val;
 //
-//      EAXFR = 1;                      //Ê¹ÄÜ·ÃÎÊXFR
-//      READ_HSPWMA(PWMA_CR1, val);     //Òì²½¶ÁPWMA×é¼Ä´æÆ÷
+//      EAXFR = 1;                      //Ê¹ï¿½Ü·ï¿½ï¿½ï¿½XFR
+//      READ_HSPWMA(PWMA_CR1, val);     //ï¿½ì²½ï¿½ï¿½PWMAï¿½ï¿½Ä´ï¿½ï¿½ï¿½
 //      val |= 0x01;
-//      WRITE_HSPWMA(PWMA_CR1, val);    //Òì²½Ð´PWMA×é¼Ä´æÆ÷
+//      WRITE_HSPWMA(PWMA_CR1, val);    //ï¿½ì²½Ð´PWMAï¿½ï¿½Ä´ï¿½ï¿½ï¿½
 
 #define     READ_HSPWMA(reg, dat)           \
             {                               \
@@ -971,13 +974,13 @@ typedef struct TAG_PWM_STRUCT
 //#define   CANAR                   (*(unsigned char volatile far *)0x7efebb)
 //#define   CANDR                   (*(unsigned char volatile far *)0x7efebc)
 
-//Ê¹ÓÃÏÂÃæµÄºê,ÐèÏÈ½«EAXFRÉèÖÃÎª1
-//Ê¹ÓÃ·½·¨:
+//Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äºï¿½,ï¿½ï¿½ï¿½È½ï¿½EAXFRï¿½ï¿½ï¿½ï¿½Îª1
+//Ê¹ï¿½Ã·ï¿½ï¿½ï¿½:
 //      char dat;
 //
-//      EAXFR = 1;                  //Ê¹ÄÜ·ÃÎÊXFR
-//      dat = READ_CAN(RX_BUF0);    //¶ÁCAN¼Ä´æÆ÷
-//      WRITE_CAN(TX_BUF0, 0x55);   //Ð´CAN¼Ä´æÆ÷
+//      EAXFR = 1;                  //Ê¹ï¿½Ü·ï¿½ï¿½ï¿½XFR
+//      dat = READ_CAN(RX_BUF0);    //ï¿½ï¿½CANï¿½Ä´ï¿½ï¿½ï¿½
+//      WRITE_CAN(TX_BUF0, 0x55);   //Ð´CANï¿½Ä´ï¿½ï¿½ï¿½
 
 #define     READ_CAN(reg)           (CANAR = (reg), CANDR)
 #define     WRITE_CAN(reg, dat)     (CANAR = (reg), CANDR = (dat))
@@ -1021,11 +1024,11 @@ typedef struct TAG_PWM_STRUCT
 //sfr       LINAR       =           0xfa;
 //sfr       LINDR       =           0xfb;
 
-//Ê¹ÓÃ·½·¨:
+//Ê¹ï¿½Ã·ï¿½ï¿½ï¿½:
 //      char dat;
 //
-//      dat = READ_LIN(LBUF);       //¶ÁCAN¼Ä´æÆ÷
-//      WRITE_LIN(LBUF, 0x55);      //Ð´CAN¼Ä´æÆ÷
+//      dat = READ_LIN(LBUF);       //ï¿½ï¿½CANï¿½Ä´ï¿½ï¿½ï¿½
+//      WRITE_LIN(LBUF, 0x55);      //Ð´CANï¿½Ä´ï¿½ï¿½ï¿½
 
 #define     READ_LIN(reg)           (LINAR = (reg), LINDR)
 #define     WRITE_LIN(reg, dat)     (LINAR = (reg), LINDR = (dat))
@@ -1052,11 +1055,11 @@ typedef struct TAG_PWM_STRUCT
 //sfr       USBCON      =           0xf4;
 //sfr       USBADR      =           0xfc;
 
-//Ê¹ÓÃ·½·¨:
+//Ê¹ï¿½Ã·ï¿½ï¿½ï¿½:
 //      char dat;
 //
-//      READ_USB(CSR0, dat);        //¶ÁUSB¼Ä´æÆ÷
-//      WRITE_USB(FADDR, 0x00);     //Ð´USB¼Ä´æÆ÷
+//      READ_USB(CSR0, dat);        //ï¿½ï¿½USBï¿½Ä´ï¿½ï¿½ï¿½
+//      WRITE_USB(FADDR, 0x00);     //Ð´USBï¿½Ä´ï¿½ï¿½ï¿½
 
 #define     READ_USB(reg, dat)          \
             {                           \
@@ -1143,6 +1146,9 @@ typedef struct TAG_PWM_STRUCT
 #define     P7INT_VECTOR            44      //0163H
 #define     M2MDMA_VECTOR           47      //017BH
 #define     ADCDMA_VECTOR           48      //0183H
+
+#define     DMA_ADC_VECTOR          48      //0183H  /*---------æ‰‹åŠ¨æ·»åŠ è¡¥å……---------*/
+
 #define     SPIDMA_VECTOR           49      //018BH
 #define     U1TXDMA_VECTOR          50      //0193H
 #define     U1RXDMA_VECTOR          51      //019BH
@@ -1177,6 +1183,52 @@ typedef struct TAG_PWM_STRUCT
 #define VRT10M_ADDR CHIPID22 //VRTRIM_10M
 #define VRT27M_ADDR CHIPID23 //VRTRIM_27M
 #define VRT44M_ADDR CHIPID24 //VRTRIM_44M
+
+
+
+/*-----------------æ‰‹åŠ¨æ·»åŠ è¡¥å……---------------------*/
+#define NOP1()  _nop_()
+#define NOP2()  NOP1(),NOP1()
+#define NOP3()  NOP2(),NOP1()
+#define NOP4()  NOP3(),NOP1()
+#define NOP5()  NOP4(),NOP1()
+#define NOP6()  NOP5(),NOP1()
+#define NOP7()  NOP6(),NOP1()
+#define NOP8()  NOP7(),NOP1()
+#define NOP9()  NOP8(),NOP1()
+#define NOP10() NOP9(),NOP1()
+#define NOP11() NOP10(),NOP1()
+#define NOP12() NOP11(),NOP1()
+#define NOP13() NOP12(),NOP1()
+#define NOP14() NOP13(),NOP1()
+#define NOP15() NOP14(),NOP1()
+#define NOP16() NOP15(),NOP1()
+#define NOP17() NOP16(),NOP1()
+#define NOP18() NOP17(),NOP1()
+#define NOP19() NOP18(),NOP1()
+#define NOP20() NOP19(),NOP1()
+#define NOP21() NOP20(),NOP1()
+#define NOP22() NOP21(),NOP1()
+#define NOP23() NOP22(),NOP1()
+#define NOP24() NOP23(),NOP1()
+#define NOP25() NOP24(),NOP1()
+#define NOP26() NOP25(),NOP1()
+#define NOP27() NOP26(),NOP1()
+#define NOP28() NOP27(),NOP1()
+#define NOP29() NOP28(),NOP1()
+#define NOP30() NOP29(),NOP1()
+#define NOP31() NOP30(),NOP1()
+#define NOP32() NOP31(),NOP1()
+#define NOP33() NOP32(),NOP1()
+#define NOP34() NOP33(),NOP1()
+#define NOP35() NOP34(),NOP1()
+#define NOP36() NOP35(),NOP1()
+#define NOP37() NOP36(),NOP1()
+#define NOP38() NOP37(),NOP1()
+#define NOP39() NOP38(),NOP1()
+#define NOP40() NOP39(),NOP1()
+#define NOP(N)  NOP##N()
+
 
 #endif
 

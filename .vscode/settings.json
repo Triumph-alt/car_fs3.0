@@ -5,6 +5,16 @@
         "headfile.h": "c",
         "stc32gxx.h": "c",
         "at24c16.h": "c",
-        "common.h": "c"
+        "common.h": "c",
+        "stc32g_dma.h": "c",
+        "board.h": "c",
+        "stc32g_switch.h": "c",
+        "stc32g_adc.h": "c",
+        "string.h": "c",
+        "stc32g_nvic.h": "c",
+        "zf_nvic.h": "c",
+        "zf_adc.h": "c",
+        "zf_exti.h": "c",
+        "zf_tim.h": "c"
     }
 }

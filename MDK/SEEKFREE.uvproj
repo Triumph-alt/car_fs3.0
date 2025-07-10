@@ -384,6 +384,26 @@
               <FileType>1</FileType>
               <FilePath>..\USER\src\pid.c</FilePath>
             </File>
+            <File>
+              <FileName>STC32G_ADC.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\src\STC32G_ADC.c</FilePath>
+            </File>
+            <File>
+              <FileName>STC32G_DMA.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\src\STC32G_DMA.c</FilePath>
+            </File>
+            <File>
+              <FileName>STC32G_DMA_Isr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\src\STC32G_DMA_Isr.c</FilePath>
+            </File>
+            <File>
+              <FileName>STC32G_NVIC.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\src\STC32G_NVIC.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -448,6 +468,26 @@
               <FileName>pid.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\USER\inc\pid.h</FilePath>
+            </File>
+            <File>
+              <FileName>STC32G_ADC.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\USER\inc\STC32G_ADC.h</FilePath>
+            </File>
+            <File>
+              <FileName>STC32G_DMA.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\USER\inc\STC32G_DMA.h</FilePath>
+            </File>
+            <File>
+              <FileName>STC32G_Switch.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\USER\inc\STC32G_Switch.h</FilePath>
+            </File>
+            <File>
+              <FileName>STC32G_NVIC.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\USER\inc\STC32G_NVIC.h</FilePath>
             </File>
           </Files>
         </Group>
