@@ -5,23 +5,12 @@
 #include "STC32G_DMA.h"
 #include "STC32G_Switch.h"
 
-/*************	宏定义	**************/
-#define ADC_HL  14  // 左侧横向电感-P0.6
-#define ADC_VL  13  // 左侧纵向电感-P0.5
-#define ADC_HML 9   // 左中横向电感-P0.1
-#define ADC_HC  1   // 中间横向电感-P1.1
-#define ADC_HMR 3   // 右中横向电感-P1.3
-#define ADC_VR  4   // 右侧纵向电感-P1.4
-#define ADC_HR  8   // 右侧横向电感-P0.0
-
-#define	ADC_CH		7			/* 1~16, ADC转换通道数, 需同步修改转换通道 */
-#define	ADC_DATA	6			/* 6~n, 每个通道ADC转换数据总数, 2*转换次数+4, 需同步修改转换次数 */
-
 
 /*************	全局变量	**************/
-u8 chn = 0;
-u8 xdata DmaAdBuffer[ADC_CH][ADC_DATA];
+extern u8 chn;
+extern u8 xdata DmaAdBuffer[ADC_CH][ADC_DATA];
 uint8_t g_TxData[200] = {0};
+extern float result[SENSOR_COUNT];       // 来自 electromagnetic_tracking.c 的滤波结果数组
 
 
 /*************	函数声明	**************/
@@ -29,7 +18,8 @@ void PrintChAvg7(void);
 void ADC_config(void);
 void DMA_config(void);
 void GPIO_config(void);
-
+void PrintFiltered7(void);               // 打印滤波后七电感数据
+void PrintNormalized7(void);             // 打印归一化后七电感数据
 
 
 /*************	主函数	**************/
@@ -68,86 +58,32 @@ void main(void)
 	/*************	主循环	**************/
     while(1)
 	{
+		uart4_recv_task();  // 串口4接收任务
 //		 key_task();         // 处理按键任务
 //		 display_task();     // OLED显示任务
-		
-		uart4_recv_task();  // 串口4接收任务
-		
-//		sprintf(g_TxData, "%f,%f\n",Gyro_Z,filtered_GyroZ);
-//		uart_putstr(UART_4, g_TxData);
 
 		/*************	ADC DMA采样完成	**************/
 		if(DmaADCFlag)  //判断ADC DMA采样是否完成
 		{
-			DmaADCFlag = 0; //清除完成标志
-
-			PrintChAvg7();
-
-			DMA_ADC_TRIG();		//重新触发启动下一次转换
+			// 使用average_filter读取DMA数据并完成递推均值滤波
+			average_filter();
+			// 重新触发DMA进行下一次转换
+			DMA_ADC_TRIG();
 		}
 		
-#if 0
-		// 通过串口输出七电感数据
-		sprintf(g_TxData, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",
-		 (uint16)normalized_data[SENSOR_HL], 
-		 (uint16)normalized_data[SENSOR_VL], 
-		 (uint16)normalized_data[SENSOR_HML], 
-		 (uint16)normalized_data[SENSOR_HC],
-		 (uint16)normalized_data[SENSOR_HMR], 
-		 (uint16)normalized_data[SENSOR_VR], 
-		 (uint16)normalized_data[SENSOR_HR], 
-		  position,
-		 (uint16)signal_strength_value,
-		  track_type,
-		  track_route,
-		  track_route_status,
-		  track_type_zj);
-		 uart_putstr(UART_4, g_TxData);
+		// PrintFiltered7();
 
-
-		// 获取滤波后的ADC数据		
-		mid_filter();      // 使用中位值滤波获取电感数据
-
-		// 归一化电感数组·
+		// 归一化电感数组
 		normalize_sensors();
-		
+	
 		// 计算位置偏差
-		position = calculate_position_improved();
+		 position = calculate_position_improved();
+
+		// 打印归一化后的电感数据
+		PrintNormalized7();
 		
-		//检查电磁保护
-		protection_flag = check_electromagnetic_protection();
-#endif		
-		
-		/* 调试功能 */
-#if 0
-		//读取七电感ADC值（用于调试）
-		value[0] = adc_once(ADC_HL,  ADC_10BIT);
-		value[1] = adc_once(ADC_VL,  ADC_10BIT);
-		value[2] = adc_once(ADC_HML, ADC_10BIT);
-		value[3] = adc_once(ADC_HC,  ADC_10BIT); 
-		value[4] = adc_once(ADC_HMR, ADC_10BIT);
-		value[5] = adc_once(ADC_VR,  ADC_10BIT);
-		value[6] = adc_once(ADC_HR,  ADC_10BIT);	
-
-		// 计算所有电感值的总和
-//		sum_value = (uint16)normalized_data[SENSOR_HL] + (uint16)normalized_data[SENSOR_VL] + 
-//		            (uint16)normalized_data[SENSOR_HML] + (uint16)normalized_data[SENSOR_HC] + 
-//		            (uint16)normalized_data[SENSOR_HMR] + (uint16)normalized_data[SENSOR_VR] + 
-//		            (uint16)normalized_data[SENSOR_HR];
-
-		 // 通过串口输出七电感原始数据
-		  sprintf(g_TxData, "%d,%d,%d,%d,%d,%d,%d\n",
-					value[0], 
-					value[1], 
-					value[2], 
-					value[3], 
-					value[4],
-					value[5],
-          value[6]);
-		  uart_putstr(UART_4, g_TxData);
-
-		  delay_ms(10);
-#endif	
+		// 检查电磁保护
+		// protection_flag = check_electromagnetic_protection();
 		
     }
 }
@@ -189,25 +125,62 @@ void DMA_config(void)
 	// DMA_ADC_InitStructure.DMA_Channel = 0xffff;         //ADC通道使能寄存器, 1:使能, bit15~bit0 对应 ADC15~ADC0
 	DMA_ADC_InitStructure.DMA_Channel = 0x631A;			//ADC通道使能: P0.0, P0.1, P0.5, P0.6, P1.1, P1.3, P1.4
 	DMA_ADC_InitStructure.DMA_Buffer = (u16)DmaAdBuffer;	//ADC转换数据存储地址
-	DMA_ADC_InitStructure.DMA_Times = ADC_1_Times;	//每个通道转换次数, ADC_1_Times,ADC_2_Times,ADC_4_Times,ADC_8_Times,ADC_16_Times,ADC_32_Times,ADC_64_Times,ADC_128_Times,ADC_256_Times
+	DMA_ADC_InitStructure.DMA_Times = ADC_8_Times;	//每个通道转换次数, ADC_1_Times,ADC_2_Times,ADC_4_Times,ADC_8_Times,ADC_16_Times,ADC_32_Times,ADC_64_Times,ADC_128_Times,ADC_256_Times
 	DMA_ADC_Inilize(&DMA_ADC_InitStructure);		//初始化
 	NVIC_DMA_ADC_Init(ENABLE,Priority_0,Priority_0);		//中断使能, ENABLE/DISABLE; 优先级(低到高) Priority_0~Priority_3; 总线优先级(低到高) Priority_0~Priority_3
 	DMA_ADC_TRIG();		//触发启动转换
 }
 
+
+/*************	打印电感原始数据	**************/
 void PrintChAvg7(void)	
 {
     // 一次性打印前 7 个通道的平均值 (假设 ADC_CH >= 7)
-    u16 HC = ((u16)DmaAdBuffer[0][4] << 8) | DmaAdBuffer[0][5];//1
-    u16 HMR = ((u16)DmaAdBuffer[1][4] << 8) | DmaAdBuffer[1][5];//3
-    u16 VR = ((u16)DmaAdBuffer[2][4] << 8) | DmaAdBuffer[2][5];//4
-    u16 HR = ((u16)DmaAdBuffer[3][4] << 8) | DmaAdBuffer[3][5];//8
-    u16 HML = ((u16)DmaAdBuffer[4][4] << 8) | DmaAdBuffer[4][5];//9
-    u16 VL = ((u16)DmaAdBuffer[5][4] << 8) | DmaAdBuffer[5][5];//13
-    u16 HL = ((u16)DmaAdBuffer[6][4] << 8) | DmaAdBuffer[6][5];//14
+    u16 HC  = ((u16)DmaAdBuffer[0][2*ADC_TIMES+2] << 8) | DmaAdBuffer[0][2*ADC_TIMES+3]; //1
+    u16 HMR = ((u16)DmaAdBuffer[1][2*ADC_TIMES+2] << 8) | DmaAdBuffer[1][2*ADC_TIMES+3]; //3
+    u16 VR  = ((u16)DmaAdBuffer[2][2*ADC_TIMES+2] << 8) | DmaAdBuffer[2][2*ADC_TIMES+3]; //4
+    u16 HR  = ((u16)DmaAdBuffer[3][2*ADC_TIMES+2] << 8) | DmaAdBuffer[3][2*ADC_TIMES+3]; //8
+    u16 HML = ((u16)DmaAdBuffer[4][2*ADC_TIMES+2] << 8) | DmaAdBuffer[4][2*ADC_TIMES+3]; //9
+    u16 VL  = ((u16)DmaAdBuffer[5][2*ADC_TIMES+2] << 8) | DmaAdBuffer[5][2*ADC_TIMES+3]; //13
+    u16 HL  = ((u16)DmaAdBuffer[6][2*ADC_TIMES+2] << 8) | DmaAdBuffer[6][2*ADC_TIMES+3]; //14
 
     sprintf(g_TxData,"%u,%u,%u,%u,%u,%u,%u\r\n",
            HL, VL, HML, HC, HMR, VR, HR);
     uart_putstr(UART_4, g_TxData);
-    delay_ms(20);
+    delay_ms(10);
 }
+
+/*************	打印滤波后电感数据	**************/
+void PrintFiltered7(void)
+{
+    // 将 float 转为无符号整数打印，便于串口调试
+    sprintf(g_TxData, "%u,%u,%u,%u,%u,%u,%u\r\n",
+            (uint16)result[SENSOR_HL],
+            (uint16)result[SENSOR_VL],
+            (uint16)result[SENSOR_HML],
+            (uint16)result[SENSOR_HC],
+            (uint16)result[SENSOR_HMR],
+            (uint16)result[SENSOR_VR],
+            (uint16)result[SENSOR_HR]);
+    uart_putstr(UART_4, g_TxData);
+    delay_ms(10);
+}
+
+/*************	打印归一化后电感和位置数据	**************/
+void PrintNormalized7(void)
+{
+    // 将归一化后的float数据打印，保留两位小数
+    sprintf(g_TxData, "%u,%u,%u,%u,%u,%u,%u,%d\r\n",
+            (uint16)normalized_data[SENSOR_HL],
+            (uint16)normalized_data[SENSOR_VL],
+            (uint16)normalized_data[SENSOR_HML],
+            (uint16)normalized_data[SENSOR_HC],
+            (uint16)normalized_data[SENSOR_HMR],
+            (uint16)normalized_data[SENSOR_VR],
+            (uint16)normalized_data[SENSOR_HR],
+            position);
+    uart_putstr(UART_4, g_TxData);
+    delay_ms(10);
+}
+
+

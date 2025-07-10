@@ -12,10 +12,24 @@
 // #define ADC_VR  ADC_P14  // 右侧纵向电感
 // #define ADC_HR  ADC_P00  // 右侧横向电感
 
+/*************	宏定义	**************/
+#define ADC_HL  14  // 左侧横向电感-P0.6
+#define ADC_VL  13  // 左侧纵向电感-P0.5
+#define ADC_HML 9   // 左中横向电感-P0.1
+#define ADC_HC  1   // 中间横向电感-P1.1
+#define ADC_HMR 3   // 右中横向电感-P1.3
+#define ADC_VR  4   // 右侧纵向电感-P1.4
+#define ADC_HR  8   // 右侧横向电感-P0.0
+
+
+#define	ADC_CH		7				/* 1~16, ADC转换通道数, 需同步修改转换通道 */
+#define ADC_TIMES	8				/* 1~16, ADC转换次数, 需同步修改转换次数 */
+#define	ADC_DATA	2*ADC_TIMES+4	/* 12, 每个通道ADC转换数据总数, 2*转换次数+4 (n = 4), 需同步修改转换次数 */
+
 
 // 电感数组定义
 #define SENSOR_COUNT 7   // 电感个数
-#define HISTORY_COUNT 5  // 滤波次数，当前只存储最新值
+#define HISTORY_COUNT 8  // 滤波次数，当前只存储最新值
 
 // 赛道类型索引，与track_type对应
 #define WEIGHT_STRAIGHT    0  // 直道
@@ -47,8 +61,7 @@ typedef enum {
 } sensor_type_e;
 
 // 函数声明
-void electromagnetic_init(void);               // 初始化电磁传感器
-uint16 get_adc(uint16 i);                      // 获取ADC的值
+
 void average_filter(void);                     // 递推均值滤波函数
 void mid_filter(void);                         // 中位值滤波函数
 void update_min_max_values(void);              // 更新每个电感的最大最小值
@@ -79,7 +92,6 @@ extern uint8 track_ten_flag;
 
 // 电磁保护逻辑变量
 extern uint8 protection_flag;
-
 extern uint8 track_ten_flag;
 extern uint8 ten_change_flag;
 

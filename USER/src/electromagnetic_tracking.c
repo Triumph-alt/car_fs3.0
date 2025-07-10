@@ -1,7 +1,11 @@
 #include "electromagnetic_tracking.h"
 #include "headfile.h"
 #include "common.h"
+#include "STC32G_DMA.h"    
 
+
+u8 chn = 0;
+u8 xdata DmaAdBuffer[ADC_CH][ADC_DATA];
 
 // 定义全局权重配置，只保留四种基本元素
 TrackWeights track_weights[4] = {
@@ -19,7 +23,7 @@ TrackWeights track_weights[4] = {
     {0.35f, 0.38f, 0.10f, 0.25f, 1.00f, 50, "环岛"}
 };
 
-u16 adc_fliter_data[SENSOR_COUNT][HISTORY_COUNT] = {0}; //滤波后的值
+uint16 adc_fliter_data[SENSOR_COUNT][HISTORY_COUNT] = {0}; //滤波后的值
 float result[SENSOR_COUNT] = {0};		//电存储每个电感滤波后的最终结果值（尚未归一化），是连接滤波处理和归一化处理的中间变量
 uint16 sum[SENSOR_COUNT][HISTORY_COUNT] = {0};      	//累加的和
 
@@ -27,14 +31,14 @@ uint16 sum[SENSOR_COUNT][HISTORY_COUNT] = {0};      	//累加的和
 uint16 times = HISTORY_COUNT;  // 滤波次数
 uint16 i_num = SENSOR_COUNT;  // 电感数量
 
-// 归一化数据 - 改为数组形式
+// 归一化数据
 float normalized_data[SENSOR_COUNT] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};  // 归一化后的电感数据数组
 
 // 存储每个电感的最大最小值，用于动态校准 - 改为数组形式
 // uint16 min_value[SENSOR_COUNT] = {0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF};  // 每个电感的最小值
 // uint16 max_value[SENSOR_COUNT] = {0, 0, 0, 0, 0, 0, 0};  // 每个电感的最大值
 uint16 min_value[SENSOR_COUNT] = {0, 0, 0, 0, 0, 0, 0};  // 每个电感的最小值
-uint16 max_value[SENSOR_COUNT] = {950, 960, 940, 750, 940, 960, 940};  // 每个电感的最大值
+uint16 max_value[SENSOR_COUNT] = {4095, 4095, 4095, 4095, 4095, 4095, 4095};  // 每个电感的最大值
 
 // 电感位置计算相关变量
 float signal_strength_value = 0;   // 信号强度指标
@@ -54,68 +58,9 @@ uint8 ten_change_flag = 0; //1表示0.5后track_ten_flag=1
 
 uint8 protection_flag = 0;// 电磁保护逻辑变量,0表示未保护，1表示保护
 
-
 uint8 speed_count = 0;
 
-//-----------------------------------------------------------------------------
-// @brief  	电磁传感器初始化
-// @param   无
-// @return  无
-// @author  ZP
-// Sample usage: electromagnetic_init();
-//-----------------------------------------------------------------------------
-void electromagnetic_init(void)
-{
-   uint8 i = 0, j = 0;
 
-//    adc_init(ADC_HL, 0);   // 左侧横向电感
-//    adc_init(ADC_VL, 0);   // 左侧纵向电感
-//    adc_init(ADC_HML, 0);  // 左中横向电感
-//    adc_init(ADC_HC, 0);   // 中间横向电感
-//    adc_init(ADC_HMR, 0);  // 右中横向电感
-//    adc_init(ADC_VR, 0);   // 右侧纵向电感
-//    adc_init(ADC_HR, 0);   // 右侧横向电感
-   
-   // 初始化二维数组
-   for(i = 0; i < SENSOR_COUNT; i++)
-   {
-       for(j = 0; j < HISTORY_COUNT; j++)
-       {
-           adc_fliter_data[i][j] = 0;
-           sum[i][j] = 0;
-       }
-       normalized_data[i] = 0.0f;  // 初始化归一化数据数组
-   }
-}
-
-//-----------------------------------------------------------------------------
-// @brief  	得到adc的值
-// @param   测的ADC/电感序号
-// @return  测出的adc值
-// @author  ZP
-// Sample usage: get_adc(1)
-//-----------------------------------------------------------------------------
-// uint16 get_adc(uint16 i)
-// {
-// 	switch(i){
-// 		case 0:
-// 			return adc_once(ADC_HL, ADC_10BIT);  //ADC_10BIT是电磁寻迹最佳分辨率
-// 		case 1:
-// 			return adc_once(ADC_VL, ADC_10BIT);
-// 		case 2:
-// 			return adc_once(ADC_HML, ADC_10BIT);
-// 		case 3:
-// 			return adc_once(ADC_HC, ADC_10BIT); 
-// 		case 4:
-// 			return adc_once(ADC_HMR, ADC_10BIT);
-// 		case 5:
-// 			return adc_once(ADC_VR, ADC_10BIT);
-// 		case 6:
-// 			return adc_once(ADC_HR, ADC_10BIT);
-// 		default:
-// 			return 0;
-// 	}
-// }
 
 //-----------------------------------------------------------------------------
 // @brief  	递推均值滤波
@@ -125,52 +70,48 @@ void electromagnetic_init(void)
 // Sample usage: average_filter();
 //-----------------------------------------------------------------------------
 
-
 void average_filter(void)
 {
-    static uint16 filter_index = 0;  // 递推次数计数器
-    static uint8 is_initialized = 0; // 初始化标志,只在第一次调用时进行多次采样,后续调用时使用真正的递推算法   
-    uint16 a = 0, b = 0;
-    
-    // 检查是否需要初始化
-    if (!is_initialized)
+    uint8 i;
+	
+    static const uint8 dma_index_map[SENSOR_COUNT] = {6, 5, 4, 0, 1, 2, 3}; // 电感索引与DMA缓冲区索引的映射关系，
+    // 使用循环缓冲索引保存历史数据
+    static uint8 history_index = 0;                // 当前写入的历史索引
+    static uint32 running_sum[SENSOR_COUNT] = {0}; // 每个传感器的历史和，用于快速计算均值
+    	
+    // 读取完成，清除标志位
+    DmaADCFlag = 0;
+
+    /* DMA缓冲区与电感索引的映射关系，因为DMA缓冲区是按ADC通道号从小到大顺序存储的
+       SENSOR_HL  -> DmaAdBuffer[6]
+       SENSOR_VL  -> DmaAdBuffer[5]
+       SENSOR_HML -> DmaAdBuffer[4]
+       SENSOR_HC  -> DmaAdBuffer[0]
+       SENSOR_HMR -> DmaAdBuffer[1]
+       SENSOR_VR  -> DmaAdBuffer[2]
+       SENSOR_HR  -> DmaAdBuffer[3]
+    */
+
+
+    for(i = 0; i < SENSOR_COUNT; i++) //顺序为HL -> VL -> HML -> HC -> HMR -> VR -> HR
     {
-        // 重置累加器
-        for(a = 0; a < i_num; a++)
-        {
-            sum[a][0] = 0;
-        }
-        
-        // 前几次采集，累积足够的数据
-        for(filter_index = 0; filter_index < times; filter_index++)
-        {
-            for(b = 0; b < i_num; b++)
-            {
-                // sum[b][0] += get_adc(b);  // 采集一次ADC并累加
-            }
-            delay_us(5); // 添加短暂延时提高采样稳定性
-        }
-        
-        // 计算初始平均值
-        for(a = 0; a < i_num; a++)
-        {
-            adc_fliter_data[a][0] = sum[a][0] / times;  // 求平均
-            result[a] = adc_fliter_data[a][0];
-        }
-        
-        is_initialized = 1; // 标记初始化完成
+        // 读取DMA缓冲区中的高低字节，组合成16位ADC平均值
+        uint8 dma_ch = dma_index_map[i];
+        uint16 value = ((uint16)DmaAdBuffer[dma_ch][2*ADC_TIMES + 2] << 8) |
+                        (uint16)DmaAdBuffer[dma_ch][2*ADC_TIMES + 3];
+
+        // 更新递推和：移除旧值，加入新值
+        running_sum[i] -= adc_fliter_data[i][history_index];
+        adc_fliter_data[i][history_index] = value;
+        running_sum[i] += value;
+
+        // 计算均值并存入结果数组
+        result[i] = (float)running_sum[i] / (float)times;
     }
-    else  // 已初始化，执行递推均值滤波
-    {
-        for(a = 0; a < i_num; a++)
-        {
-            // 递推均值滤波核心算法：减去平均值，加上新值，重新计算平均值
-            sum[a][0] -= (sum[a][0] / times);         // 每次去除平均值的贡献
-            // sum[a][0] += get_adc(a);              // 加上新值
-            adc_fliter_data[a][0] = (sum[a][0] / times);  // 求新的平均值
-            result[a] = adc_fliter_data[a][0];      // 保存结果
-        }
-    }
+
+    // 更新循环缓冲索引
+    history_index++;
+    if(history_index >= times) history_index = 0;
 }
 
 
@@ -401,6 +342,7 @@ int16 calculate_position_improved(void)
     int16 pos = 0;               // 当前计算得到的位置值
     static int16 max_change_rate = 8; // 允许的最大变化率，越大越灵敏
     int16 position_change = 0;   // 位置变化量
+	
 	
 	
 	
