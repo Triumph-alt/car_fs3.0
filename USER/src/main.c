@@ -20,15 +20,12 @@ void DMA_config(void);
 void GPIO_config(void);
 void PrintFiltered7(void);               // 打印滤波后七电感数据
 void PrintNormalized7(void);             // 打印归一化后七电感数据
-
+void PrintNormalized17(void);
 
 /*************	主函数	**************/
 void main(void)
 {
 	/*************	本地变量声明	**************/
-	int state = 5;
-	uint16 sum_value = 0;    
-	uint16 value[7] = {0};   //调试用数组
 
 	/*************	系统初始化	**************/
 	board_init();			 // 初始化寄存器
@@ -52,8 +49,8 @@ void main(void)
 	kalman_init(&imu693_kf, 0.98, 0.02, imu693kf_Q, imu693kf_R, 0.0);
 	
     /* 从EEPROM加载max_value及PID参数，覆盖默认值 */
-   load_parameters_from_eeprom();
-//	save_parameters_to_eeprom();  //保存max_value及PID参数到EEPROM（初始化）
+    //load_parameters_from_eeprom();
+	// save_parameters_to_eeprom();  //保存max_value及PID参数到EEPROM（初始化）
 
 	/*************	主循环	**************/
     while(1)
@@ -73,14 +70,14 @@ void main(void)
 		
 		// PrintFiltered7();
 
-		// 归一化电感数组
+		//归一化电感数组
 		normalize_sensors();
 	
 		// 计算位置偏差
 		 position = calculate_position_improved();
 
 		// 打印归一化后的电感数据
-		PrintNormalized7();
+		PrintNormalized17();
 		
 		// 检查电磁保护
 		// protection_flag = check_electromagnetic_protection();
@@ -183,4 +180,27 @@ void PrintNormalized7(void)
     delay_ms(10);
 }
 
+/*************	打印归一化后电感和位置数据	**************/
+void PrintNormalized17(void)
+{
+    // 将归一化后的float数据打印，保留两位小数
+    sprintf(g_TxData, "%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%d\r\n",
+            (uint16)result[SENSOR_HL],
+            (uint16)result[SENSOR_VL],
+            (uint16)result[SENSOR_HML],
+            (uint16)result[SENSOR_HC],
+            (uint16)result[SENSOR_HMR],
+            (uint16)result[SENSOR_VR],
+            (uint16)result[SENSOR_HR],
+            (uint16)normalized_data[SENSOR_HL],
+            (uint16)normalized_data[SENSOR_VL],
+            (uint16)normalized_data[SENSOR_HML],
+            (uint16)normalized_data[SENSOR_HC],
+            (uint16)normalized_data[SENSOR_HMR],
+            (uint16)normalized_data[SENSOR_VR],
+            (uint16)normalized_data[SENSOR_HR],
+            position);
+    uart_putstr(UART_4, g_TxData);
+    delay_ms(10);
+}
 

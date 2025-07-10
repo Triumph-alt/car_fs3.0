@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  zf_pwm                                                             10/07/25  11:58:01  PAGE 1   
+C251 COMPILER V5.60.0,  zf_pwm                                                             10/07/25  21:09:19  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE zf_pwm
@@ -66,7 +66,7 @@ stmt  level    source
    51   1        switch(pwmch)
    52   1        {
    53   2          case PWMA_CH1P_P10:
-C251 COMPILER V5.60.0,  zf_pwm                                                             10/07/25  11:58:01  PAGE 2   
+C251 COMPILER V5.60.0,  zf_pwm                                                             10/07/25  21:09:19  PAGE 2   
 
    54   2          {
    55   3            gpio_mode(P1_0,GPO_PP);
@@ -134,7 +134,7 @@ stmt  level    source
   117   3            gpio_mode(P1_4,GPO_PP);
   118   3            break;
   119   3          }
-C251 COMPILER V5.60.0,  zf_pwm                                                             10/07/25  11:58:01  PAGE 3   
+C251 COMPILER V5.60.0,  zf_pwm                                                             10/07/25  21:09:19  PAGE 3   
 
   120   2          case PWMA_CH3N_P15:
   121   2          {
@@ -202,7 +202,7 @@ stmt  level    source
   183   2          {
   184   3            gpio_mode(P3_3,GPO_PP);
   185   3            break;
-C251 COMPILER V5.60.0,  zf_pwm                                                             10/07/25  11:58:01  PAGE 4   
+C251 COMPILER V5.60.0,  zf_pwm                                                             10/07/25  21:09:19  PAGE 4   
 
   186   3          }
   187   2          
@@ -270,7 +270,7 @@ stmt  level    source
   249   3            gpio_mode(P7_6,GPO_PP);
   250   3            break;
   251   3          }
-C251 COMPILER V5.60.0,  zf_pwm                                                             10/07/25  11:58:01  PAGE 5   
+C251 COMPILER V5.60.0,  zf_pwm                                                             10/07/25  21:09:19  PAGE 5   
 
   252   2      
   253   2          
@@ -338,7 +338,7 @@ stmt  level    source
   312   2        }
   313   1        else
   314   1        {
-C251 COMPILER V5.60.0,  zf_pwm                                                             10/07/25  11:58:01  PAGE 6   
+C251 COMPILER V5.60.0,  zf_pwm                                                             10/07/25  21:09:19  PAGE 6   
 
   315   2          match_temp = period_temp + 1;               // duty为100%
   316   2        }
@@ -406,7 +406,7 @@ stmt  level    source
   374          //  Sample usage:           pwm_duty(PWM0_P00, 5000);     //初始化PWM0  使用引脚P0.0  输出PWM频
              -率50HZ   占空比为百分之 5000/PWM_DUTY_MAX*100
   375          //              PWM_DUTY_MAX在fsl_pwm.h文件中 默认为10000
-C251 COMPILER V5.60.0,  zf_pwm                                                             10/07/25  11:58:01  PAGE 7   
+C251 COMPILER V5.60.0,  zf_pwm                                                             10/07/25  21:09:19  PAGE 7   
 
   376          //-------------------------------------------------------------------------------------------------------
              -------------
@@ -474,7 +474,7 @@ stmt  level    source
   434   1        
   435   1        
   436   1        
-C251 COMPILER V5.60.0,  zf_pwm                                                             10/07/25  11:58:01  PAGE 8   
+C251 COMPILER V5.60.0,  zf_pwm                                                             10/07/25  21:09:19  PAGE 8   
 
   437   1      //  P_SW2 |= 0x80;
   438   1        

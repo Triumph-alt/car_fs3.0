@@ -38,7 +38,7 @@ float normalized_data[SENSOR_COUNT] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f}
 // uint16 min_value[SENSOR_COUNT] = {0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF};  // 每个电感的最小值
 // uint16 max_value[SENSOR_COUNT] = {0, 0, 0, 0, 0, 0, 0};  // 每个电感的最大值
 uint16 min_value[SENSOR_COUNT] = {0, 0, 0, 0, 0, 0, 0};  // 每个电感的最小值
-uint16 max_value[SENSOR_COUNT] = {4095, 4095, 4095, 4095, 4095, 4095, 4095};  // 每个电感的最大值
+uint16 max_value[SENSOR_COUNT] = {3400, 3700, 3800, 2800, 3700, 3700, 3000};  // 每个电感的最大值
 
 // 电感位置计算相关变量
 float signal_strength_value = 0;   // 信号强度指标
@@ -78,7 +78,7 @@ void average_filter(void)
     // 使用循环缓冲索引保存历史数据
     static uint8 history_index = 0;                // 当前写入的历史索引
     static uint32 running_sum[SENSOR_COUNT] = {0}; // 每个传感器的历史和，用于快速计算均值
-    	
+
     // 读取完成，清除标志位
     DmaADCFlag = 0;
 
@@ -205,55 +205,55 @@ void mid_filter(void)
 // @author  ZP
 // Sample usage: update_min_max_values();
 //-----------------------------------------------------------------------------
-void update_min_max_values(void)
-{
-    uint8 i;
-    static uint16 update_counter = 0;
-    
-    // 定期轻微衰减最大最小值，使系统能适应环境变化
-    update_counter++;
-    if(update_counter >= 1000)  // 每1000次调用执行一次衰减
-    {
-        update_counter = 0;
-        
-        // 最小值略微增加，最大值略微减少，形成缓慢衰减
-        for(i = 0; i < SENSOR_COUNT; i++)
-        {
-            // 最小值向上衰减（增加1%）
-            min_value[i] += min_value[i] / 100;
-            
-            // 最大值向下衰减（减少1%）
-            if(max_value[i] > min_value[i])  // 确保最大值始终大于最小值
-                max_value[i] -= max_value[i] / 100;
-        }
-    }
-    
-    // 更新每个电感的最小值和最大值
-    for(i = 0; i < SENSOR_COUNT; i++)
-    {
-        // 异常值检测 - 如果读数异常大或异常小，可能是传感器故障，不更新
-        if(result[i] > 1000 || result[i] < 5)
-            continue;
-            
-        // 更新最小值（忽略过小的值，可能是噪声）
-        if(result[i] < min_value[i] && result[i] > 10) 
-            min_value[i] = result[i];
-        
-        // 更新最大值
-        if(result[i] > max_value[i]) 
-            max_value[i] = result[i];
-    }
-    
-    // 确保最大最小值之间有足够差距，避免除以接近0的值
-    for(i = 0; i < SENSOR_COUNT; i++)
-    {
-        if(max_value[i] - min_value[i] < 20)
-        {
-            // 如果差距太小，强制设置一个合理差距
-            max_value[i] = min_value[i] + 20;
-        }
-    }
-}
+//void update_min_max_values(void)
+//{
+//    uint8 i;
+//    static uint16 update_counter = 0;
+//    
+//    // 定期轻微衰减最大最小值，使系统能适应环境变化
+//    update_counter++;
+//    if(update_counter >= 1000)  // 每1000次调用执行一次衰减
+//    {
+//        update_counter = 0;
+//        
+//        // 最小值略微增加，最大值略微减少，形成缓慢衰减
+//        for(i = 0; i < SENSOR_COUNT; i++)
+//        {
+//            // 最小值向上衰减（增加1%）
+//            min_value[i] += min_value[i] / 100;
+//            
+//            // 最大值向下衰减（减少1%）
+//            if(max_value[i] > min_value[i])  // 确保最大值始终大于最小值
+//                max_value[i] -= max_value[i] / 100;
+//        }
+//    }
+//    
+//    // 更新每个电感的最小值和最大值
+//    for(i = 0; i < SENSOR_COUNT; i++)
+//    {
+//        // 异常值检测 - 如果读数异常大或异常小，可能是传感器故障，不更新
+//        if(result[i] > 1000 || result[i] < 5)
+//            continue;
+//            
+//        // 更新最小值（忽略过小的值，可能是噪声）
+//        if(result[i] < min_value[i] && result[i] > 10) 
+//            min_value[i] = result[i];
+//        
+//        // 更新最大值
+//        if(result[i] > max_value[i]) 
+//            max_value[i] = result[i];
+//    }
+//    
+//    // 确保最大最小值之间有足够差距，避免除以接近0的值
+//    for(i = 0; i < SENSOR_COUNT; i++)
+//    {
+//        if(max_value[i] - min_value[i] < 20)
+//        {
+//            // 如果差距太小，强制设置一个合理差距
+//            max_value[i] = min_value[i] + 20;
+//        }
+//    }
+//}
 
 //-----------------------------------------------------------------------------
 // @brief  	归一化电感数据
@@ -269,14 +269,12 @@ void normalize_sensors(void)
     static float last_normalized[SENSOR_COUNT] = {0};
     // 平滑因子，可调整：值越大，响应越快但抖动越明显，值越小，响应越慢但更平稳
     float smooth_factor = 0.7f; // 建议在0.6-0.8范围内调整，根据小车实际表现微调    // 首先更新最大最小值
-
-    // update_min_max_values();
     
     // 对每个电感进行归一化处理
     for(i = 0; i < SENSOR_COUNT; i++)
     {
-        // 检查最大最小值差异是否足够大，防止除以接近0的值
-        if(max_value[i] - min_value[i] > 20) 
+        // 检查最大值是否足够大，防止除以接近0的值
+        if(max_value[i] > 10) 
         {
             // 标准线性归一化，将值映射到0-100范围（乘以100方便后续使用）
             normalized_data[i] = (float)(result[i] - min_value[i]) * 100.0f / (max_value[i] - min_value[i]);
@@ -288,7 +286,7 @@ void normalize_sensors(void)
         {
             // 如果最大最小值差异太小，可能是传感器故障或未正确初始化
             // 使用原始值的相对比例作为替代，也乘以100保持一致性
-            normalized_data[i] = (float)result[i] / 10.0f;  // 假设ADC最大值为1000，归一化到0-100
+            normalized_data[i] = (float)result[i] / 30.0f;  // 假设ADC最大值为1000，归一化到0-100
         }
         
         // 限制范围在0-100之间

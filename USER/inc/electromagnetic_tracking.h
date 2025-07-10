@@ -70,19 +70,19 @@ int16 calculate_position_improved(void);      // 改进版计算位置
 uint8 check_electromagnetic_protection(void);  // 电磁保护逻辑函数
 
 // 外部变量声明
-extern u16 adc_fliter_data[SENSOR_COUNT][HISTORY_COUNT]; // 滤波后的值
+extern uint16 adc_fliter_data[SENSOR_COUNT][HISTORY_COUNT]; // 滤波后的值
 extern float result[SENSOR_COUNT];                // 电感结果数据
 extern float normalized_data[SENSOR_COUNT];       // 归一化后的电感数据，数组形式
-extern uint16 min_value[SENSOR_COUNT];            // 每个电感的最小值
-extern uint16 max_value[SENSOR_COUNT];            // 每个电感的最大值
 extern int16 position;                         // 位置偏差
 extern uint8 protection_flag;                  // 保护标志
 extern float signal_strength_value;            // 信号强度指标
+extern uint16 min_value[SENSOR_COUNT];
+extern uint16 max_value[SENSOR_COUNT];
 
 //电磁位置计算变量
-extern float filter_param;   // 滤波系数，可调
+extern float filter_param;      // 滤波系数，可调
 extern uint8 track_type;        // 赛道类型：0-普通，1-十字，2-环岛，3-直角弯道
-extern uint8 track_type_last;         // 赛道类型：0-普通，1-直角弯道，2-十字圆环，3-环岛
+extern uint8 track_type_last;   // 赛道类型：0-普通，1-直角弯道，2-十字圆环，3-环岛
 
 extern uint8 track_route;      // 赛道路径：1-左转，2-右转
 extern uint8 track_route_status;

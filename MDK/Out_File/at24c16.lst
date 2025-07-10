@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  at24c16                                                            10/07/25  18:13:46  PAGE 1   
+C251 COMPILER V5.60.0,  at24c16                                                            10/07/25  21:53:29  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE at24c16
@@ -66,7 +66,7 @@ stmt  level    source
    55          void at24c16_write_twobytes(uint8_t page, uint8_t addr, uint16_t w_data)
    56          {
    57   1        uint8_t h_data = 0, l_data = 0;
-C251 COMPILER V5.60.0,  at24c16                                                            10/07/25  18:13:46  PAGE 2   
+C251 COMPILER V5.60.0,  at24c16                                                            10/07/25  21:53:29  PAGE 2   
 
    58   1        
    59   1        /* 拆成高低8位分别写入 */
@@ -127,25 +127,25 @@ stmt  level    source
   114          
   115          void load_parameters_from_eeprom(void)
   116          {
-  117   1          uint8_t i;
+  117   1         uint8_t i;
   118   1      
-  119   1          /* 1. 读取 max_value 数组 */
-  120   1          for(i = 0; i < 7; i++)
-  121   1          {
-  122   2              max_value[i] = at24c16_read_twobytes(0, (uint8_t)(i * 2));
-  123   2          }
-C251 COMPILER V5.60.0,  at24c16                                                            10/07/25  18:13:46  PAGE 3   
+  119   1         /* 1. 读取 max_value 数组 */
+  120   1         for(i = 0; i < 7; i++)
+  121   1         {
+  122   2             max_value[i] = at24c16_read_twobytes(0, (uint8_t)(i * 2));
+  123   2         }
+C251 COMPILER V5.60.0,  at24c16                                                            10/07/25  21:53:29  PAGE 3   
 
   124   1      
-  125   1          /* 2. 读取 SpeedPID 参数 */
-  126   1          SpeedPID.kp = eeprom_read_float(1, 0);
-  127   1          SpeedPID.ki = eeprom_read_float(1, 4);
-  128   1          SpeedPID.kd = eeprom_read_float(1, 8);
+  125   1         /* 2. 读取 SpeedPID 参数 */
+  126   1         SpeedPID.kp = eeprom_read_float(1, 0);
+  127   1         SpeedPID.ki = eeprom_read_float(1, 4);
+  128   1         SpeedPID.kd = eeprom_read_float(1, 8);
   129   1      
-  130   1          /* 3. 读取 TurnPID 参数 */
-  131   1          TurnPID.kp = eeprom_read_float(2, 0);
-  132   1          TurnPID.ki = eeprom_read_float(2, 4);
-  133   1          TurnPID.kd = eeprom_read_float(2, 8);
+  130   1         /* 3. 读取 TurnPID 参数 */
+  131   1         TurnPID.kp = eeprom_read_float(2, 0);
+  132   1         TurnPID.ki = eeprom_read_float(2, 4);
+  133   1         TurnPID.kd = eeprom_read_float(2, 8);
   134   1      }
   135          
   136          //----------------------------------------------------------------------------- 
@@ -158,42 +158,42 @@ stmt  level    source
   143          //-----------------------------------------------------------------------------
   144          void save_parameters_to_eeprom(void)
   145          {
-  146   1          uint8_t i;
-  147   1          /* 1. 写入 max_value (uint16) */
-  148   1          for(i = 0; i < 7; i++)
-  149   1          {
-  150   2              /* Page0 起始地址按 2*i */
-  151   2              at24c16_write_twobytes(0, (uint8_t)(i * 2), max_value[i]);
-  152   2          }
+  146   1         uint8_t i;
+  147   1         /* 1. 写入 max_value (uint16) */
+  148   1         for(i = 0; i < 7; i++)
+  149   1         {
+  150   2             /* Page0 起始地址按 2*i */
+  151   2             at24c16_write_twobytes(0, (uint8_t)(i * 2), max_value[i]);
+  152   2         }
   153   1      
-  154   1          /* 工具宏：将 float 拆分为 4 个字节并写入 */
-  155   1          #define WRITE_FLOAT_TO_EEPROM(base_page, base_offset, fval)                 \
-  156   1              do{                                                                    \
-  157   1                  union { float f; uint8_t b[4]; } _u;                               \
-  158   1                  uint8_t  _k;                                                       \
-  159   1                  uint16_t _off;                                                     \
-  160   1                  uint8_t  _pg, _ad;                                                 \
-  161   1                  _u.f = (fval);                                                     \
-  162   1                  for(_k = 0; _k < 4; _k++)                                          \
-  163   1                  {                                                                  \
-  164   1                      _off = (base_offset) + _k;                                     \
-  165   1                      _pg  = (uint8_t)((base_page) + (_off / 16));                  \
-  166   1                      _ad  = (uint8_t)(_off % 16);                                   \
-  167   1                      at24c16_write_byte(_pg, _ad, _u.b[_k]);                        \
-  168   1                  }                                                                  \
-  169   1              }while(0)
+  154   1         /* 工具宏：将 float 拆分为 4 个字节并写入 */
+  155   1         #define WRITE_FLOAT_TO_EEPROM(base_page, base_offset, fval)                \
+  156   1             do{                                                                    \
+  157   1                 union { float f; uint8_t b[4]; } _u;                               \
+  158   1                 uint8_t  _k;                                                       \
+  159   1                 uint16_t _off;                                                     \
+  160   1                 uint8_t  _pg, _ad;                                                 \
+  161   1                 _u.f = (fval);                                                     \
+  162   1                 for(_k = 0; _k < 4; _k++)                                          \
+  163   1                 {                                                                  \
+  164   1                     _off = (base_offset) + _k;                                     \
+  165   1                     _pg  = (uint8_t)((base_page) + (_off / 16));                   \
+  166   1                     _ad  = (uint8_t)(_off % 16);                                   \
+  167   1                     at24c16_write_byte(_pg, _ad, _u.b[_k]);                        \
+  168   1                 }                                                                  \
+  169   1             }while(0)
   170   1      
-  171   1          /* 2. 写入 SpeedPID 参数到 Page1 起始偏移 0 */
-  172   1          WRITE_FLOAT_TO_EEPROM(1, 0, SpeedPID.kp);
-  173   1          WRITE_FLOAT_TO_EEPROM(1, 4, SpeedPID.ki);
-  174   1          WRITE_FLOAT_TO_EEPROM(1, 8, SpeedPID.kd);
+  171   1         /* 2. 写入 SpeedPID 参数到 Page1 起始偏移 0 */
+  172   1         WRITE_FLOAT_TO_EEPROM(1, 0, SpeedPID.kp);
+  173   1         WRITE_FLOAT_TO_EEPROM(1, 4, SpeedPID.ki);
+  174   1         WRITE_FLOAT_TO_EEPROM(1, 8, SpeedPID.kd);
   175   1      
-  176   1          /* 3. 写入 TurnPID 参数到 Page2 起始偏移 0 */
-  177   1          WRITE_FLOAT_TO_EEPROM(2, 0, TurnPID.kp);
-  178   1          WRITE_FLOAT_TO_EEPROM(2, 4, TurnPID.ki);
-  179   1          WRITE_FLOAT_TO_EEPROM(2, 8, TurnPID.kd);
+  176   1         /* 3. 写入 TurnPID 参数到 Page2 起始偏移 0 */
+  177   1         WRITE_FLOAT_TO_EEPROM(2, 0, TurnPID.kp);
+  178   1         WRITE_FLOAT_TO_EEPROM(2, 4, TurnPID.ki);
+  179   1         WRITE_FLOAT_TO_EEPROM(2, 8, TurnPID.kd);
   180   1      
-  181   1          #undef WRITE_FLOAT_TO_EEPROM
+  181   1         #undef WRITE_FLOAT_TO_EEPROM
   182   1      }
 
 
@@ -203,7 +203,7 @@ Module Information          Static   Overlayable
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
-C251 COMPILER V5.60.0,  at24c16                                                            10/07/25  18:13:46  PAGE 4   
+C251 COMPILER V5.60.0,  at24c16                                                            10/07/25  21:53:29  PAGE 4   
 
   pdata size           =    ------     ------
   xdata size           =        46     ------

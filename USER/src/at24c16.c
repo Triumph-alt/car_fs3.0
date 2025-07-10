@@ -114,23 +114,23 @@ float eeprom_read_float(uint8_t base_page, uint8_t base_offset)
 
 void load_parameters_from_eeprom(void)
 {
-    uint8_t i;
+   uint8_t i;
 
-    /* 1. 读取 max_value 数组 */
-    for(i = 0; i < 7; i++)
-    {
-        max_value[i] = at24c16_read_twobytes(0, (uint8_t)(i * 2));
-    }
+   /* 1. 读取 max_value 数组 */
+   for(i = 0; i < 7; i++)
+   {
+       max_value[i] = at24c16_read_twobytes(0, (uint8_t)(i * 2));
+   }
 
-    /* 2. 读取 SpeedPID 参数 */
-    SpeedPID.kp = eeprom_read_float(1, 0);
-    SpeedPID.ki = eeprom_read_float(1, 4);
-    SpeedPID.kd = eeprom_read_float(1, 8);
+   /* 2. 读取 SpeedPID 参数 */
+   SpeedPID.kp = eeprom_read_float(1, 0);
+   SpeedPID.ki = eeprom_read_float(1, 4);
+   SpeedPID.kd = eeprom_read_float(1, 8);
 
-    /* 3. 读取 TurnPID 参数 */
-    TurnPID.kp = eeprom_read_float(2, 0);
-    TurnPID.ki = eeprom_read_float(2, 4);
-    TurnPID.kd = eeprom_read_float(2, 8);
+   /* 3. 读取 TurnPID 参数 */
+   TurnPID.kp = eeprom_read_float(2, 0);
+   TurnPID.ki = eeprom_read_float(2, 4);
+   TurnPID.kd = eeprom_read_float(2, 8);
 }
 
 //----------------------------------------------------------------------------- 
@@ -143,40 +143,40 @@ void load_parameters_from_eeprom(void)
 //-----------------------------------------------------------------------------
 void save_parameters_to_eeprom(void)
 {
-    uint8_t i;
-    /* 1. 写入 max_value (uint16) */
-    for(i = 0; i < 7; i++)
-    {
-        /* Page0 起始地址按 2*i */
-        at24c16_write_twobytes(0, (uint8_t)(i * 2), max_value[i]);
-    }
+   uint8_t i;
+   /* 1. 写入 max_value (uint16) */
+   for(i = 0; i < 7; i++)
+   {
+       /* Page0 起始地址按 2*i */
+       at24c16_write_twobytes(0, (uint8_t)(i * 2), max_value[i]);
+   }
 
-    /* 工具宏：将 float 拆分为 4 个字节并写入 */
-    #define WRITE_FLOAT_TO_EEPROM(base_page, base_offset, fval)                 \
-        do{                                                                    \
-            union { float f; uint8_t b[4]; } _u;                               \
-            uint8_t  _k;                                                       \
-            uint16_t _off;                                                     \
-            uint8_t  _pg, _ad;                                                 \
-            _u.f = (fval);                                                     \
-            for(_k = 0; _k < 4; _k++)                                          \
-            {                                                                  \
-                _off = (base_offset) + _k;                                     \
-                _pg  = (uint8_t)((base_page) + (_off / 16));                  \
-                _ad  = (uint8_t)(_off % 16);                                   \
-                at24c16_write_byte(_pg, _ad, _u.b[_k]);                        \
-            }                                                                  \
-        }while(0)
+   /* 工具宏：将 float 拆分为 4 个字节并写入 */
+   #define WRITE_FLOAT_TO_EEPROM(base_page, base_offset, fval)                \
+       do{                                                                    \
+           union { float f; uint8_t b[4]; } _u;                               \
+           uint8_t  _k;                                                       \
+           uint16_t _off;                                                     \
+           uint8_t  _pg, _ad;                                                 \
+           _u.f = (fval);                                                     \
+           for(_k = 0; _k < 4; _k++)                                          \
+           {                                                                  \
+               _off = (base_offset) + _k;                                     \
+               _pg  = (uint8_t)((base_page) + (_off / 16));                   \
+               _ad  = (uint8_t)(_off % 16);                                   \
+               at24c16_write_byte(_pg, _ad, _u.b[_k]);                        \
+           }                                                                  \
+       }while(0)
 
-    /* 2. 写入 SpeedPID 参数到 Page1 起始偏移 0 */
-    WRITE_FLOAT_TO_EEPROM(1, 0, SpeedPID.kp);
-    WRITE_FLOAT_TO_EEPROM(1, 4, SpeedPID.ki);
-    WRITE_FLOAT_TO_EEPROM(1, 8, SpeedPID.kd);
+   /* 2. 写入 SpeedPID 参数到 Page1 起始偏移 0 */
+   WRITE_FLOAT_TO_EEPROM(1, 0, SpeedPID.kp);
+   WRITE_FLOAT_TO_EEPROM(1, 4, SpeedPID.ki);
+   WRITE_FLOAT_TO_EEPROM(1, 8, SpeedPID.kd);
 
-    /* 3. 写入 TurnPID 参数到 Page2 起始偏移 0 */
-    WRITE_FLOAT_TO_EEPROM(2, 0, TurnPID.kp);
-    WRITE_FLOAT_TO_EEPROM(2, 4, TurnPID.ki);
-    WRITE_FLOAT_TO_EEPROM(2, 8, TurnPID.kd);
+   /* 3. 写入 TurnPID 参数到 Page2 起始偏移 0 */
+   WRITE_FLOAT_TO_EEPROM(2, 0, TurnPID.kp);
+   WRITE_FLOAT_TO_EEPROM(2, 4, TurnPID.ki);
+   WRITE_FLOAT_TO_EEPROM(2, 8, TurnPID.kd);
 
-    #undef WRITE_FLOAT_TO_EEPROM
+   #undef WRITE_FLOAT_TO_EEPROM
 }
