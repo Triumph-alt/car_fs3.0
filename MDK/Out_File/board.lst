@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  board                                                              10/07/25  23:18:27  PAGE 1   
+=======
+C251 COMPILER V5.60.0,  board                                                              10/07/25  11:51:20  PAGE 1   
+>>>>>>> Stashed changes
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE board
@@ -66,7 +70,11 @@ stmt  level    source
    51   2                      CLKDIV = 0x04;
    52   2                      IRTRIM = T22M_ADDR;
    53   2                      VRTRIM = VRT27M_ADDR;
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  board                                                              10/07/25  23:18:27  PAGE 2   
+=======
+C251 COMPILER V5.60.0,  board                                                              10/07/25  11:51:20  PAGE 2   
+>>>>>>> Stashed changes
 
    54   2                      IRCBAND = 0x02;
    55   2                      CLKDIV = 0x00;
@@ -134,7 +142,11 @@ stmt  level    source
   117          
   118          
   119          
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  board                                                              10/07/25  23:18:27  PAGE 3   
+=======
+C251 COMPILER V5.60.0,  board                                                              10/07/25  11:51:20  PAGE 3   
+>>>>>>> Stashed changes
 
   120          
   121          void board_init(void)
@@ -202,7 +214,11 @@ stmt  level    source
   182          ////重定义printf 数字 只能输出uint16
   183          //char putchar(char c)
   184          //{
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  board                                                              10/07/25  23:18:27  PAGE 4   
+=======
+C251 COMPILER V5.60.0,  board                                                              10/07/25  11:51:20  PAGE 4   
+>>>>>>> Stashed changes
 
   185          //      uart_putchar(DEBUG_UART, c);//把自己实现的串口打印一字节数据的函数替换到这里
   186          

@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  zf_delay                                                           10/07/25  23:18:28  PAGE 1   
+=======
+C251 COMPILER V5.60.0,  zf_delay                                                           10/07/25  11:51:22  PAGE 1   
+>>>>>>> Stashed changes
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE zf_delay
@@ -66,7 +70,11 @@ stmt  level    source
    49          {
    50   1              uint16 i;
    51   1              do {
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  zf_delay                                                           10/07/25  23:18:28  PAGE 2   
+=======
+C251 COMPILER V5.60.0,  zf_delay                                                           10/07/25  11:51:22  PAGE 2   
+>>>>>>> Stashed changes
 
    52   2                              i = zf_delay_ms;
    53   2                              //i = sys_clk/6000;//参数: ms,要延时的ms数, 这里只支持1~255ms. 自动适应主时钟.

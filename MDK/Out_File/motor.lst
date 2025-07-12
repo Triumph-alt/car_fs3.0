@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  motor                                                              10/07/25  23:18:24  PAGE 1   
+=======
+C251 COMPILER V5.60.0,  motor                                                              10/07/25  11:51:18  PAGE 1   
+>>>>>>> Stashed changes
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE motor
@@ -66,7 +70,11 @@ stmt  level    source
    55   3                      }
    56   2                      
    57   2                      pwm_duty(PWMA_CH3P_P64, 0);
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  motor                                                              10/07/25  23:18:24  PAGE 2   
+=======
+C251 COMPILER V5.60.0,  motor                                                              10/07/25  11:51:18  PAGE 2   
+>>>>>>> Stashed changes
 
    58   2                      pwm_duty(PWMA_CH4P_P66, -right_duty);
    59   2      //              pwm_duty(PWMA_CH4P_P66, 0);

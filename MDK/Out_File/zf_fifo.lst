@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  23:18:32  PAGE 1   
+=======
+C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  11:51:27  PAGE 1   
+>>>>>>> Stashed changes
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE zf_fifo
@@ -66,7 +70,11 @@ stmt  level    source
    50   1      }
    51          
    52          //-------------------------------------------------------------------------------------------------------
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  23:18:32  PAGE 2   
+=======
+C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  11:51:27  PAGE 2   
+>>>>>>> Stashed changes
 
              -------------
    53          // 函数简介     FIFO 尾指针位移
@@ -134,7 +142,11 @@ stmt  level    source
   105          // 参数说明     *fifo               FIFO 对象指针
   106          // 返回参数     uint32              已使用长度
   107          // 使用示例     uint32 len = fifo_used(fifo);
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  23:18:32  PAGE 3   
+=======
+C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  11:51:27  PAGE 3   
+>>>>>>> Stashed changes
 
   108          // 备注信息
   109          //-------------------------------------------------------------------------------------------------------
@@ -202,7 +214,11 @@ stmt  level    source
   162          // 参数说明     *dat                数据来源缓冲区指针
   163          // 参数说明     length              需要写入的数据长度
   164          // 返回参数     fifo_state_enum     操作状态
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  23:18:32  PAGE 4   
+=======
+C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  11:51:27  PAGE 4   
+>>>>>>> Stashed changes
 
   165          // 使用示例     zf_log(fifo_write_buffer(&fifo, data, 32) == FIFO_SUCCESS, "fifo_write_buffer error")
              -;
@@ -270,7 +286,11 @@ stmt  level    source
   220   5                          case FIFO_DATA_32BIT:
   221   5                          {
   222   6                              memcpy(
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  23:18:32  PAGE 5   
+=======
+C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  11:51:27  PAGE 5   
+>>>>>>> Stashed changes
 
   223   6                                  &(((uint32 *)fifo->buffer)[fifo->head]),
   224   6                                  dat, temp_length * 4);                              // 拷贝第一段数据
@@ -338,7 +358,11 @@ stmt  level    source
   281          // 备注信息
   282          //-------------------------------------------------------------------------------------------------------
              -------------
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  23:18:32  PAGE 6   
+=======
+C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  11:51:27  PAGE 6   
+>>>>>>> Stashed changes
 
   283          fifo_state_enum fifo_read_element (fifo_struct *fifo, void *dat, fifo_operation_enum flag)
   284          {
@@ -406,7 +430,11 @@ stmt  level    source
              -��
   340          // 参数说明     flag                是否变更 FIFO 状态 可选择是否清空读取的数据
   341          // 返回参数     fifo_state_enum     操作状态
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  23:18:32  PAGE 7   
+=======
+C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  11:51:27  PAGE 7   
+>>>>>>> Stashed changes
 
   342          // 使用示例     zf_log(fifo_read_buffer(&fifo, data, &length, FIFO_READ_ONLY) == FIFO_SUCCESS, "fifo_
              -read_buffer error");
@@ -474,7 +502,11 @@ stmt  level    source
   394   4                      {
   395   5                          case FIFO_DATA_8BIT:
   396   5                          {
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  23:18:32  PAGE 8   
+=======
+C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  11:51:27  PAGE 8   
+>>>>>>> Stashed changes
 
   397   6                              memcpy(dat, &(((uint8 *)fifo->buffer)[fifo->end]), (uint16)temp_length);
   398   6                              memcpy(&(((uint8 *)dat)[temp_length]), fifo->buffer, (uint16)(*length - temp_leng
@@ -542,7 +574,11 @@ stmt  level    source
   449   1          uint32 temp_length = 0;
   450   1          uint32 fifo_data_length = 0;
   451   1      
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  23:18:32  PAGE 9   
+=======
+C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  11:51:27  PAGE 9   
+>>>>>>> Stashed changes
 
   452   1          do
   453   1          {
@@ -610,7 +646,11 @@ stmt  level    source
   503   6                          }break;
   504   5                          case FIFO_DATA_32BIT:
   505   5                          {
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  23:18:32  PAGE 10  
+=======
+C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  11:51:27  PAGE 10  
+>>>>>>> Stashed changes
 
   506   6                              memcpy(dat, &(((uint32 *)fifo->buffer)[fifo->max - temp_length]), temp_length * 4
              -);
@@ -679,7 +719,11 @@ Module Information          Static   Overlayable
   xdata-const size     =    ------     ------
   edata size           =    ------     ------
   bit size             =    ------     ------
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  23:18:32  PAGE 11  
+=======
+C251 COMPILER V5.60.0,  zf_fifo                                                            10/07/25  11:51:27  PAGE 11  
+>>>>>>> Stashed changes
 
   ebit size            =    ------     ------
   bitaddressable size  =    ------     ------

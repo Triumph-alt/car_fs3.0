@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  maths                                                              10/07/25  23:18:24  PAGE 1   
+=======
+C251 COMPILER V5.60.0,  maths                                                              10/07/25  11:51:19  PAGE 1   
+>>>>>>> Stashed changes
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE maths
@@ -66,7 +70,11 @@ stmt  level    source
    55          //  * @param  colsA: 矩阵的列数
    56          //  * @param  scalar: 缩放因子
    57          //  * @param  C: 输出矩阵，rowsA x colsA
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  maths                                                              10/07/25  23:18:24  PAGE 2   
+=======
+C251 COMPILER V5.60.0,  maths                                                              10/07/25  11:51:19  PAGE 2   
+>>>>>>> Stashed changes
 
    58          //  * @retval 无
    59          //  */

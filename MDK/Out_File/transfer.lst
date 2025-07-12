@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  transfer                                                           10/07/25  23:18:22  PAGE 1   
+=======
+C251 COMPILER V5.60.0,  transfer                                                           10/07/25  11:51:16  PAGE 1   
+>>>>>>> Stashed changes
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE transfer
@@ -66,7 +70,11 @@ stmt  level    source
    55   1              if (key[2].flag == 1)
    56   1              {
    57   2              // 按键2作为增加值的按键
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  transfer                                                           10/07/25  23:18:22  PAGE 2   
+=======
+C251 COMPILER V5.60.0,  transfer                                                           10/07/25  11:51:16  PAGE 2   
+>>>>>>> Stashed changes
 
    58   2              switch (car_state)
    59   2              {
@@ -134,7 +142,11 @@ stmt  level    source
   121   2              case ELECT_PARA:
   122   2                  {
   123   3                      oled_show_string(1, 8, "max_v:");
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  transfer                                                           10/07/25  23:18:22  PAGE 3   
+=======
+C251 COMPILER V5.60.0,  transfer                                                           10/07/25  11:51:16  PAGE 3   
+>>>>>>> Stashed changes
 
   124   3                      
   125   3                      // 显示电感名称，选中项前添加'>'标记
@@ -203,7 +215,11 @@ Module Information          Static   Overlayable
   idata size           =    ------     ------
   pdata size           =    ------     ------
   xdata size           =        17     ------
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  transfer                                                           10/07/25  23:18:22  PAGE 4   
+=======
+C251 COMPILER V5.60.0,  transfer                                                           10/07/25  11:51:16  PAGE 4   
+>>>>>>> Stashed changes
 
   xdata-const size     =    ------     ------
   edata size           =    ------     ------

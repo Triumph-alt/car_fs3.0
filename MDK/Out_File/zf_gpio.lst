@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  zf_gpio                                                            10/07/25  23:18:29  PAGE 1   
+=======
+C251 COMPILER V5.60.0,  zf_gpio                                                            10/07/25  11:51:23  PAGE 1   
+>>>>>>> Stashed changes
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE zf_gpio
@@ -66,7 +70,11 @@ stmt  level    source
    50          //  @param      mode        引脚模式 GPIO:准双向口, GPO_PP:推挽输出, GPI_IMPEDANCE:高阻输�
              -��, GPI_OD:开漏输出
    51          //  @return     void
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  zf_gpio                                                            10/07/25  23:18:29  PAGE 2   
+=======
+C251 COMPILER V5.60.0,  zf_gpio                                                            10/07/25  11:51:23  PAGE 2   
+>>>>>>> Stashed changes
 
    52          //  Sample usage:           gpio_mode(P0_0,GPIO);       // 设置P0.0设置为双向IO
    53          //-------------------------------------------------------------------------------------------------------
@@ -134,7 +142,11 @@ stmt  level    source
   114   3                              P2M1 &= ~(1<<(pin&0xF));
   115   3                              P2M0 |=  (1<<(pin&0xF));
   116   3                      }
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  zf_gpio                                                            10/07/25  23:18:29  PAGE 3   
+=======
+C251 COMPILER V5.60.0,  zf_gpio                                                            10/07/25  11:51:23  PAGE 3   
+>>>>>>> Stashed changes
 
   117   2                      
   118   2                      if(0x30 == (pin&0xF0))  //P3
@@ -202,7 +214,11 @@ stmt  level    source
   180   3                              P6M1 |=  (1<<(pin&0xF));
   181   3                              P6M0 &= ~(1<<(pin&0xF));
   182   3                      }
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  zf_gpio                                                            10/07/25  23:18:29  PAGE 4   
+=======
+C251 COMPILER V5.60.0,  zf_gpio                                                            10/07/25  11:51:23  PAGE 4   
+>>>>>>> Stashed changes
 
   183   2                      if(0x70 == (pin&0xF0))  //P5
   184   2                      {
@@ -271,7 +287,11 @@ Module Information          Static   Overlayable
   bit size             =    ------     ------
   ebit size            =    ------     ------
   bitaddressable size  =    ------     ------
+<<<<<<< Updated upstream
 C251 COMPILER V5.60.0,  zf_gpio                                                            10/07/25  23:18:29  PAGE 5   
+=======
+C251 COMPILER V5.60.0,  zf_gpio                                                            10/07/25  11:51:23  PAGE 5   
+>>>>>>> Stashed changes
 
   ebitaddressable size =    ------     ------
   far data size        =    ------     ------
