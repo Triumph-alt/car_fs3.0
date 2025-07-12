@@ -4,7 +4,7 @@
 #include "headfile.h"
 
 #define  MOTOR_PWM_FREQ   17000   //PWM输出频率
-#define  MOTOR_PWM_LIMIT  6500    //PWM输出限幅65%
+#define  MOTOR_PWM_LIMIT  7500    //PWM输出限幅75%
 
 void motor_init(void);
 void set_motor_pwm(int32_t left_duty, int32_t right_duty);

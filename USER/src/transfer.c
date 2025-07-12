@@ -9,23 +9,40 @@ enum state car_state;
 uint8 selected_item = 0; // 当前选中的项目索引
 
 
+uint8_t startKeyFlag = 0, uartSendFlag = 1;
+
 void key_task(void)
 {
 	if (key[0].flag == 1)
 	{
-        enum state prev_state = car_state;   // 记录切换前状态
-        if (car_state < RUNNING)
-        {
-            car_state++;
-            oled_clear();
-            selected_item = 0; // 切换状态时重置选中项
+//        enum state prev_state = car_state;   // 记录切换前状态
+//        if (car_state < RUNNING)
+//        {
+//            car_state++;
+//            oled_clear();
+//            selected_item = 0; // 切换状态时重置选中项
 
-            /* 若从 PID_PARA 切换到 CHARGE，保存参数 */
-            if(prev_state == PID_PARA && car_state == CHARGE)
-            {
-                save_parameters_to_eeprom();
-            }
-        }
+//            /* 若从 PID_PARA 切换到 CHARGE，保存参数 */
+//            if(prev_state == PID_PARA && car_state == CHARGE)
+//            {
+//                save_parameters_to_eeprom();
+//            }
+//        }
+		
+		if (startKeyFlag == 1)
+		{
+			set_motor_pwm(0, 0);
+
+			pid_clean(&SpeedPID);
+			pid_clean(&TurnPID);
+			
+			uartSendFlag = startKeyFlag = 0;
+		}
+		else
+		{
+			delay_ms(2000);
+			uartSendFlag = startKeyFlag = 1;
+		}
 		
 		key[0].flag = 0;
 	}

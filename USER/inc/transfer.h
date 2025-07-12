@@ -21,6 +21,10 @@ enum state//小车运行状态
 extern Key_t key[4];
 extern enum state car_state; 
 
+
+extern uint8_t startKeyFlag, uartSendFlag;
+
+
 void key_task(void);
 void display_task(void);
 

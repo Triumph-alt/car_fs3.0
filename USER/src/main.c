@@ -9,7 +9,6 @@
 /*************	全局变量	**************/
 extern u8 chn;
 extern u8 xdata DmaAdBuffer[ADC_CH][ADC_DATA];
-uint8_t g_TxData[200] = {0};
 extern float result[SENSOR_COUNT];       // 来自 electromagnetic_tracking.c 的滤波结果数组
 
 
@@ -19,8 +18,9 @@ void ADC_config(void);
 void DMA_config(void);
 void GPIO_config(void);
 void PrintFiltered7(void);               // 打印滤波后七电感数据
-void PrintNormalized7(void);             // 打印归一化后七电感数据
+void Printtest(void);            
 void PrintNormalized17(void);
+void PrintDebugData(void);
 
 /*************	主函数	**************/
 void main(void)
@@ -42,22 +42,37 @@ void main(void)
 	pit_timer_ms(TIM_1, 10);
 	pit_timer_ms(TIM_2, 5);
 
-	pid_init(&SpeedPID, 1.0f, 2.0f, 3.0f, 5000.0f, 6000.0f); //初始化速度PID
-	pid_init(&TurnPID, 1.0f, 2.0f, 3.0f, 0.0f, 6000.0f);  //初始化位置PID
-	lowpass_init(&leftSpeedFilt, 0.556);   //初始化低通滤波器
+	pid_init(&SpeedPID, 50.0f, 0.2f, 0.0f, 5000.0f, 6000.0f);      //初始化速度PID
+	pid_init(&TurnPID, 35.0f, 0.0f, 1.8f, 0.0f, 6000.0f);          //初始化位置PID
+	lowpass_init(&leftSpeedFilt, 0.556);                          //初始化低通滤波器
 	lowpass_init(&rightSpeedFilt, 0.556);
 	kalman_init(&imu693_kf, 0.98, 0.02, imu693kf_Q, imu693kf_R, 0.0);
 	
     /* 从EEPROM加载max_value及PID参数，覆盖默认值 */
-    //load_parameters_from_eeprom();
-	// save_parameters_to_eeprom();  //保存max_value及PID参数到EEPROM（初始化）
+//	load_parameters_from_eeprom();
+//	save_parameters_to_eeprom();  //保存max_value及PID参数到EEPROM（初始化）
 
 	/*************	主循环	**************/
     while(1)
 	{
 		uart4_recv_task();  // 串口4接收任务
-//		 key_task();         // 处理按键任务
-//		 display_task();     // OLED显示任务
+		key_task();         // 处理按键任务
+//		display_task();     // OLED显示任务
+		
+		/*************	 定时操作	**************/
+		if (flag == 1)
+		{
+//			if (g_speedpoint == 60)
+//			{
+//				g_speedpoint = 150;
+//			}
+//			else if (g_speedpoint == 150)
+//			{
+//				g_speedpoint = 60;
+//			}
+			
+			flag = 0;
+		}
 
 		/*************	ADC DMA采样完成	**************/
 		if(DmaADCFlag)  //判断ADC DMA采样是否完成
@@ -68,20 +83,21 @@ void main(void)
 			DMA_ADC_TRIG();
 		}
 		
-		// PrintFiltered7();
-
 		//归一化电感数组
 		normalize_sensors();
 	
 		// 计算位置偏差
-		 position = calculate_position_improved();
+		position = calculate_position_improved();
 
 		// 打印归一化后的电感数据
-		PrintNormalized17();
+//		PrintNormalized17();
 		
 		// 检查电磁保护
-		// protection_flag = check_electromagnetic_protection();
+		if (!protection_flag)
+			protection_flag = check_electromagnetic_protection();
 		
+//		PrintDebugData();
+		Printtest();
     }
 }
 
@@ -141,17 +157,17 @@ void PrintChAvg7(void)
     u16 VL  = ((u16)DmaAdBuffer[5][2*ADC_TIMES+2] << 8) | DmaAdBuffer[5][2*ADC_TIMES+3]; //13
     u16 HL  = ((u16)DmaAdBuffer[6][2*ADC_TIMES+2] << 8) | DmaAdBuffer[6][2*ADC_TIMES+3]; //14
 
-    sprintf(g_TxData,"%u,%u,%u,%u,%u,%u,%u\r\n",
+    sprintf(g_txbuffer,"%u,%u,%u,%u,%u,%u,%u\r\n",
            HL, VL, HML, HC, HMR, VR, HR);
-    uart_putstr(UART_4, g_TxData);
-    delay_ms(10);
+    uart_putstr(UART_4, g_txbuffer);
+	memset(g_txbuffer, 0, 200);
 }
 
 /*************	打印滤波后电感数据	**************/
 void PrintFiltered7(void)
 {
     // 将 float 转为无符号整数打印，便于串口调试
-    sprintf(g_TxData, "%u,%u,%u,%u,%u,%u,%u\r\n",
+    sprintf(g_txbuffer, "%u,%u,%u,%u,%u,%u,%u\r\n",
             (uint16)result[SENSOR_HL],
             (uint16)result[SENSOR_VL],
             (uint16)result[SENSOR_HML],
@@ -159,15 +175,15 @@ void PrintFiltered7(void)
             (uint16)result[SENSOR_HMR],
             (uint16)result[SENSOR_VR],
             (uint16)result[SENSOR_HR]);
-    uart_putstr(UART_4, g_TxData);
-    delay_ms(10);
+    uart_putstr(UART_4, g_txbuffer);
+	memset(g_txbuffer, 0, 200);
 }
 
-/*************	打印归一化后电感和位置数据	**************/
-void PrintNormalized7(void)
+/*************	打印电感元素判别数据	**************/
+void Printtest(void)
 {
     // 将归一化后的float数据打印，保留两位小数
-    sprintf(g_TxData, "%u,%u,%u,%u,%u,%u,%u,%d\r\n",
+    sprintf(g_txbuffer, "%u,%u,%u,%u,%u,%u,%u,%u,%d,%u,%u\r\n",
             (uint16)normalized_data[SENSOR_HL],
             (uint16)normalized_data[SENSOR_VL],
             (uint16)normalized_data[SENSOR_HML],
@@ -175,16 +191,20 @@ void PrintNormalized7(void)
             (uint16)normalized_data[SENSOR_HMR],
             (uint16)normalized_data[SENSOR_VR],
             (uint16)normalized_data[SENSOR_HR],
-            position);
-    uart_putstr(UART_4, g_TxData);
-    delay_ms(10);
+			(uint16)signal_strength_value,
+	        position,
+			track_type,
+			track_type_zj
+			);
+    uart_putstr(UART_4, g_txbuffer);
+	memset(g_txbuffer, 0, 200);
 }
 
-/*************	打印归一化后电感和位置数据	**************/
+/*************	打印原始和归一化数据	**************/
 void PrintNormalized17(void)
 {
     // 将归一化后的float数据打印，保留两位小数
-    sprintf(g_TxData, "%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%d\r\n",
+    sprintf(g_txbuffer, "%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%d\r\n",
             (uint16)result[SENSOR_HL],
             (uint16)result[SENSOR_VL],
             (uint16)result[SENSOR_HML],
@@ -200,7 +220,32 @@ void PrintNormalized17(void)
             (uint16)normalized_data[SENSOR_VR],
             (uint16)normalized_data[SENSOR_HR],
             position);
-    uart_putstr(UART_4, g_TxData);
-    delay_ms(10);
+    uart_putstr(UART_4, g_txbuffer);
+	memset(g_txbuffer, 0, 200);
+}
+
+/*************	打印调试数据	**************/
+void PrintDebugData(void)
+{
+    if (uartSendFlag == 1)
+	{
+		sprintf(g_txbuffer, "%d,%d,%d,%d,%d,%d,%d,%d,%d\n", 
+				g_speedpoint, 
+				g_encoder_average, 
+				EncoderL.encoder_final,
+				EncoderR.encoder_final,
+				(int)g_DutyLeft,
+				(int)g_DutyRight,
+				position,
+				(int)speed_pid,
+				(int)turn_pid);
+		uart_putstr(UART_4, g_txbuffer);
+		memset(g_txbuffer, 0, 200);
+				
+		if (position >= 0)
+			P52 = 1;
+		else
+			P52 = 0;
+	}
 }
 

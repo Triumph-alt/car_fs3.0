@@ -61,7 +61,7 @@ float pid_poisitional(PID_t* pid, float real, float target)
 	return pid->output; 
 }
 
-//增量式PID（带前馈）
+//增量式PID
 float pid_increment(PID_t* pid, float real, float target)
 {
 	pid->error = target - real;
@@ -87,7 +87,7 @@ float pid_increment(PID_t* pid, float real, float target)
 	return pid->output;
 }
 
-//转向环pid（加二次项）
+//转向环pid
 float pid_poisitional_turnning(PID_t* pid, float position, float GyroZ)
 {
 	pid->p_out = pid->kp * position;

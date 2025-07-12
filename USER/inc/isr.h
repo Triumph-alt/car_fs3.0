@@ -22,7 +22,12 @@
 
 extern int g_encoder_average;
 extern int32_t g_DutyLeft, g_DutyRight;
+extern int g_speedpoint;
+extern float Gyro_Z, filtered_GyroZ;
 
+extern float speed_pid;
+extern float turn_pid;
 
+extern int flag;
 
 #endif

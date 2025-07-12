@@ -21,8 +21,8 @@ void set_motor_pwm(int32_t left_duty, int32_t right_duty)
 			left_duty = MOTOR_PWM_LIMIT;
 		}
 	
-		pwm_duty(PWMA_CH1P_P60, 0);
-		pwm_duty(PWMA_CH2P_P62, left_duty);
+		pwm_duty(PWMA_CH1P_P60, left_duty);
+		pwm_duty(PWMA_CH2P_P62, 0);
 	}
 	else
 	{
@@ -31,9 +31,8 @@ void set_motor_pwm(int32_t left_duty, int32_t right_duty)
 			left_duty = -MOTOR_PWM_LIMIT;
 		}
 	
-		pwm_duty(PWMA_CH1P_P60, -left_duty);
-//		pwm_duty(PWMA_CH1P_P60, 0);
-		pwm_duty(PWMA_CH2P_P62, 0);
+		pwm_duty(PWMA_CH1P_P60, 0);
+		pwm_duty(PWMA_CH2P_P62, -left_duty);
 	}
 	
 	/* 右轮PWM限幅并输出 */

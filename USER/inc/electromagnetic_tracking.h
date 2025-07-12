@@ -23,7 +23,7 @@
 
 
 #define	ADC_CH		7				/* 1~16, ADC转换通道数, 需同步修改转换通道 */
-#define ADC_TIMES	8				/* 1~16, ADC转换次数, 需同步修改转换次数 */
+#define ADC_TIMES   8 					/* 1~16, ADC转换次数, 需同步修改转换次数 */
 #define	ADC_DATA	2*ADC_TIMES+4	/* 12, 每个通道ADC转换数据总数, 2*转换次数+4 (n = 4), 需同步修改转换次数 */
 
 

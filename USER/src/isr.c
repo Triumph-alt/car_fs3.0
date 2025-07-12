@@ -36,6 +36,8 @@ uint8_t beep_flag = 0;                           // 蜂鸣器开启标志，1表
 uint16_t beep_count = 0;                         // 蜂鸣器计时计数器
 uint8_t track_ten_cnt = 0;                       //出入环重复判定计时器
 
+int count = 0, flag = 0;
+
 //UART1中断
 void UART1_Isr() interrupt 4
 {
@@ -199,6 +201,14 @@ void TM1_Isr() interrupt 3
 			break;
 		}
 	}
+	
+	/* 普通定时功能，备用 */
+	count++;
+	if (count >= 50)
+	{
+		flag = 1;
+		count = 0;
+	}
 
 	/* 检测赛道类型变化并控制蜂鸣器 */
     if (track_type != track_type_last)
@@ -243,51 +253,54 @@ void TM2_Isr() interrupt 12
 {
 	TIM2_CLEAR_FLAG;  //清除中断标志
 	
-	/* 初步读取并清除编码器的值 */
-	EncoderL.encoder_original = get_left_encoder();
-	EncoderR.encoder_original = get_right_encoder();
-
-	/* 对编码器的值进行滤波 */
-	EncoderL.encoder_final = lowpass_filter(&leftSpeedFilt, EncoderL.encoder_original);
-	EncoderR.encoder_final = lowpass_filter(&rightSpeedFilt, EncoderR.encoder_original);
-
-	/* 对编码器的值进行异常消除 */
-	EncoderL.encoder_final = encoder_debounce(&EncoderDeboL, EncoderR.encoder_final);
-	EncoderR.encoder_final = encoder_debounce(&EncoderDeboR, EncoderR.encoder_final);
-
-	/* 取左右编码器平均值 */
-	g_encoder_average = (EncoderL.encoder_final + EncoderR.encoder_final) / 2;
-
-	/* 读取陀螺仪原始数据并将其转化为物理数据 */
-	imu963ra_get_gyro();
-	Gyro_Z = imu963ra_gyro_transition(imu963ra_gyro_z);
-
-	/* 对Gyro_Z进行卡尔曼滤波 */
-	filtered_GyroZ = kalman_update(&imu693_kf, Gyro_Z);
-	
-	/* 转向环PID控制 */
-	turn_pid = pid_poisitional_turnning(&TurnPID, position, filtered_GyroZ);
-
-	/* 更新卡尔曼滤波器的值 */
-	kalman_predict(&imu693_kf, turn_pid);
-
-	/* 速度环PID控制 */
-	speed_pid = pid_increment(&SpeedPID, g_encoder_average, g_speedpoint);
-
-	/* 控制电机 */
-	g_DutyLeft = (int32_t)(speed_pid - turn_pid);
-	g_DutyRight = (int32_t)(speed_pid + turn_pid);
-
-	if (protection_flag == 1)
+	if (startKeyFlag == 1)
 	{
-		pid_clean(&SpeedPID);  // 清除速度环PID
-		pid_clean(&TurnPID);   // 清除转向环PID
+		/* 初步读取并清除编码器的值 */
+		EncoderL.encoder_original = get_left_encoder();
+		EncoderR.encoder_original = get_right_encoder();
 
-		set_motor_pwm(0, 0);
-	}
-	else
-	{
-		set_motor_pwm(g_DutyLeft, g_DutyRight);
+		/* 对编码器的值进行滤波 */
+		EncoderL.encoder_final = lowpass_filter(&leftSpeedFilt, EncoderL.encoder_original);
+		EncoderR.encoder_final = lowpass_filter(&rightSpeedFilt, EncoderR.encoder_original);
+
+		/* 对编码器的值进行异常消除 */
+		EncoderL.encoder_final = encoder_debounce(&EncoderDeboL, EncoderL.encoder_final);
+		EncoderR.encoder_final = encoder_debounce(&EncoderDeboR, EncoderR.encoder_final);
+
+		/* 取左右编码器平均值 */
+		g_encoder_average = (EncoderL.encoder_final + EncoderR.encoder_final) / 2;
+
+		/* 读取陀螺仪原始数据并将其转化为物理数据 */
+		imu963ra_get_gyro();
+		Gyro_Z = imu963ra_gyro_transition(imu963ra_gyro_z);
+
+		/* 对Gyro_Z进行卡尔曼滤波 */
+		filtered_GyroZ = kalman_update(&imu693_kf, Gyro_Z);
+		
+		/* 转向环PID控制 */
+		turn_pid = pid_poisitional_turnning(&TurnPID, position, filtered_GyroZ);
+
+		/* 更新卡尔曼滤波器的值 */
+		kalman_predict(&imu693_kf, turn_pid);
+
+		/* 速度环PID控制 */
+		speed_pid = pid_increment(&SpeedPID, g_encoder_average, g_speedpoint);
+
+		/* 控制电机 */
+		g_DutyLeft = (int32_t)(speed_pid - turn_pid);
+		g_DutyRight = (int32_t)(speed_pid + turn_pid);
+
+		if (protection_flag == 1)
+		{
+			pid_clean(&SpeedPID);  // 清除速度环PID
+			pid_clean(&TurnPID);   // 清除转向环PID
+
+			set_motor_pwm(0, 0);
+		}
+		else
+		{
+			set_motor_pwm(g_DutyLeft, g_DutyRight);
+		}
 	}
 }
 
