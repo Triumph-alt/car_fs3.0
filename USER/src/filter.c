@@ -49,3 +49,4 @@ float lowpass_filter(LowPassFilter* instance, float input)
     
     return instance->output;
 }
+

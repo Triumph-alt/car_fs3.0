@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream
-C251 COMPILER V5.60.0,  pid                                                                10/07/25  23:18:25  PAGE 1   
-=======
-C251 COMPILER V5.60.0,  pid                                                                10/07/25  11:51:20  PAGE 1   
->>>>>>> Stashed changes
+C251 COMPILER V5.60.0,  pid                                                                12/07/25  20:30:33  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE pid
@@ -70,11 +66,7 @@ stmt  level    source
    55   2              }
    56   1              else if (pid->output < -pid->o_limit)
    57   1              {
-<<<<<<< Updated upstream
-C251 COMPILER V5.60.0,  pid                                                                10/07/25  23:18:25  PAGE 2   
-=======
-C251 COMPILER V5.60.0,  pid                                                                10/07/25  11:51:20  PAGE 2   
->>>>>>> Stashed changes
+C251 COMPILER V5.60.0,  pid                                                                12/07/25  20:30:33  PAGE 2   
 
    58   2                      pid->output = -pid->o_limit;
    59   2              }
@@ -82,7 +74,7 @@ stmt  level    source
    61   1              return pid->output; 
    62   1      }
    63          
-   64          //增量式PID（带前馈）
+   64          //增量式PID
    65          float pid_increment(PID_t* pid, float real, float target)
    66          {
    67   1              pid->error = target - real;
@@ -108,7 +100,7 @@ stmt  level    source
    87   1              return pid->output;
    88   1      }
    89          
-   90          //转向环pid（加二次项）
+   90          //转向环pid
    91          float pid_poisitional_turnning(PID_t* pid, float position, float GyroZ)
    92          {
    93   1              pid->p_out = pid->kp * position;
@@ -142,11 +134,7 @@ stmt  level    source
   121   1              pid->lasterror = 0;
   122   1              pid->interror = 0;
   123   1              pid->preverror = 0;
-<<<<<<< Updated upstream
-C251 COMPILER V5.60.0,  pid                                                                10/07/25  23:18:25  PAGE 3   
-=======
-C251 COMPILER V5.60.0,  pid                                                                10/07/25  11:51:20  PAGE 3   
->>>>>>> Stashed changes
+C251 COMPILER V5.60.0,  pid                                                                12/07/25  20:30:33  PAGE 3   
 
   124   1              pid->output = 0;
   125   1      }

@@ -28,7 +28,7 @@ int32_t g_DutyLeft = 0, g_DutyRight = 0;         // 最后真正要给电机的P
 
 //pid控制相关变量
 float speed_pid = 0, turn_pid = 0;               //速度环和转向环pid的值
-int g_speedpoint = 80;
+int g_speedpoint = 100;
 int g_leftpoint = 0, g_rightpoint = 0;           //左右轮的目标速度
 
 // 蜂鸣器控制相关变量

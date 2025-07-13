@@ -1,7 +1,12 @@
 #include "encoder.h"
 
+#define ENCODER_JUMP_THRESHOLD    20  // 编码器读数突变的阈值（略大于正常的最大值）
+#define MIN_STABILITY_COUNT       5   // 判定为稳定状态所需的最小连续计数
+#define COUNTER_SAFETY_RESET   10000  // 计数器防溢出重置值
+
 Encoder_t EncoderL, EncoderR;
 EncoderDebo_t EncoderDeboL, EncoderDeboR;
+
 
 void encoder_init(void)
 {
@@ -61,7 +66,8 @@ int get_right_encoder(void)
 
 int encoder_debounce(EncoderDebo_t* instance, int encoder)
 {
-	if (myabs(encoder - instance->encoderlast) > 20 && instance->count >= 5)
+	// 使用宏替换魔法数，代码意图一目了然
+	if (myabs(encoder - instance->encoderlast) > ENCODER_JUMP_THRESHOLD && instance->count >= MIN_STABILITY_COUNT)
 	{
 		encoder = instance->encoderlast;
 		instance->count = 0;
@@ -71,9 +77,10 @@ int encoder_debounce(EncoderDebo_t* instance, int encoder)
 		instance->encoderlast = encoder;
 		
 		instance->count++;
-		if (instance->count >= 10000)
+		if (instance->count >= COUNTER_SAFETY_RESET)
 		{
-			instance->count = 0;
+			// 可以保持清零，或者设置为一个不会立即触发抖动判断的值
+			instance->count = MIN_STABILITY_COUNT; 
 		}
 	}
 	

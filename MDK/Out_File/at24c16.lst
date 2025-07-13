@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream
-C251 COMPILER V5.60.0,  at24c16                                                            10/07/25  23:18:21  PAGE 1   
-=======
-C251 COMPILER V5.60.0,  at24c16                                                            10/07/25  11:51:16  PAGE 1   
->>>>>>> Stashed changes
+C251 COMPILER V5.60.0,  at24c16                                                            12/07/25  20:30:30  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE at24c16
@@ -70,11 +66,7 @@ stmt  level    source
    55          void at24c16_write_twobytes(uint8_t page, uint8_t addr, uint16_t w_data)
    56          {
    57   1              uint8_t h_data = 0, l_data = 0;
-<<<<<<< Updated upstream
-C251 COMPILER V5.60.0,  at24c16                                                            10/07/25  23:18:21  PAGE 2   
-=======
-C251 COMPILER V5.60.0,  at24c16                                                            10/07/25  11:51:16  PAGE 2   
->>>>>>> Stashed changes
+C251 COMPILER V5.60.0,  at24c16                                                            12/07/25  20:30:30  PAGE 2   
 
    58   1              
    59   1              /* 拆成高低8位分别写入 */
@@ -137,21 +129,12 @@ stmt  level    source
   116          {
   117   1         uint8_t i;
   118   1      
-<<<<<<< Updated upstream
   119   1         /* 1. 读取 max_value 数组 */
   120   1         for(i = 0; i < 7; i++)
   121   1         {
   122   2             max_value[i] = at24c16_read_twobytes(0, (uint8_t)(i * 2));
   123   2         }
-C251 COMPILER V5.60.0,  at24c16                                                            10/07/25  23:18:21  PAGE 3   
-=======
-  119   1          /* 1. 读取 max_value 数组 */
-  120   1          for(i = 0; i < 7; i++)
-  121   1          {
-  122   2              max_value[i] = at24c16_read_twobytes(0, (uint8_t)(i * 2));
-  123   2          }
-C251 COMPILER V5.60.0,  at24c16                                                            10/07/25  11:51:16  PAGE 3   
->>>>>>> Stashed changes
+C251 COMPILER V5.60.0,  at24c16                                                            12/07/25  20:30:30  PAGE 3   
 
   124   1      
   125   1         /* 2. 读取 SpeedPID 参数 */
@@ -220,11 +203,7 @@ Module Information          Static   Overlayable
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
-<<<<<<< Updated upstream
-C251 COMPILER V5.60.0,  at24c16                                                            10/07/25  23:18:21  PAGE 4   
-=======
-C251 COMPILER V5.60.0,  at24c16                                                            10/07/25  11:51:16  PAGE 4   
->>>>>>> Stashed changes
+C251 COMPILER V5.60.0,  at24c16                                                            12/07/25  20:30:30  PAGE 4   
 
   pdata size           =    ------     ------
   xdata size           =        46     ------

@@ -9,7 +9,7 @@
 /*************	全局变量	**************/
 extern u8 chn;
 extern u8 xdata DmaAdBuffer[ADC_CH][ADC_DATA];
-extern float result[SENSOR_COUNT];       // 来自 electromagnetic_tracking.c 的滤波结果数组
+extern float result[SENSOR_COUNT];       //滤波后的电感值
 
 
 /*************	函数声明	**************/
@@ -43,7 +43,7 @@ void main(void)
 	pit_timer_ms(TIM_2, 5);
 
 	pid_init(&SpeedPID, 50.0f, 0.2f, 0.0f, 5000.0f, 6000.0f);      //初始化速度PID
-	pid_init(&TurnPID, 35.0f, 0.0f, 1.8f, 0.0f, 6000.0f);          //初始化位置PID
+	pid_init(&TurnPID, 25.0f, 0.0f, 2.4f, 0.0f, 6000.0f);          //初始化位置PID
 	lowpass_init(&leftSpeedFilt, 0.556);                          //初始化低通滤波器
 	lowpass_init(&rightSpeedFilt, 0.556);
 	kalman_init(&imu693_kf, 0.98, 0.02, imu693kf_Q, imu693kf_R, 0.0);
@@ -88,16 +88,15 @@ void main(void)
 	
 		// 计算位置偏差
 		position = calculate_position_improved();
-
-		// 打印归一化后的电感数据
-//		PrintNormalized17();
 		
 		// 检查电磁保护
 		if (!protection_flag)
 			protection_flag = check_electromagnetic_protection();
 		
-//		PrintDebugData();
-		Printtest();
+		// 打印数据
+		// PrintNormalized17(); //原始数据和归一化
+		PrintDebugData();	 //调试数据
+		//Printtest(); 		 //电感元素判别
     }
 }
 
@@ -240,7 +239,7 @@ void PrintDebugData(void)
 				(int)speed_pid,
 				(int)turn_pid);
 		uart_putstr(UART_4, g_txbuffer);
-		memset(g_txbuffer, 0, 200);
+		//memset(g_txbuffer, 0, 200);
 				
 		if (position >= 0)
 			P52 = 1;

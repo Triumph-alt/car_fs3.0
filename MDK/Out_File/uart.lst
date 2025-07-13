@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream
-C251 COMPILER V5.60.0,  uart                                                               10/07/25  23:18:22  PAGE 1   
-=======
-C251 COMPILER V5.60.0,  uart                                                               10/07/25  11:51:17  PAGE 1   
->>>>>>> Stashed changes
+C251 COMPILER V5.60.0,  uart                                                               12/07/25  20:30:31  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE uart
@@ -20,36 +16,85 @@ stmt  level    source
     5          uint8_t g_rxbuffer[UART_RX_LENGTH] = {0};
     6          uint8_t g_rxpointer = 0, g_rxdat = 0;
     7          
-    8          void uart4_recv_task(void)
-    9          {
-   10   1              if (g_rxpointer != 0)
-   11   1              {
-   12   2                      int temp = g_rxpointer;
-   13   2                      delay_ms(4);
-   14   2                      
-   15   2                      if (temp == g_rxpointer)
-   16   2                      {
-   17   3                              uart4_interrupt_callback();
-   18   3                      }
-   19   2              }
-   20   1      }
-   21          
-   22          void uart4_interrupt_callback(void)
-   23          {
-   24   1              if(g_rxpointer > 0)
-   25   1              {
-   26   2                      
-   27   2              }
-   28   1              
-   29   1              g_rxpointer = 0;
-   30   1              memset(g_rxbuffer, 0, UART_RX_LENGTH);
-   31   1              memset(g_txbuffer, 0, UART_TX_LENGTH);
-   32   1      }
+    8          
+    9          void uart4_recv_task(void)
+   10          {
+   11   1              if (g_rxpointer != 0)
+   12   1              {
+   13   2                      int temp = g_rxpointer;
+   14   2                      delay_ms(4);
+   15   2                      
+   16   2                      if (temp == g_rxpointer)
+   17   2                      {
+   18   3                              uart4_interrupt_callback();
+   19   3                      }
+   20   2              }
+   21   1      }
+   22          
+   23          void uart4_interrupt_callback(void)
+   24          {
+   25   1              if(g_rxpointer > 0)
+   26   1              {
+   27   2                      if (strncmp(g_rxbuffer, "speed_kp", 8) == 0)
+   28   2                      {
+   29   3                              sscanf(g_rxbuffer, "speed_kp:%f", &SpeedPID.kp);
+   30   3                              
+   31   3      //                      sprintf(g_txbuffer, "speed_kp:%f\n", SpeedPID.kp);
+   32   3      //                      uart_putstr(UART_4, g_txbuffer);
+   33   3                      }
+   34   2                      else if (strncmp(g_rxbuffer, "speed_ki", 8) == 0)
+   35   2                      {
+   36   3                              sscanf(g_rxbuffer, "speed_ki:%f", &SpeedPID.ki);
+   37   3                              
+   38   3      //                      sprintf(g_txbuffer, "speed_ki:%f\n", SpeedPID.ki);
+   39   3      //                      uart_putstr(UART_4, g_txbuffer);
+   40   3                      }
+   41   2                      else if (strncmp(g_rxbuffer, "speed_kd", 8) == 0)
+   42   2                      {
+   43   3                              sscanf(g_rxbuffer, "speed_kd:%f", &SpeedPID.kd);
+   44   3                              
+   45   3      //                      sprintf(g_txbuffer, "speed_kd:%f\n", SpeedPID.kd);
+   46   3      //                      uart_putstr(UART_4, g_txbuffer);
+   47   3                      }
+   48   2                      else if (strncmp(g_rxbuffer, "turn_kp", 7) == 0)
+   49   2                      {
+   50   3                              sscanf(g_rxbuffer, "turn_kp:%f", &TurnPID.kp);
+   51   3                              
+   52   3      //                      sprintf(g_txbuffer, "turn_kp:%f\n", TurnPID.kp);
+   53   3      //                      uart_putstr(UART_4, g_txbuffer);
+   54   3                      }
+   55   2                      else if (strncmp(g_rxbuffer, "turn_ki", 7) == 0)
+   56   2                      {
+   57   3                              sscanf(g_rxbuffer, "turn_ki:%f", &TurnPID.ki);
+C251 COMPILER V5.60.0,  uart                                                               12/07/25  20:30:31  PAGE 2   
+
+   58   3                              
+   59   3      //                      sprintf(g_txbuffer, "turn_ki:%f\n", TurnPID.ki);
+   60   3      //                      uart_putstr(UART_4, g_txbuffer);
+   61   3                      }
+   62   2                      else if (strncmp(g_rxbuffer, "turn_kd", 7) == 0)
+   63   2                      {
+   64   3                              sscanf(g_rxbuffer, "turn_kd:%f", &TurnPID.kd);
+   65   3                              
+   66   3      //                      sprintf(g_txbuffer, "turn_kd:%f\n", TurnPID.kd);
+   67   3      //                      uart_putstr(UART_4, g_txbuffer);
+   68   3                      }
+   69   2                      else if (strncmp(g_rxbuffer, "stop", 4) == 0)
+   70   2                      {                       
+   71   3                              protection_flag = 1;
+   72   3                      }
+   73   2                      
+   74   2              }
+   75   1              
+   76   1              g_rxpointer = 0;
+   77   1              memset(g_rxbuffer, 0, UART_RX_LENGTH);
+   78   1              memset(g_txbuffer, 0, UART_TX_LENGTH);
+   79   1      }
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =        86     ------
+  code size            =       567     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
@@ -64,7 +109,7 @@ Module Information          Static   Overlayable
   far data size        =    ------     ------
   huge data size       =    ------     ------
   const size           =    ------     ------
-  hconst size          =       422     ------
+  hconst size          =       547     ------
 End of Module Information.
 
 

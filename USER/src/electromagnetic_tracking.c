@@ -12,16 +12,16 @@ u8 xdata DmaAdBuffer[ADC_CH][ADC_DATA];
 TrackWeights track_weights[4] = {
     // 普通直道
 
-    {0.00f, 0.35, 0.30f, 0.20f, 0.70f, 30, "直道"},
+    {0.20f, 0.35, 0.00f, 0.20f, 0.70f, 30, "直道"},
     
     // 直角弯道
-    {0.00f, 0.30f, 0.35f, 0.40f, 1.00f, 50, "直角弯道"},
+    {0.20f, 0.30f, 0.00f, 0.40f, 1.00f, 50, "直角弯道"},
     
     // 十字圆环
-    {0.35f, 0.25f, 0.20f, 0.15f, 0.90f, 40, "十字圆环"},
+    {0.35f, 0.25f, 0.00f, 0.15f, 0.90f, 40, "十字圆环"},
     
     // 环岛
-    {0.35f, 0.38f, 0.10f, 0.25f, 1.00f, 50, "环岛"}
+    {0.35f, 0.38f, 0.00f, 0.25f, 1.00f, 50, "环岛"}
 };
 
 uint16 adc_fliter_data[SENSOR_COUNT][HISTORY_COUNT] = {0}; //滤波后的值
@@ -39,7 +39,7 @@ float normalized_data[SENSOR_COUNT] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f}
 // uint16 min_value[SENSOR_COUNT] = {0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF};  // 每个电感的最小值
 // uint16 max_value[SENSOR_COUNT] = {0, 0, 0, 0, 0, 0, 0};  // 每个电感的最大值
 uint16 min_value[SENSOR_COUNT] = {0, 0, 0, 0, 0, 0, 0};  // 每个电感的最小值
-uint16 max_value[SENSOR_COUNT] = {3100, 3400, 3500, 2800, 3500, 3400, 3300};  // 每个电感的最大值
+uint16 max_value[SENSOR_COUNT] = {3300, 3500, 3700, 3700, 3700, 3500, 3300};  // 每个电感的最大值
 
 // 电感位置计算相关变量
 float signal_strength_value = 0;   // 信号强度指标
@@ -114,7 +114,7 @@ void average_filter(void)
     history_index++;
     if(history_index >= times) history_index = 0;
 }
-
+	
 
 //-----------------------------------------------------------------------------
 // @brief  	中位值滤波，将每个电感的中位数作为结果
@@ -402,9 +402,9 @@ int16 calculate_position_improved(void)
     if (track_type == WEIGHT_STRAIGHT || track_type == 4) // 0. 当前认为是普通赛道时，尝试判断特殊赛道
     {    
         // 1. 直角弯道特征
-        if(((normalized_data[SENSOR_VL] > 65.0f && normalized_data[SENSOR_VR] < 20.0f) || //左转
-                (normalized_data[SENSOR_VR] > 65.0f && normalized_data[SENSOR_VL] < 20.0f)) &&  //右转
-								normalized_data[SENSOR_HC] < 75.0f && 
+        if(((normalized_data[SENSOR_VL] > 60.0f && normalized_data[SENSOR_VR] < 25.0f) || //左转
+                (normalized_data[SENSOR_VR] > 60.0f && normalized_data[SENSOR_VL] < 25.0f)) &&  //右转
+								normalized_data[SENSOR_HC] < 70.0f && 
                 signal_strength > 25.0f && signal_strength < 50.0f) // 调整信号强度范围
         {
             track_type = WEIGHT_RIGHT_ANGLE; // 直角弯道
@@ -426,23 +426,28 @@ int16 calculate_position_improved(void)
     }
     else if (track_type == WEIGHT_RIGHT_ANGLE) // 1. 直角弯道
 	{
-		if (normalized_data[SENSOR_VL] > 60.0f && normalized_data[SENSOR_VR] < 30.0f )
+		if (normalized_data[SENSOR_VL] > 50.0f && normalized_data[SENSOR_VR] < 30.0f )
 		{
 			track_type_zj = 1; //左转
 		}
-		else if (normalized_data[SENSOR_VR] > 60.0f && normalized_data[SENSOR_VL] < 30.0f )
+		else if (normalized_data[SENSOR_VR] > 50.0f && normalized_data[SENSOR_VL] < 30.0f )
 		{
 			track_type_zj = 2; //右转
-		}
+		}   
 		
 		if (track_type_zj != 0)
 		{
 			// 回到直道 - 可选:增加 signal_strength < 45.0f 判断
-			if (normalized_data[SENSOR_VR] < 20.0f && normalized_data[SENSOR_VL] < 20.0f ) 
-			{
-				track_type = WEIGHT_STRAIGHT; 
-				track_type_zj = 0;
-			}
+            if (track_type_zj == 1 && (normalized_data[SENSOR_HC] > 65.0f && normalized_data[SENSOR_VL] < 50.0f ))
+            {
+                track_type = WEIGHT_STRAIGHT; 
+                track_type_zj = 0;
+            }
+            else if (track_type_zj == 2 && (normalized_data[SENSOR_HC] > 65.0f && normalized_data[SENSOR_VR] < 50.0f ))
+            {
+                track_type = WEIGHT_STRAIGHT; 
+                track_type_zj = 0;
+            }
 //			if (signal_strength > 50) // 直角右拐进圆环的特殊点
 //			{
 //				track_type = WEIGHT_ROUNDABOUT; 
