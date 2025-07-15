@@ -5,6 +5,7 @@ uint8_t g_txbuffer[UART_TX_LENGTH] = {0};
 uint8_t g_rxbuffer[UART_RX_LENGTH] = {0};
 uint8_t g_rxpointer = 0, g_rxdat = 0;
 
+float temp = 0;
 
 void uart4_recv_task(void)
 {
@@ -70,7 +71,27 @@ void uart4_interrupt_callback(void)
 		{			
 			protection_flag = 1;
 		}
-		
+		else if (strncmp(g_rxbuffer, "r_p", 3) == 0)
+		{
+			sscanf(g_rxbuffer, "r_p:%f", &temp);
+			r_position = (uint8_t)temp;
+			// sprintf(g_TxData, "r_p:%d\n", r_position);
+			// uart_putstr(UART_4, g_TxData);
+		}
+		else if (strncmp(g_rxbuffer, "r_d", 3) == 0)
+		{
+			sscanf(g_rxbuffer, "r_d:%f", &temp);
+			r_distance = (uint16_t)temp;
+			// sprintf(g_TxData, "r_d:%d\n", r_distance);
+			// uart_putstr(UART_4, g_TxData);
+		}
+		else if (strncmp(g_rxbuffer, "s_d", 3) == 0)
+		{
+			sscanf(g_rxbuffer, "s_d:%f", &temp);
+			s_distance = (uint16_t)temp;
+			// sprintf(g_TxData, "r_d:%d\n", r_distance);
+			// uart_putstr(UART_4, g_TxData);
+		}
 	}
 	
 	g_rxpointer = 0;

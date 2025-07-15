@@ -21,8 +21,9 @@
 #define ADC_VR  4   // 右侧纵向电感-P1.4
 #define ADC_HR  8   // 右侧横向电感-P0.0
 
+#define ADC_POWR 5
 
-#define	ADC_CH		7				/* 1~16, ADC转换通道数, 需同步修改转换通道 */
+#define	ADC_CH		8				/* 1~16, ADC转换通道数, 需同步修改转换通道 */
 #define ADC_TIMES   8 					/* 1~16, ADC转换次数, 需同步修改转换次数 */
 #define	ADC_DATA	2*ADC_TIMES+4	/* 12, 每个通道ADC转换数据总数, 2*转换次数+4 (n = 4), 需同步修改转换次数 */
 
@@ -94,6 +95,8 @@ extern uint8 track_ten_flag;
 extern uint8 protection_flag;
 extern uint8 track_ten_flag;
 extern uint8 ten_change_flag;
+
+extern volatile uint8_t outisland_flag;
 
 #endif 
 

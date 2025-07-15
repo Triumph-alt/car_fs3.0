@@ -28,6 +28,10 @@ extern float Gyro_Z, filtered_GyroZ;
 extern float speed_pid;
 extern float turn_pid;
 
+extern volatile uint8_t r_position;
+extern volatile uint16_t r_distance;
+extern volatile uint16_t s_distance;
+
 extern int flag;
 
 #endif

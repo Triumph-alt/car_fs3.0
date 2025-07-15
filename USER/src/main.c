@@ -7,10 +7,9 @@
 
 
 /*************	全局变量	**************/
-extern u8 chn;
 extern u8 xdata DmaAdBuffer[ADC_CH][ADC_DATA];
 extern float result[SENSOR_COUNT];       //滤波后的电感值
-
+extern uint32 power_voltage;
 
 /*************	函数声明	**************/
 void PrintChAvg7(void);
@@ -40,10 +39,10 @@ void main(void)
 	oled_init();
 
 	pit_timer_ms(TIM_1, 10);
-	pit_timer_ms(TIM_2, 5);
+	pit_timer_ms(TIM_2, 2);
 
 	pid_init(&SpeedPID, 50.0f, 0.2f, 0.0f, 5000.0f, 6000.0f);      //初始化速度PID
-	pid_init(&TurnPID, 25.0f, 0.0f, 2.4f, 0.0f, 6000.0f);          //初始化位置PID
+	pid_init(&TurnPID, 70.0f, 0.0f, 7.5f, 0.0f, 6000.0f);          //初始化位置PID
 	lowpass_init(&leftSpeedFilt, 0.556);                          //初始化低通滤波器
 	lowpass_init(&rightSpeedFilt, 0.556);
 	kalman_init(&imu693_kf, 0.98, 0.02, imu693kf_Q, imu693kf_R, 0.0);
@@ -94,9 +93,10 @@ void main(void)
 			protection_flag = check_electromagnetic_protection();
 		
 		// 打印数据
-		// PrintNormalized17(); //原始数据和归一化
-		PrintDebugData();	 //调试数据
-		//Printtest(); 		 //电感元素判别
+//		PrintNormalized17(); //原始数据和归一化
+//		PrintDebugData();	 //调试数据
+//		PrintNormalized17();
+		Printtest(); 		 //电感元素判别
     }
 }
 
@@ -110,6 +110,7 @@ void GPIO_config(void)
 	gpio_mode(P1_1, GPI_IMPEDANCE);
 	gpio_mode(P1_3, GPI_IMPEDANCE);
 	gpio_mode(P1_4, GPI_IMPEDANCE);
+	gpio_mode(P1_5, GPI_IMPEDANCE);
 }
 
 
@@ -135,7 +136,7 @@ void DMA_config(void)
 
 	DMA_ADC_InitStructure.DMA_Enable = ENABLE;			//DMA使能  	ENABLE,DISABLE
 	// DMA_ADC_InitStructure.DMA_Channel = 0xffff;         //ADC通道使能寄存器, 1:使能, bit15~bit0 对应 ADC15~ADC0
-	DMA_ADC_InitStructure.DMA_Channel = 0x631A;			//ADC通道使能: P0.0, P0.1, P0.5, P0.6, P1.1, P1.3, P1.4
+	DMA_ADC_InitStructure.DMA_Channel = 0x633A;			//ADC通道使能: P0.0, P0.1, P0.5, P0.6, P1.1, P1.3, P1.4
 	DMA_ADC_InitStructure.DMA_Buffer = (u16)DmaAdBuffer;	//ADC转换数据存储地址
 	DMA_ADC_InitStructure.DMA_Times = ADC_8_Times;	//每个通道转换次数, ADC_1_Times,ADC_2_Times,ADC_4_Times,ADC_8_Times,ADC_16_Times,ADC_32_Times,ADC_64_Times,ADC_128_Times,ADC_256_Times
 	DMA_ADC_Inilize(&DMA_ADC_InitStructure);		//初始化
@@ -159,7 +160,6 @@ void PrintChAvg7(void)
     sprintf(g_txbuffer,"%u,%u,%u,%u,%u,%u,%u\r\n",
            HL, VL, HML, HC, HMR, VR, HR);
     uart_putstr(UART_4, g_txbuffer);
-	memset(g_txbuffer, 0, 200);
 }
 
 /*************	打印滤波后电感数据	**************/
@@ -175,14 +175,13 @@ void PrintFiltered7(void)
             (uint16)result[SENSOR_VR],
             (uint16)result[SENSOR_HR]);
     uart_putstr(UART_4, g_txbuffer);
-	memset(g_txbuffer, 0, 200);
 }
 
 /*************	打印电感元素判别数据	**************/
 void Printtest(void)
 {
     // 将归一化后的float数据打印，保留两位小数
-    sprintf(g_txbuffer, "%u,%u,%u,%u,%u,%u,%u,%u,%d,%u,%u\r\n",
+    sprintf(g_txbuffer, "%u,%u,%u,%u,%u,%u,%u,%u,%d,%u,%u,%u,%u,%d\r\n",
             (uint16)normalized_data[SENSOR_HL],
             (uint16)normalized_data[SENSOR_VL],
             (uint16)normalized_data[SENSOR_HML],
@@ -193,10 +192,13 @@ void Printtest(void)
 			(uint16)signal_strength_value,
 	        position,
 			track_type,
-			track_type_zj
+//			track_type_zj
+			track_route,
+			track_route_status,
+			g_intencoderALL,
+			outisland_flag
 			);
     uart_putstr(UART_4, g_txbuffer);
-	memset(g_txbuffer, 0, 200);
 }
 
 /*************	打印原始和归一化数据	**************/
@@ -220,7 +222,6 @@ void PrintNormalized17(void)
             (uint16)normalized_data[SENSOR_HR],
             position);
     uart_putstr(UART_4, g_txbuffer);
-	memset(g_txbuffer, 0, 200);
 }
 
 /*************	打印调试数据	**************/
@@ -228,7 +229,7 @@ void PrintDebugData(void)
 {
     if (uartSendFlag == 1)
 	{
-		sprintf(g_txbuffer, "%d,%d,%d,%d,%d,%d,%d,%d,%d\n", 
+		sprintf(g_txbuffer, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n", 
 				g_speedpoint, 
 				g_encoder_average, 
 				EncoderL.encoder_final,
@@ -237,9 +238,9 @@ void PrintDebugData(void)
 				(int)g_DutyRight,
 				position,
 				(int)speed_pid,
-				(int)turn_pid);
+				(int)turn_pid,
+				(uint16)power_voltage);
 		uart_putstr(UART_4, g_txbuffer);
-		//memset(g_txbuffer, 0, 200);
 				
 		if (position >= 0)
 			P52 = 1;

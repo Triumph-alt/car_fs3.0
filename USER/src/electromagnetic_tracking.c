@@ -4,8 +4,6 @@
 #include "common.h"
 #include "STC32G_DMA.h"    
 
-
-u8 chn = 0;
 u8 xdata DmaAdBuffer[ADC_CH][ADC_DATA];
 
 // 定义全局权重配置，只保留四种基本元素
@@ -21,7 +19,7 @@ TrackWeights track_weights[4] = {
     {0.35f, 0.25f, 0.00f, 0.15f, 0.90f, 40, "十字圆环"},
     
     // 环岛
-    {0.35f, 0.38f, 0.00f, 0.25f, 1.00f, 50, "环岛"}
+    {0.20f, 0.35f, 0.00f, 0.20f, 1.00f, 50, "环岛"}
 };
 
 uint16 adc_fliter_data[SENSOR_COUNT][HISTORY_COUNT] = {0}; //滤波后的值
@@ -38,8 +36,9 @@ float normalized_data[SENSOR_COUNT] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f}
 // 存储每个电感的最大最小值，用于动态校准 - 改为数组形式
 // uint16 min_value[SENSOR_COUNT] = {0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF};  // 每个电感的最小值
 // uint16 max_value[SENSOR_COUNT] = {0, 0, 0, 0, 0, 0, 0};  // 每个电感的最大值
-uint16 min_value[SENSOR_COUNT] = {0, 0, 0, 0, 0, 0, 0};  // 每个电感的最小值
-uint16 max_value[SENSOR_COUNT] = {3300, 3500, 3700, 3700, 3700, 3500, 3300};  // 每个电感的最大值
+uint16 min_value[SENSOR_COUNT] 
+= {0, 0, 0, 0, 0, 0, 0};  // 每个电感的最小值
+uint16 max_value[SENSOR_COUNT] = {2900, 3700, 3500, 3600, 3500, 3700, 2900};  // 每个电感的最大值
 
 // 电感位置计算相关变量
 float signal_strength_value = 0;   // 信号强度指标
@@ -52,7 +51,7 @@ uint8 track_type = 0;         // 赛道类型：0-普通，1-直角弯道，2-�
 uint8 track_type_last = 0;         // 赛道类型：0-普通，1-直角弯道，2-十字圆环，3-环岛
 
 uint8 track_type_zj = 0;	  //1-左直角，2-右直角
-uint8 track_route = 0; 		  //1-右环，2-左环
+uint8 track_route = 0; 		  //1-左环，2-右环
 uint8 track_route_status = 0; //1-入环，2-环中，3-出环
 uint8 track_ten_flag = 1;	//十字圆环：0表示到计时0.5s再开始判断，1-可以开始判断
 uint8 ten_change_flag = 0; //1表示0.5后track_ten_flag=1
@@ -61,7 +60,8 @@ uint8 protection_flag = 0;// 电磁保护逻辑变量,0表示未保护，1表示
 
 uint8 speed_count = 0;
 
-
+uint32 power_voltage = 0; //电源电压
+volatile uint8_t outisland_flag = 0;
 
 //-----------------------------------------------------------------------------
 // @brief  	递推均值滤波
@@ -74,8 +74,8 @@ uint8 speed_count = 0;
 void average_filter(void)
 {
     uint8 i;
-	
-    static const uint8 dma_index_map[SENSOR_COUNT] = {6, 5, 4, 0, 1, 2, 3}; // 电感索引与DMA缓冲区索引的映射关系，
+	static uint16 counter = 0;
+    static const uint8 dma_index_map[SENSOR_COUNT] = {7, 6, 5, 0, 1, 2, 4}; // 电感索引与DMA缓冲区索引的映射关系，
     // 使用循环缓冲索引保存历史数据
     static uint8 history_index = 0;                // 当前写入的历史索引
     static uint32 running_sum[SENSOR_COUNT] = {0}; // 每个传感器的历史和，用于快速计算均值
@@ -84,16 +84,27 @@ void average_filter(void)
     DmaADCFlag = 0;
 
     /* DMA缓冲区与电感索引的映射关系，因为DMA缓冲区是按ADC通道号从小到大顺序存储的
-       SENSOR_HL  -> DmaAdBuffer[6]
-       SENSOR_VL  -> DmaAdBuffer[5]
-       SENSOR_HML -> DmaAdBuffer[4]
+       SENSOR_HL  -> DmaAdBuffer[7]
+       SENSOR_VL  -> DmaAdBuffer[6]
+       SENSOR_HML -> DmaAdBuffer[5]
        SENSOR_HC  -> DmaAdBuffer[0]
        SENSOR_HMR -> DmaAdBuffer[1]
        SENSOR_VR  -> DmaAdBuffer[2]
-       SENSOR_HR  -> DmaAdBuffer[3]
+       SENSOR_HR  -> DmaAdBuffer[4]
     */
 
-
+	if (counter < 1000)
+	{
+		counter++;
+	}
+	else
+	{
+		power_voltage = (uint32)((uint16)DmaAdBuffer[3][2*ADC_TIMES + 2] << 8) |
+                        (uint16)DmaAdBuffer[3][2*ADC_TIMES + 3];
+		power_voltage = power_voltage * 3630 / 4095;
+		counter = 0;
+	}
+	
     for(i = 0; i < SENSOR_COUNT; i++) //顺序为HL -> VL -> HML -> HC -> HMR -> VR -> HR
     {
         // 读取DMA缓冲区中的高低字节，组合成16位ADC平均值
@@ -337,7 +348,7 @@ int16 calculate_position_improved(void)
     float signal_strength = 0;   // 信号强度指标
     static int16 last_pos = 0;   // 上一次位置值，用于滤波
     static int16 very_last_pos = 0;  // 上上次位置值，用于二次滤波
-    static int16 very_very_last_pos = 0;  // 上上上次位置值，用于三次滤波
+//    static int16 very_very_last_pos = 0;  // 上上上次位置值，用于三次滤波
     int16 pos = 0;               // 当前计算得到的位置值
     static int16 max_change_rate = 2; // 允许的最大变化率，越大越灵敏
     int16 position_change = 0;   // 位置变化量
@@ -418,10 +429,11 @@ int16 calculate_position_improved(void)
         //     ten_change_flag = 1;//感应到入环，延时2s再让track_ten_flag=1
 				
         // }
-        else if((normalized_data[SENSOR_HR] > 70.0f && normalized_data[SENSOR_HC] > 90.0f && ((normalized_data[SENSOR_HR] + normalized_data[SENSOR_VR]) - (normalized_data[SENSOR_HL] + normalized_data[SENSOR_VL]) > 80.0f))  //右环岛
-                 && signal_strength > 48.0f )    
+        else if(normalized_data[SENSOR_HC] > 90.0f && (((normalized_data[SENSOR_HR] + normalized_data[SENSOR_VR]) - (normalized_data[SENSOR_HL] + normalized_data[SENSOR_VL]) > 90.0f)||  //右环岛
+				((normalized_data[SENSOR_HL] + normalized_data[SENSOR_VL]) - (normalized_data[SENSOR_HR] + normalized_data[SENSOR_VR]) > 90.0f))  //左环岛
+                 && signal_strength > 50.0f )    
         {
-//            track_type = 3;// 环岛
+            track_type = WEIGHT_ROUNDABOUT;// 环岛
         }
     }
     else if (track_type == WEIGHT_RIGHT_ANGLE) // 1. 直角弯道
@@ -473,23 +485,27 @@ int16 calculate_position_improved(void)
 		 }
 	}
     else if (track_type == WEIGHT_ROUNDABOUT) // 3. 环岛   
-    {
-        if(normalized_data[SENSOR_HR] > 80.0f && normalized_data[SENSOR_HL] < 40.0f && track_route == 0)
+    {		
+        if(normalized_data[SENSOR_HR] > 70.0f && track_route == 0)
         {
             // 右环岛
-            track_route = 1;
-						track_route_status = 1;
+            track_route = 2;
+			track_route_status = 1;
         }
-        // else if(normalized_data[SENSOR_HR] < 30.0f && normalized_data[SENSOR_HL] > 70.0f && track_route == 0)
-        // {
-        //     // 左环岛
-        //     track_route = 2;
-		// 	track_route_status = 1;
-        // }
-		if(track_route_status == 2 &&(normalized_data[SENSOR_VL] > 30.0f && normalized_data[SENSOR_HL] < 55.0f && normalized_data[SENSOR_HC] < 65.0f && normalized_data[SENSOR_HML] < 35.0f && normalized_data[SENSOR_HMR] > 70.0f && normalized_data[SENSOR_VR] > 75.0f)) //右环
+         else if( normalized_data[SENSOR_HL] > 70.0f && track_route == 0)
+         {
+             // 左环岛
+             track_route = 1;
+		 	 track_route_status = 1;
+         }
+		if(outisland_flag ==1 && track_route_status == 2 && (((normalized_data[SENSOR_HMR] + normalized_data[SENSOR_VR]) - (normalized_data[SENSOR_HML] + normalized_data[SENSOR_VL]) > 80.0f)||
+				((normalized_data[SENSOR_HML] + normalized_data[SENSOR_VL]) - (normalized_data[SENSOR_HMR] + normalized_data[SENSOR_VR]) > 80.0f))
+		&& normalized_data[SENSOR_HC] < 80)
 		{
 //			track_route = 0;
+			outisland_flag = 0;
 			track_route_status = 3;
+//			P26 = 0;
 //			track_type == WEIGHT_RIGHT_ANGLE; // 检验位点
 		}
     }
@@ -552,15 +568,15 @@ int16 calculate_position_improved(void)
    }
     
     // 特殊情况处理：当所有电感值都很小时，可能已经偏离赛道
-    if(sum_outer < 10.0f && sum_middle < 10.0f && sum_vertical < 10.0f && center_value < 10.0f)
-    {
-//        if(last_pos > 0)
-//            return (last_pos + 10);  // 向右偏离
-//        else
-//            return (last_pos - 10); // 向左偏离
-		
-		return last_pos;
-    }
+//    if(sum_outer < 10.0f && sum_middle < 10.0f && sum_vertical < 10.0f && center_value < 10.0f)
+//    {
+////        if(last_pos > 0)
+////            return (last_pos + 10);  // 向右偏离
+////        else
+////            return (last_pos - 10); // 向左偏离
+//		
+//		return last_pos;
+//    }
     
     // 当中心电感大于阈值时，认为车辆接近中心，对位置进行修正
     if(center_value > 60.0f) {
@@ -619,7 +635,7 @@ int16 calculate_position_improved(void)
 		
     
     // 更新历史位置值
-    very_very_last_pos = very_last_pos;
+//    very_very_last_pos = very_last_pos;
     very_last_pos = last_pos;
     last_pos = pos;
     

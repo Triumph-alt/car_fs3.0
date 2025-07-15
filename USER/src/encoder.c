@@ -7,6 +7,7 @@
 Encoder_t EncoderL, EncoderR;
 EncoderDebo_t EncoderDeboL, EncoderDeboR;
 
+uint16_t g_intencoderALL = 0;
 
 void encoder_init(void)
 {

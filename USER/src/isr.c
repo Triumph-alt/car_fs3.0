@@ -28,13 +28,18 @@ int32_t g_DutyLeft = 0, g_DutyRight = 0;         // 最后真正要给电机的P
 
 //pid控制相关变量
 float speed_pid = 0, turn_pid = 0;               //速度环和转向环pid的值
-int g_speedpoint = 100;
+int g_speedpoint = 50;
 int g_leftpoint = 0, g_rightpoint = 0;           //左右轮的目标速度
+int16_t positionReal = 0; 
 
 // 蜂鸣器控制相关变量
 uint8_t beep_flag = 0;                           // 蜂鸣器开启标志，1表示开启
 uint16_t beep_count = 0;                         // 蜂鸣器计时计数器
 uint8_t track_ten_cnt = 0;                       //出入环重复判定计时器
+
+volatile uint8_t r_position = 55;
+volatile uint16_t r_distance = 7400;
+volatile uint16_t s_distance = 5500;
 
 int count = 0, flag = 0;
 
@@ -216,7 +221,7 @@ void TM1_Isr() interrupt 3
         // 赛道类型发生变化，启动蜂鸣器
         beep_flag = 1;
         beep_count = 0;  // 重置计数器
-        P26 = 0;         // 打开蜂鸣器
+		P26 = 0;         // 打开蜂鸣器
         
         // 更新上一次赛道类型
         track_type_last = track_type;
@@ -277,8 +282,88 @@ void TM2_Isr() interrupt 12
 		/* 对Gyro_Z进行卡尔曼滤波 */
 		filtered_GyroZ = kalman_update(&imu693_kf, Gyro_Z);
 		
+		if (track_type == 0)//普通直线
+		{		
+			positionReal = position;
+		}
+		else if (track_type == 1)//直角
+		{		
+			positionReal = position;
+		}
+		else if (track_type == 3 && track_route_status == 1)//圆环入环
+		{
+			g_intencoderALL += g_encoder_average;
+			
+			if(g_intencoderALL <= 10500)//第一阶段先直行
+			{
+				positionReal = 0;
+			}
+			else//进入第二阶段打死进环
+			{
+				if (track_route == 1)//左环
+				{
+					positionReal = 65;
+				}
+				else if (track_route == 2)//右环
+				{
+					positionReal = -65;
+				}
+							
+				if (g_intencoderALL >= 11500)//入环完毕
+				{
+					track_route_status = 2;
+					g_intencoderALL = 0;
+				}
+			}
+		}
+		else if (track_type == 3 && track_route_status == 2)//环岛内部
+		{
+			positionReal = position;
+			
+			if (outisland_flag == 0)
+			{
+				g_intencoderALL += g_encoder_average;
+			}
+			
+			if (g_intencoderALL >= 28000)
+			{
+				g_intencoderALL = 0;
+				outisland_flag = 1;
+			}
+		}
+		else if (track_type == 3 && track_route_status == 3)//圆环出环
+		{
+			g_intencoderALL += g_encoder_average;
+			
+			if (g_intencoderALL <= s_distance)//第一阶段打死出环
+			{
+				if (track_route == 1)//左环
+				{
+					positionReal = r_position;
+				}
+				else if (track_route == 2)//右环
+				{
+					positionReal = -r_position;
+				}
+			}
+			else//第二阶段直走
+			{
+//				P26 = 1;
+				positionReal = 0;
+				
+				if (g_intencoderALL >= r_distance)//出环完毕
+				{
+					track_type = 0;
+					track_route = 0;
+					track_route_status = 0;
+					
+					g_intencoderALL = 0;
+				}
+			}
+		}
+		
 		/* 转向环PID控制 */
-		turn_pid = pid_poisitional_turnning(&TurnPID, position, filtered_GyroZ);
+		turn_pid = pid_poisitional_turnning(&TurnPID, positionReal, filtered_GyroZ);
 
 		/* 更新卡尔曼滤波器的值 */
 		kalman_predict(&imu693_kf, turn_pid);

@@ -22,6 +22,7 @@ typedef struct
 
 extern Encoder_t EncoderL, EncoderR;
 extern EncoderDebo_t EncoderDeboL, EncoderDeboR;
+extern uint16_t g_intencoderALL;
 
 void encoder_init(void);
 int get_left_encoder(void);
