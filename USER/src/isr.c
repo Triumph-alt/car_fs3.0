@@ -36,8 +36,9 @@ int16_t positionReal = 0;
 uint8_t beep_flag = 0;                           // 蜂鸣器开启标志，1表示开启
 uint16_t beep_count = 0;                         // 蜂鸣器计时计数器
 uint8_t track_ten_cnt = 0;                       //出入环重复判定计时器
+uint16_t outisland_cnt = 0;                       //出入环岛重复判定计时器
 
-volatile uint8_t r_position = 55;
+volatile uint8_t r_position = 30;
 volatile uint16_t r_distance = 7400;
 volatile uint16_t s_distance = 5500;
 
@@ -160,6 +161,7 @@ void TM0_Isr() interrupt 1
 }
 
 
+/* 10ms */
 void TM1_Isr() interrupt 3
 {
 	int i = 0;
@@ -240,17 +242,44 @@ void TM1_Isr() interrupt 3
         }
     }
 
+	/* 出环辅助判定，备用 */
+    // if (track_route_status == 3)
+    // {
+	// 	P26 = 0;
+    //     beep_count++;
+    //     // 10ms * 20 = 200ms
+    //     if (beep_count >= 10)
+    //     {
+    //         beep_count = 0;
+    //         P26 = 1;  // 关闭蜂鸣器
+	// 		track_route_status = 2;
+    //     }
+    // }
+
 	/* 出入十字圆环计时判定 */
-	if (ten_change_flag == 1)
+	// if (ten_ch_flag == 1)
+	// {
+	// 	track_ten_cnt++;
+	// 	if (track_ten_cnt >= 150)
+	// 	{
+	// 		track_ten_flag = 1;
+	// 		track_ten_cnt = 0;
+	// 		ten_ch_flag = 0;
+	// 	}
+	// }
+
+	/* 出入环岛计时判定 */
+	if (island_ch_flag == 1)
 	{
-		track_ten_cnt++;
-		if (track_ten_cnt >= 150)
+		outisland_cnt++;
+		if (outisland_cnt >= 500)
 		{
-			track_ten_flag = 1;
-			track_ten_cnt = 0;
-			ten_change_flag = 0;
+			track_island_flag = 1;
+			outisland_cnt = 0;
+			island_ch_flag = 0;
 		}
 	}
+
 }
 
 
@@ -319,16 +348,12 @@ void TM2_Isr() interrupt 12
 		else if (track_type == 3 && track_route_status == 2)//环岛内部
 		{
 			positionReal = position;
-			
-			if (outisland_flag == 0)
-			{
-				g_intencoderALL += g_encoder_average;
-			}
-			
+
+			g_intencoderALL += g_encoder_average;
+
 			if (g_intencoderALL >= 28000)
 			{
 				g_intencoderALL = 0;
-				outisland_flag = 1;
 			}
 		}
 		else if (track_type == 3 && track_route_status == 3)//圆环出环

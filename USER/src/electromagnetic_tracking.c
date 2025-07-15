@@ -53,15 +53,17 @@ uint8 track_type_last = 0;         // 赛道类型：0-普通，1-直角弯道�
 uint8 track_type_zj = 0;	  //1-左直角，2-右直角
 uint8 track_route = 0; 		  //1-左环，2-右环
 uint8 track_route_status = 0; //1-入环，2-环中，3-出环
-uint8 track_ten_flag = 1;	//十字圆环：0表示到计时0.5s再开始判断，1-可以开始判断
-uint8 ten_change_flag = 0; //1表示0.5后track_ten_flag=1
+
+uint8 track_ten_flag = 1;	//十字圆环：0表示不可入环，1-可以入环
+uint8 ten_ch_flag = 0; //十字圆环：1表示0.5s后track_ten_flag=1
+uint8 track_island_flag = 1; //环岛：0表示不可入环，1-可以入环
+uint8 island_ch_flag = 0; //环岛：1表示5s后track_island_flag=1
 
 uint8 protection_flag = 0;// 电磁保护逻辑变量,0表示未保护，1表示保护
 
 uint8 speed_count = 0;
 
 uint32 power_voltage = 0; //电源电压
-volatile uint8_t outisland_flag = 0;
 
 //-----------------------------------------------------------------------------
 // @brief  	递推均值滤波
@@ -426,14 +428,16 @@ int16 calculate_position_improved(void)
         // {
         //     track_type = 2; //十字圆环
         //     track_ten_flag = 0; 
-        //     ten_change_flag = 1;//感应到入环，延时2s再让track_ten_flag=1
+        //     ten_ch_flag = 1;//感应到入环，延时2s再让track_ten_flag=1
 				
         // }
         else if(normalized_data[SENSOR_HC] > 90.0f && (((normalized_data[SENSOR_HR] + normalized_data[SENSOR_VR]) - (normalized_data[SENSOR_HL] + normalized_data[SENSOR_VL]) > 90.0f)||  //右环岛
 				((normalized_data[SENSOR_HL] + normalized_data[SENSOR_VL]) - (normalized_data[SENSOR_HR] + normalized_data[SENSOR_VR]) > 90.0f))  //左环岛
-                 && signal_strength > 50.0f )    
+                 && signal_strength > 50.0f && track_island_flag == 1 )    
         {
             track_type = WEIGHT_ROUNDABOUT;// 环岛
+            track_island_flag = 0; //5s后才可以重新判断入环
+            island_ch_flag = 1; //开始计时5s
         }
     }
     else if (track_type == WEIGHT_RIGHT_ANGLE) // 1. 直角弯道
@@ -481,7 +485,7 @@ int16 calculate_position_improved(void)
 		 {
 			track_type = WEIGHT_STRAIGHT; //回直道
 			track_ten_flag = 0;
-			ten_change_flag = 1; //感应到出环延时2s再让track_ten_flag=1	
+			ten_ch_flag = 1; //感应到出环延时2s再让track_ten_flag=1	
 		 }
 	}
     else if (track_type == WEIGHT_ROUNDABOUT) // 3. 环岛   
@@ -498,12 +502,10 @@ int16 calculate_position_improved(void)
              track_route = 1;
 		 	 track_route_status = 1;
          }
-		if(outisland_flag ==1 && track_route_status == 2 && (((normalized_data[SENSOR_HMR] + normalized_data[SENSOR_VR]) - (normalized_data[SENSOR_HML] + normalized_data[SENSOR_VL]) > 80.0f)||
-				((normalized_data[SENSOR_HML] + normalized_data[SENSOR_VL]) - (normalized_data[SENSOR_HMR] + normalized_data[SENSOR_VR]) > 80.0f))
-		&& normalized_data[SENSOR_HC] < 80)
+		if(track_route_status == 2 && ((normalized_data[SENSOR_VL] > 60.0f && normalized_data[SENSOR_HL] > 70.0f)|| 
+        (normalized_data[SENSOR_VR] > 50.0f && normalized_data[SENSOR_HR] > 50.0f)))
 		{
 //			track_route = 0;
-			outisland_flag = 0;
 			track_route_status = 3;
 //			P26 = 0;
 //			track_type == WEIGHT_RIGHT_ANGLE; // 检验位点

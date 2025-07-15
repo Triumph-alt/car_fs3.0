@@ -181,7 +181,7 @@ void PrintFiltered7(void)
 void Printtest(void)
 {
     // 将归一化后的float数据打印，保留两位小数
-    sprintf(g_txbuffer, "%u,%u,%u,%u,%u,%u,%u,%u,%d,%u,%u,%u,%u,%d\r\n",
+    sprintf(g_txbuffer, "%u,%u,%u,%u,%u,%u,%u,%u,%d,%u,%u,%u,%d\r\n",
             (uint16)normalized_data[SENSOR_HL],
             (uint16)normalized_data[SENSOR_VL],
             (uint16)normalized_data[SENSOR_HML],
@@ -195,8 +195,7 @@ void Printtest(void)
 //			track_type_zj
 			track_route,
 			track_route_status,
-			g_intencoderALL,
-			outisland_flag
+			g_intencoderALL
 			);
     uart_putstr(UART_4, g_txbuffer);
 }

@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  filter                                                             12/07/25  20:30:32  PAGE 1   
+C251 COMPILER V5.60.0,  filter                                                             15/07/25  15:28:54  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE filter
@@ -60,15 +60,16 @@ stmt  level    source
    49   1          
    50   1          return instance->output;
    51   1      }
+   52          
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
   code size            =      1003     ------
   ecode size           =    ------     ------
-  data size            =    ------     ------
-C251 COMPILER V5.60.0,  filter                                                             12/07/25  20:30:32  PAGE 2   
+C251 COMPILER V5.60.0,  filter                                                             15/07/25  15:28:54  PAGE 2   
 
+  data size            =    ------     ------
   idata size           =    ------     ------
   pdata size           =    ------     ------
   xdata size           =       108     ------

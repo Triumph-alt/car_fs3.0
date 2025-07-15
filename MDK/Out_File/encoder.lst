@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  encoder                                                            12/07/25  22:01:39  PAGE 1   
+C251 COMPILER V5.60.0,  encoder                                                            15/07/25  15:28:54  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE encoder
@@ -18,88 +18,89 @@ stmt  level    source
     7          Encoder_t EncoderL, EncoderR;
     8          EncoderDebo_t EncoderDeboL, EncoderDeboR;
     9          
-   10          
-   11          void encoder_init(void)
-   12          {
-   13   1          EncoderL.encoder_original = 0;
-   14   1          EncoderL.encoder_integral = 0;
-   15   1          EncoderL.encoder_final = 0;
-   16   1      
-   17   1          EncoderR.encoder_integral = 0;
-   18   1          EncoderR.encoder_original = 0;
-   19   1          EncoderR.encoder_final = 0;
-   20   1              
-   21   1              EncoderDeboL.encoderlast = 0;
-   22   1              EncoderDeboL.count = 0;
-   23   1              
-   24   1              EncoderDeboR.encoderlast = 0;
-   25   1              EncoderDeboR.count = 0;
-   26   1              
-   27   1              ctimer_count_init(CTIM0_P34);
-   28   1              ctimer_count_init(CTIM3_P04);
-   29   1      }
-   30          
-   31          int get_left_encoder(void)
-   32          {
-   33   1              int encoder_left;
-   34   1              
-   35   1              if(LEFT_DIR == 1)
-   36   1              {
-   37   2                      encoder_left = ctimer_count_read(CTIM0_P34);
-   38   2              }
-   39   1              else
-   40   1              {
-   41   2                      encoder_left = ctimer_count_read(CTIM0_P34) * -1;
-   42   2              }
-   43   1              
-   44   1              ctimer_count_clean(CTIM0_P34);
-   45   1              
-   46   1              return encoder_left;
-   47   1      }
-   48          
-   49          int get_right_encoder(void)
-   50          {
-   51   1              int encoder_right;
-   52   1              
-   53   1              if(RIGHT_DIR == 1)
-   54   1              {
-   55   2                      encoder_right = ctimer_count_read(CTIM3_P04) * -1;
-   56   2              }
-   57   1              else
-C251 COMPILER V5.60.0,  encoder                                                            12/07/25  22:01:39  PAGE 2   
+   10          uint16_t g_intencoderALL = 0;
+   11          
+   12          void encoder_init(void)
+   13          {
+   14   1          EncoderL.encoder_original = 0;
+   15   1          EncoderL.encoder_integral = 0;
+   16   1          EncoderL.encoder_final = 0;
+   17   1      
+   18   1          EncoderR.encoder_integral = 0;
+   19   1          EncoderR.encoder_original = 0;
+   20   1          EncoderR.encoder_final = 0;
+   21   1              
+   22   1              EncoderDeboL.encoderlast = 0;
+   23   1              EncoderDeboL.count = 0;
+   24   1              
+   25   1              EncoderDeboR.encoderlast = 0;
+   26   1              EncoderDeboR.count = 0;
+   27   1              
+   28   1              ctimer_count_init(CTIM0_P34);
+   29   1              ctimer_count_init(CTIM3_P04);
+   30   1      }
+   31          
+   32          int get_left_encoder(void)
+   33          {
+   34   1              int encoder_left;
+   35   1              
+   36   1              if(LEFT_DIR == 1)
+   37   1              {
+   38   2                      encoder_left = ctimer_count_read(CTIM0_P34);
+   39   2              }
+   40   1              else
+   41   1              {
+   42   2                      encoder_left = ctimer_count_read(CTIM0_P34) * -1;
+   43   2              }
+   44   1              
+   45   1              ctimer_count_clean(CTIM0_P34);
+   46   1              
+   47   1              return encoder_left;
+   48   1      }
+   49          
+   50          int get_right_encoder(void)
+   51          {
+   52   1              int encoder_right;
+   53   1              
+   54   1              if(RIGHT_DIR == 1)
+   55   1              {
+   56   2                      encoder_right = ctimer_count_read(CTIM3_P04) * -1;
+   57   2              }
+C251 COMPILER V5.60.0,  encoder                                                            15/07/25  15:28:54  PAGE 2   
 
-   58   1              {
-   59   2                      encoder_right = ctimer_count_read(CTIM3_P04);
-   60   2              }
-   61   1              
-   62   1              ctimer_count_clean(CTIM3_P04);
-   63   1              
-   64   1              return encoder_right;
-   65   1      }
-   66          
-   67          int encoder_debounce(EncoderDebo_t* instance, int encoder)
-   68          {
-   69   1              // 使用宏替换魔法数，代码意图一目了然
-   70   1              if (myabs(encoder - instance->encoderlast) > ENCODER_JUMP_THRESHOLD && instance->count >= MIN_STABILITY_
+   58   1              else
+   59   1              {
+   60   2                      encoder_right = ctimer_count_read(CTIM3_P04);
+   61   2              }
+   62   1              
+   63   1              ctimer_count_clean(CTIM3_P04);
+   64   1              
+   65   1              return encoder_right;
+   66   1      }
+   67          
+   68          int encoder_debounce(EncoderDebo_t* instance, int encoder)
+   69          {
+   70   1              // 使用宏替换魔法数，代码意图一目了然
+   71   1              if (myabs(encoder - instance->encoderlast) > ENCODER_JUMP_THRESHOLD && instance->count >= MIN_STABILITY_
              -COUNT)
-   71   1              {
-   72   2                      encoder = instance->encoderlast;
-   73   2                      instance->count = 0;
-   74   2              }
-   75   1              else
-   76   1              {
-   77   2                      instance->encoderlast = encoder;
-   78   2                      
-   79   2                      instance->count++;
-   80   2                      if (instance->count >= COUNTER_SAFETY_RESET)
-   81   2                      {
-   82   3                              // 可以保持清零，或者设置为一个不会立即触发抖动判断的值
-   83   3                              instance->count = MIN_STABILITY_COUNT; 
-   84   3                      }
-   85   2              }
-   86   1              
-   87   1              return encoder;
-   88   1      }
+   72   1              {
+   73   2                      encoder = instance->encoderlast;
+   74   2                      instance->count = 0;
+   75   2              }
+   76   1              else
+   77   1              {
+   78   2                      instance->encoderlast = encoder;
+   79   2                      
+   80   2                      instance->count++;
+   81   2                      if (instance->count >= COUNTER_SAFETY_RESET)
+   82   2                      {
+   83   3                              // 可以保持清零，或者设置为一个不会立即触发抖动判断的值
+   84   3                              instance->count = MIN_STABILITY_COUNT; 
+   85   3                      }
+   86   2              }
+   87   1              
+   88   1              return encoder;
+   89   1      }
 
 
 Module Information          Static   Overlayable
@@ -109,7 +110,7 @@ Module Information          Static   Overlayable
   data size            =    ------     ------
   idata size           =    ------     ------
   pdata size           =    ------     ------
-  xdata size           =        30     ------
+  xdata size           =        32     ------
   xdata-const size     =    ------     ------
   edata size           =    ------     ------
   bit size             =    ------     ------
@@ -119,7 +120,7 @@ Module Information          Static   Overlayable
   far data size        =    ------     ------
   huge data size       =    ------     ------
   const size           =    ------     ------
-  hconst size          =    ------     ------
+  hconst size          =         7     ------
 End of Module Information.
 
 

@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  uart                                                               12/07/25  20:30:31  PAGE 1   
+C251 COMPILER V5.60.0,  uart                                                               15/07/25  15:28:53  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE uart
@@ -16,90 +16,111 @@ stmt  level    source
     5          uint8_t g_rxbuffer[UART_RX_LENGTH] = {0};
     6          uint8_t g_rxpointer = 0, g_rxdat = 0;
     7          
-    8          
-    9          void uart4_recv_task(void)
-   10          {
-   11   1              if (g_rxpointer != 0)
-   12   1              {
-   13   2                      int temp = g_rxpointer;
-   14   2                      delay_ms(4);
-   15   2                      
-   16   2                      if (temp == g_rxpointer)
-   17   2                      {
-   18   3                              uart4_interrupt_callback();
-   19   3                      }
-   20   2              }
-   21   1      }
-   22          
-   23          void uart4_interrupt_callback(void)
-   24          {
-   25   1              if(g_rxpointer > 0)
-   26   1              {
-   27   2                      if (strncmp(g_rxbuffer, "speed_kp", 8) == 0)
-   28   2                      {
-   29   3                              sscanf(g_rxbuffer, "speed_kp:%f", &SpeedPID.kp);
-   30   3                              
-   31   3      //                      sprintf(g_txbuffer, "speed_kp:%f\n", SpeedPID.kp);
-   32   3      //                      uart_putstr(UART_4, g_txbuffer);
-   33   3                      }
-   34   2                      else if (strncmp(g_rxbuffer, "speed_ki", 8) == 0)
-   35   2                      {
-   36   3                              sscanf(g_rxbuffer, "speed_ki:%f", &SpeedPID.ki);
-   37   3                              
-   38   3      //                      sprintf(g_txbuffer, "speed_ki:%f\n", SpeedPID.ki);
-   39   3      //                      uart_putstr(UART_4, g_txbuffer);
-   40   3                      }
-   41   2                      else if (strncmp(g_rxbuffer, "speed_kd", 8) == 0)
-   42   2                      {
-   43   3                              sscanf(g_rxbuffer, "speed_kd:%f", &SpeedPID.kd);
-   44   3                              
-   45   3      //                      sprintf(g_txbuffer, "speed_kd:%f\n", SpeedPID.kd);
-   46   3      //                      uart_putstr(UART_4, g_txbuffer);
-   47   3                      }
-   48   2                      else if (strncmp(g_rxbuffer, "turn_kp", 7) == 0)
-   49   2                      {
-   50   3                              sscanf(g_rxbuffer, "turn_kp:%f", &TurnPID.kp);
-   51   3                              
-   52   3      //                      sprintf(g_txbuffer, "turn_kp:%f\n", TurnPID.kp);
-   53   3      //                      uart_putstr(UART_4, g_txbuffer);
-   54   3                      }
-   55   2                      else if (strncmp(g_rxbuffer, "turn_ki", 7) == 0)
-   56   2                      {
-   57   3                              sscanf(g_rxbuffer, "turn_ki:%f", &TurnPID.ki);
-C251 COMPILER V5.60.0,  uart                                                               12/07/25  20:30:31  PAGE 2   
+    8          float temp = 0;
+    9          
+   10          void uart4_recv_task(void)
+   11          {
+   12   1              if (g_rxpointer != 0)
+   13   1              {
+   14   2                      int temp = g_rxpointer;
+   15   2                      delay_ms(4);
+   16   2                      
+   17   2                      if (temp == g_rxpointer)
+   18   2                      {
+   19   3                              uart4_interrupt_callback();
+   20   3                      }
+   21   2              }
+   22   1      }
+   23          
+   24          void uart4_interrupt_callback(void)
+   25          {
+   26   1              if(g_rxpointer > 0)
+   27   1              {
+   28   2                      if (strncmp(g_rxbuffer, "speed_kp", 8) == 0)
+   29   2                      {
+   30   3                              sscanf(g_rxbuffer, "speed_kp:%f", &SpeedPID.kp);
+   31   3                              
+   32   3      //                      sprintf(g_txbuffer, "speed_kp:%f\n", SpeedPID.kp);
+   33   3      //                      uart_putstr(UART_4, g_txbuffer);
+   34   3                      }
+   35   2                      else if (strncmp(g_rxbuffer, "speed_ki", 8) == 0)
+   36   2                      {
+   37   3                              sscanf(g_rxbuffer, "speed_ki:%f", &SpeedPID.ki);
+   38   3                              
+   39   3      //                      sprintf(g_txbuffer, "speed_ki:%f\n", SpeedPID.ki);
+   40   3      //                      uart_putstr(UART_4, g_txbuffer);
+   41   3                      }
+   42   2                      else if (strncmp(g_rxbuffer, "speed_kd", 8) == 0)
+   43   2                      {
+   44   3                              sscanf(g_rxbuffer, "speed_kd:%f", &SpeedPID.kd);
+   45   3                              
+   46   3      //                      sprintf(g_txbuffer, "speed_kd:%f\n", SpeedPID.kd);
+   47   3      //                      uart_putstr(UART_4, g_txbuffer);
+   48   3                      }
+   49   2                      else if (strncmp(g_rxbuffer, "turn_kp", 7) == 0)
+   50   2                      {
+   51   3                              sscanf(g_rxbuffer, "turn_kp:%f", &TurnPID.kp);
+   52   3                              
+   53   3      //                      sprintf(g_txbuffer, "turn_kp:%f\n", TurnPID.kp);
+   54   3      //                      uart_putstr(UART_4, g_txbuffer);
+   55   3                      }
+   56   2                      else if (strncmp(g_rxbuffer, "turn_ki", 7) == 0)
+   57   2                      {
+C251 COMPILER V5.60.0,  uart                                                               15/07/25  15:28:53  PAGE 2   
 
-   58   3                              
-   59   3      //                      sprintf(g_txbuffer, "turn_ki:%f\n", TurnPID.ki);
-   60   3      //                      uart_putstr(UART_4, g_txbuffer);
-   61   3                      }
-   62   2                      else if (strncmp(g_rxbuffer, "turn_kd", 7) == 0)
-   63   2                      {
-   64   3                              sscanf(g_rxbuffer, "turn_kd:%f", &TurnPID.kd);
-   65   3                              
-   66   3      //                      sprintf(g_txbuffer, "turn_kd:%f\n", TurnPID.kd);
-   67   3      //                      uart_putstr(UART_4, g_txbuffer);
-   68   3                      }
-   69   2                      else if (strncmp(g_rxbuffer, "stop", 4) == 0)
-   70   2                      {                       
-   71   3                              protection_flag = 1;
-   72   3                      }
-   73   2                      
-   74   2              }
-   75   1              
-   76   1              g_rxpointer = 0;
-   77   1              memset(g_rxbuffer, 0, UART_RX_LENGTH);
-   78   1              memset(g_txbuffer, 0, UART_TX_LENGTH);
-   79   1      }
+   58   3                              sscanf(g_rxbuffer, "turn_ki:%f", &TurnPID.ki);
+   59   3                              
+   60   3      //                      sprintf(g_txbuffer, "turn_ki:%f\n", TurnPID.ki);
+   61   3      //                      uart_putstr(UART_4, g_txbuffer);
+   62   3                      }
+   63   2                      else if (strncmp(g_rxbuffer, "turn_kd", 7) == 0)
+   64   2                      {
+   65   3                              sscanf(g_rxbuffer, "turn_kd:%f", &TurnPID.kd);
+   66   3                              
+   67   3      //                      sprintf(g_txbuffer, "turn_kd:%f\n", TurnPID.kd);
+   68   3      //                      uart_putstr(UART_4, g_txbuffer);
+   69   3                      }
+   70   2                      else if (strncmp(g_rxbuffer, "stop", 4) == 0)
+   71   2                      {                       
+   72   3                              protection_flag = 1;
+   73   3                      }
+   74   2                      else if (strncmp(g_rxbuffer, "r_p", 3) == 0)
+   75   2                      {
+   76   3                              sscanf(g_rxbuffer, "r_p:%f", &temp);
+   77   3                              r_position = (uint8_t)temp;
+   78   3                              // sprintf(g_TxData, "r_p:%d\n", r_position);
+   79   3                              // uart_putstr(UART_4, g_TxData);
+   80   3                      }
+   81   2                      else if (strncmp(g_rxbuffer, "r_d", 3) == 0)
+   82   2                      {
+   83   3                              sscanf(g_rxbuffer, "r_d:%f", &temp);
+   84   3                              r_distance = (uint16_t)temp;
+   85   3                              // sprintf(g_TxData, "r_d:%d\n", r_distance);
+   86   3                              // uart_putstr(UART_4, g_TxData);
+   87   3                      }
+   88   2                      else if (strncmp(g_rxbuffer, "s_d", 3) == 0)
+   89   2                      {
+   90   3                              sscanf(g_rxbuffer, "s_d:%f", &temp);
+   91   3                              s_distance = (uint16_t)temp;
+   92   3                              // sprintf(g_TxData, "r_d:%d\n", r_distance);
+   93   3                              // uart_putstr(UART_4, g_TxData);
+   94   3                      }
+   95   2              }
+   96   1              
+   97   1              g_rxpointer = 0;
+   98   1              memset(g_rxbuffer, 0, UART_RX_LENGTH);
+   99   1              memset(g_txbuffer, 0, UART_TX_LENGTH);
+  100   1      }
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =       567     ------
+  code size            =       841     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
   pdata size           =    ------     ------
-  xdata size           =       404     ------
+  xdata size           =       408     ------
   xdata-const size     =    ------     ------
   edata size           =    ------     ------
   bit size             =    ------     ------
@@ -109,7 +130,7 @@ Module Information          Static   Overlayable
   far data size        =    ------     ------
   huge data size       =    ------     ------
   const size           =    ------     ------
-  hconst size          =       547     ------
+  hconst size          =       589     ------
 End of Module Information.
 
 

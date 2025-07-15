@@ -88,15 +88,17 @@ extern uint8 track_type_last;   // 赛道类型：0-普通，1-直角弯道，2-
 extern uint8 track_route;      // 赛道路径：1-左转，2-右转
 extern uint8 track_route_status;
 extern uint8 track_type_zj;
-extern uint8 track_ten_flag;
 
+//计时判定变量
+extern uint8 track_ten_flag; //十字圆环：0表示到计时0.5s再开始判断，1-可以开始判断
+extern uint8 ten_ch_flag; //十字圆环：1表示0.5s后track_ten_flag=1
+extern uint8 track_island_flag; //环岛：0表示到计时5s再开始判断，1-可以开始判断
+extern uint8 island_ch_flag; //环岛：1表示5s后track_outisland_flag=1
 
 // 电磁保护逻辑变量
 extern uint8 protection_flag;
-extern uint8 track_ten_flag;
-extern uint8 ten_change_flag;
 
-extern volatile uint8_t outisland_flag;
+
 
 #endif 
 
