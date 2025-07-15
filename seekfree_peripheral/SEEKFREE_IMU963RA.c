@@ -42,10 +42,13 @@
 
 #include "zf_delay.h"
 #include "zf_spi.h"
+#include "fixed_point.h"  // 添加定点数支持 (任务4.8)
 
 
 #pragma warning disable = 177
 #pragma warning disable = 183
+
+volatile int32_t gyro_z_offset_fixed = 0;
 
 
 int16 imu963ra_gyro_x = 0, imu963ra_gyro_y = 0, imu963ra_gyro_z = 0;
@@ -557,3 +560,76 @@ uint8 imu963ra_init(void)
     while(0);
     return return_state;
 }
+
+//-------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief  将 IMU963RA 陀螺仪原始数据转换为定点数形式的角速度 (°/s * FX_SCALE)
+ * @param  gyro_value  陀螺仪原始数据（16 位原始数）
+ * @return int32_t     放大 FX_SCALE 倍后的角速度
+ */
+//-------------------------------------------------------------------------------------------------------------------
+int32_t imu963ra_gyro_transition_fixed (int16 gyro_value)
+{
+    // 变量声明区
+    int32_t gyro_fixed = 0;
+    int32_t coeff_fixed = 0;   // 系数 = FX_SCALE / 量程转换因子
+
+    switch(IMU963RA_GYR_SAMPLE)
+    {
+        case 0x52:    // ±125 dps, 系数 228.6
+            coeff_fixed = FIXED_DIV(FX_SCALE, 229);   // 近似 1000/228.6 ≈ 4.37 -> 4 (放大后误差可接受)
+            break;
+        case 0x50:    // ±250 dps, 系数 114.3
+            coeff_fixed = FIXED_DIV(FX_SCALE, 114);   // ≈8.77 -> 9
+            break;
+        case 0x54:    // ±500 dps, 系数 57.1
+            coeff_fixed = FIXED_DIV(FX_SCALE, 57);    // ≈17.54 -> 18
+            break;
+        case 0x58:    // ±1000 dps, 系数 28.6
+            coeff_fixed = FIXED_DIV(FX_SCALE, 29);    // ≈34.5 -> 34
+            break;
+        case 0x5C:    // ±2000 dps, 系数 14.3
+            coeff_fixed = 70;    // 1000 / 14.3 ≈ 70
+            break;
+        case 0x51:    // ±4000 dps, 系数 7.1
+            coeff_fixed = FIXED_DIV(FX_SCALE, 7);     // ≈142.8 -> 143
+            break;
+        default:
+            coeff_fixed = 0;
+            break;
+    }
+
+    gyro_fixed = gyro_value * coeff_fixed;   
+
+    return gyro_fixed;
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief  陀螺仪零偏校准
+ * @param  samples  采样次数 (建议 ≥ 200)
+ */
+//-------------------------------------------------------------------------------------------------------------------
+void gyro_zero_calibration(uint16_t samples)
+{
+    // 变量声明区
+    uint16_t i = 0;
+    int32_t  sum = 0;
+    int32_t  sample_fixed = 0;
+
+    if (samples == 0)
+    {
+        return;
+    }
+
+    for (i = 0; i < samples; i++)
+    {
+        imu963ra_get_gyro();
+        sample_fixed = imu963ra_gyro_transition_fixed(imu963ra_gyro_z);
+        sum += sample_fixed;
+        delay_ms(2);
+    }
+
+    gyro_z_offset_fixed = (int32_t)(sum / samples);
+}
+

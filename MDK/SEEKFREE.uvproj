@@ -489,6 +489,11 @@
               <FileType>5</FileType>
               <FilePath>..\USER\inc\STC32G_NVIC.h</FilePath>
             </File>
+            <File>
+              <FileName>fixed_point.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\USER\inc\fixed_point.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

@@ -7,7 +7,6 @@
 Encoder_t EncoderL, EncoderR;
 EncoderDebo_t EncoderDeboL, EncoderDeboR;
 
-
 void encoder_init(void)
 {
     EncoderL.encoder_original = 0;
@@ -64,9 +63,9 @@ int get_right_encoder(void)
 	return encoder_right;
 }
 
+// 编码器去抖动
 int encoder_debounce(EncoderDebo_t* instance, int encoder)
 {
-	// 使用宏替换魔法数，代码意图一目了然
 	if (myabs(encoder - instance->encoderlast) > ENCODER_JUMP_THRESHOLD && instance->count >= MIN_STABILITY_COUNT)
 	{
 		encoder = instance->encoderlast;
@@ -86,3 +85,4 @@ int encoder_debounce(EncoderDebo_t* instance, int encoder)
 	
 	return encoder;
 }
+

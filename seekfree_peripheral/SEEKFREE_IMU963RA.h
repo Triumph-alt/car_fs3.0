@@ -207,4 +207,12 @@ float   imu963ra_mag_transition     (int16 mag_value);                          
 
 uint8   imu963ra_init               (void);
 
+
+//------------------陀螺仪零偏校准------------------
+void gyro_zero_calibration(uint16_t samples);
+int32_t imu963ra_gyro_transition_fixed (int16 gyro_value);
+//--------------------------------------------------
+
+
+
 #endif

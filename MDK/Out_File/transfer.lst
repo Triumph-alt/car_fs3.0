@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  transfer                                                           12/07/25  20:30:30  PAGE 1   
+C251 COMPILER V5.60.0,  transfer                                                           14/07/25  14:27:40  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE transfer
@@ -20,7 +20,7 @@ stmt  level    source
     9          uint8 selected_item = 0; // 当前选中的项目索引
    10          
    11          
-   12          uint8_t startKeyFlag = 0, uartSendFlag = 1;
+   12          volatile uint8_t startKeyFlag = 0, uartSendFlag = 1;
    13          
    14          void key_task(void)
    15          {
@@ -66,7 +66,7 @@ stmt  level    source
    55   3                  case ELECT_PARA:
    56   3                      // 在电感参数界面，最多7个选项(max_value数组)
    57   3                      selected_item = (selected_item + 1) % 7;
-C251 COMPILER V5.60.0,  transfer                                                           12/07/25  20:30:30  PAGE 2   
+C251 COMPILER V5.60.0,  transfer                                                           14/07/25  14:27:40  PAGE 2   
 
    58   3                      break;
    59   3                      
@@ -134,7 +134,7 @@ stmt  level    source
   121   3                      else if (selected_item == 4 && TurnPID.ki >= 0.1f) TurnPID.ki -= 0.1f;
   122   3                      else if (selected_item == 5 && TurnPID.kd >= 0.1f) TurnPID.kd -= 0.1f;
   123   3                      break;
-C251 COMPILER V5.60.0,  transfer                                                           12/07/25  20:30:30  PAGE 3   
+C251 COMPILER V5.60.0,  transfer                                                           14/07/25  14:27:40  PAGE 3   
 
   124   3                      
   125   3                  default:
@@ -202,7 +202,7 @@ stmt  level    source
   187   2      
   188   2              case RUNNING:
   189   2                  {
-C251 COMPILER V5.60.0,  transfer                                                           12/07/25  20:30:30  PAGE 4   
+C251 COMPILER V5.60.0,  transfer                                                           14/07/25  14:27:40  PAGE 4   
 
   190   3                      oled_show_string(1, 1, "running");
   191   3                  }
@@ -216,7 +216,7 @@ stmt  level    source
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =      1821     ------
+  code size            =      2075     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------

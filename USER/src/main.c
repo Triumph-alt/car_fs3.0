@@ -7,7 +7,6 @@
 
 
 /*************	全局变量	**************/
-extern u8 chn;
 extern u8 xdata DmaAdBuffer[ADC_CH][ADC_DATA];
 extern float result[SENSOR_COUNT];       //滤波后的电感值
 
@@ -25,8 +24,6 @@ void PrintDebugData(void);
 /*************	主函数	**************/
 void main(void)
 {
-	/*************	本地变量声明	**************/
-
 	/*************	系统初始化	**************/
 	board_init();			 // 初始化寄存器
 	GPIO_config();			 //初始化外设
@@ -36,6 +33,7 @@ void main(void)
 	uart_init(UART_4, UART4_RX_P02, UART4_TX_P03, 115200, TIM_4);
 	motor_init();
 	encoder_init();
+	
 	imu963ra_init();
 	oled_init();
 
@@ -44,14 +42,16 @@ void main(void)
 
 	pid_init(&SpeedPID, 50.0f, 0.2f, 0.0f, 5000.0f, 6000.0f);      //初始化速度PID
 	pid_init(&TurnPID, 25.0f, 0.0f, 2.4f, 0.0f, 6000.0f);          //初始化位置PID
-	lowpass_init(&leftSpeedFilt, 0.556);                          //初始化低通滤波器
-	lowpass_init(&rightSpeedFilt, 0.556);
-	kalman_init(&imu693_kf, 0.98, 0.02, imu693kf_Q, imu693kf_R, 0.0);
-	
+	encoder_lowpass_init(&leftSpeedFilt, 0.556);                   //初始化定点数低通滤波器
+	encoder_lowpass_init(&rightSpeedFilt, 0.556);
+	encoder_lowpass_init(&gyro_z_filt, 0.556);
+	// kalman_init(&imu693_kf, 0.98, 0.02, imu693kf_Q, imu693kf_R, 0.0);
+	gyro_zero_calibration(200);	//陀螺仪零点漂移校准
+
     /* 从EEPROM加载max_value及PID参数，覆盖默认值 */
 //	load_parameters_from_eeprom();
 //	save_parameters_to_eeprom();  //保存max_value及PID参数到EEPROM（初始化）
-
+ 
 	/*************	主循环	**************/
     while(1)
 	{
@@ -69,8 +69,7 @@ void main(void)
 //			else if (g_speedpoint == 150)
 //			{
 //				g_speedpoint = 60;
-//			}
-			
+//			}			
 			flag = 0;
 		}
 
@@ -90,8 +89,8 @@ void main(void)
 		position = calculate_position_improved();
 		
 		// 检查电磁保护
-		if (!protection_flag)
-			protection_flag = check_electromagnetic_protection();
+//		if (!protection_flag)
+//			protection_flag = check_electromagnetic_protection();
 		
 		// 打印数据
 		// PrintNormalized17(); //原始数据和归一化

@@ -9,7 +9,7 @@ enum state car_state;
 uint8 selected_item = 0; // 当前选中的项目索引
 
 
-uint8_t startKeyFlag = 0, uartSendFlag = 1;
+volatile uint8_t startKeyFlag = 0, uartSendFlag = 1;
 
 void key_task(void)
 {

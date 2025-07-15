@@ -21,13 +21,17 @@
 // #include "zf_exti.h"
 #include "zf_uart.h"
 #include "zf_tim.h"
+#include "fixed_point.h"
+#include "SEEKFREE_IMU963RA.h"   // 陀螺仪接口及零偏校准 extern
+
+extern volatile int32_t gyro_z_offset_fixed;
 
 int g_encoder_average = 0;                       //左右编码器的平均值
-float Gyro_Z = 0, filtered_GyroZ = 0;            // 陀螺仪角速度的原始值和卡尔曼滤波之后的值
+int32_t Gyro_Z_fixed = 0;                        // 定点数角速度(°/s * FX_SCALE)
 int32_t g_DutyLeft = 0, g_DutyRight = 0;         // 最后真正要给电机的PWM值
 
 //pid控制相关变量
-float speed_pid = 0, turn_pid = 0;               //速度环和转向环pid的值
+int32_t speed_pid = 0, turn_pid = 0;               // 定点数PID输出值 (°/s * FX_SCALE 或 PWM)
 int g_speedpoint = 100;
 int g_leftpoint = 0, g_rightpoint = 0;           //左右轮的目标速度
 
@@ -251,7 +255,7 @@ void TM1_Isr() interrupt 3
 
 void TM2_Isr() interrupt 12
 {
-	TIM2_CLEAR_FLAG;  //清除中断标志
+	TIM2_CLEAR_FLAG;  //清除中断标志			
 	
 	if (startKeyFlag == 1)
 	{
@@ -259,36 +263,36 @@ void TM2_Isr() interrupt 12
 		EncoderL.encoder_original = get_left_encoder();
 		EncoderR.encoder_original = get_right_encoder();
 
-		/* 对编码器的值进行滤波 */
-		EncoderL.encoder_final = lowpass_filter(&leftSpeedFilt, EncoderL.encoder_original);
-		EncoderR.encoder_final = lowpass_filter(&rightSpeedFilt, EncoderR.encoder_original);
+		/* 对编码器的值进行定点低通滤波 */
+		EncoderL.encoder_final = encoder_lowpass_filter(&leftSpeedFilt, EncoderL.encoder_original);
+		EncoderR.encoder_final = encoder_lowpass_filter(&rightSpeedFilt, EncoderR.encoder_original);
 
-		/* 对编码器的值进行异常消除 */
+		/* 对编码器的值进行去毛刺处理 */
 		EncoderL.encoder_final = encoder_debounce(&EncoderDeboL, EncoderL.encoder_final);
 		EncoderR.encoder_final = encoder_debounce(&EncoderDeboR, EncoderR.encoder_final);
 
 		/* 取左右编码器平均值 */
 		g_encoder_average = (EncoderL.encoder_final + EncoderR.encoder_final) / 2;
 
-		/* 读取陀螺仪原始数据并将其转化为物理数据 */
+		/* 读取陀螺仪原始数据并转换为定点数 */
 		imu963ra_get_gyro();
-		Gyro_Z = imu963ra_gyro_transition(imu963ra_gyro_z);
+		Gyro_Z_fixed = imu963ra_gyro_transition_fixed(imu963ra_gyro_z);
+        
+        /* 零点漂移校正 */
+        Gyro_Z_fixed -= gyro_z_offset_fixed;
 
-		/* 对Gyro_Z进行卡尔曼滤波 */
-		filtered_GyroZ = kalman_update(&imu693_kf, Gyro_Z);
-		
-		/* 转向环PID控制 */
-		turn_pid = pid_poisitional_turnning(&TurnPID, position, filtered_GyroZ);
+		/* 一阶低通滤波 (输入为定点数，输出仍为定点数) */
+		Gyro_Z_fixed = fixed_lowpass_filter(&gyro_z_filt, Gyro_Z_fixed);
 
-		/* 更新卡尔曼滤波器的值 */
-		kalman_predict(&imu693_kf, turn_pid);
+		/* 转向环PID控制 (全定点数版本，无需缩放) */
+		turn_pid = pid_positional_turning_fixed(&TurnPID, (int32_t)position, Gyro_Z_fixed);
 
 		/* 速度环PID控制 */
-		speed_pid = pid_increment(&SpeedPID, g_encoder_average, g_speedpoint);
+		speed_pid = pid_increment(&SpeedPID, (int32_t)g_encoder_average, (int32_t)g_speedpoint);
 
-		/* 控制电机 */
-		g_DutyLeft = (int32_t)(speed_pid - turn_pid);
-		g_DutyRight = (int32_t)(speed_pid + turn_pid);
+		/* 控制电机 (全定点数运算) */
+		g_DutyLeft = speed_pid - turn_pid;
+		g_DutyRight = speed_pid + turn_pid;
 
 		if (protection_flag == 1)
 		{
@@ -302,6 +306,8 @@ void TM2_Isr() interrupt 12
 			set_motor_pwm(g_DutyLeft, g_DutyRight);
 		}
 	}
+	
+
 }
 
 

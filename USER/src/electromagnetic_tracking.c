@@ -4,8 +4,6 @@
 #include "common.h"
 #include "STC32G_DMA.h"    
 
-
-u8 chn = 0;
 u8 xdata DmaAdBuffer[ADC_CH][ADC_DATA];
 
 // 定义全局权重配置，只保留四种基本元素
@@ -43,7 +41,7 @@ uint16 max_value[SENSOR_COUNT] = {3300, 3500, 3700, 3700, 3700, 3500, 3300};  //
 
 // 电感位置计算相关变量
 float signal_strength_value = 0;   // 信号强度指标
-int16 position = 0;
+volatile int16 position = 0;
 float filter_param = 0.4f;   // 滤波系数，可调 越大越灵敏
 
 
@@ -57,7 +55,7 @@ uint8 track_route_status = 0; //1-入环，2-环中，3-出环
 uint8 track_ten_flag = 1;	//十字圆环：0表示到计时0.5s再开始判断，1-可以开始判断
 uint8 ten_change_flag = 0; //1表示0.5后track_ten_flag=1
 
-uint8 protection_flag = 0;// 电磁保护逻辑变量,0表示未保护，1表示保护
+volatile uint8 protection_flag = 0;// 电磁保护逻辑变量,0表示未保护，1表示保护
 
 uint8 speed_count = 0;
 
@@ -337,15 +335,11 @@ int16 calculate_position_improved(void)
     float signal_strength = 0;   // 信号强度指标
     static int16 last_pos = 0;   // 上一次位置值，用于滤波
     static int16 very_last_pos = 0;  // 上上次位置值，用于二次滤波
-    static int16 very_very_last_pos = 0;  // 上上上次位置值，用于三次滤波
     int16 pos = 0;               // 当前计算得到的位置值
-    static int16 max_change_rate = 2; // 允许的最大变化率，越大越灵敏
+    static int16 max_change_rate = 4; // 允许的最大变化率，越大越灵敏
     int16 position_change = 0;   // 位置变化量
 	
-	
-	
-	
-	
+
 	// 位置计算（包含中心电感的贡献）
     // 中心电感越大，位置越接近中心线，这里直接将中心电感作为位置修正因子
     float center_correction = 0;
@@ -552,21 +546,21 @@ int16 calculate_position_improved(void)
    }
     
     // 特殊情况处理：当所有电感值都很小时，可能已经偏离赛道
-    if(sum_outer < 10.0f && sum_middle < 10.0f && sum_vertical < 10.0f && center_value < 10.0f)
-    {
-//        if(last_pos > 0)
-//            return (last_pos + 10);  // 向右偏离
-//        else
-//            return (last_pos - 10); // 向左偏离
+//     if(sum_outer < 10.0f && sum_middle < 10.0f && sum_vertical < 10.0f && center_value < 10.0f)
+//     {
+// //        if(last_pos > 0)
+// //            return (last_pos + 10);  // 向右偏离
+// //        else
+// //            return (last_pos - 10); // 向左偏离
 		
-		return last_pos;
-    }
+// 		return last_pos;
+//     }
     
     // 当中心电感大于阈值时，认为车辆接近中心，对位置进行修正
-    if(center_value > 60.0f) {
-        // 修正系数，当中心电感强度高时，修正系数大
-        center_correction = (center_value - 40.0f) / 60.0f * 0.5f;  // 最大修正50%
-    }
+    // if(center_value > 60.0f) {
+    //     // 修正系数，当中心电感强度高时，修正系数大
+    //     center_correction = (center_value - 40.0f) / 60.0f * 0.5f;  // 最大修正50%
+    // }
     
     // 三组差比和加权平均计算位置
     pos = (int16)((ratio_outer * weight_outer + 
@@ -574,7 +568,7 @@ int16 calculate_position_improved(void)
                    ratio_vertical * weight_vertical) * 100.0f);
     
     // 应用中心电感修正 - 向中心线拉近
-    pos = (int16)(pos * (1.0f - center_correction));
+    // pos = (int16)(pos * (1.0f - center_correction));
     
     // 限制范围在-100到100之间
     if(pos > 100) pos = 100;
@@ -591,10 +585,10 @@ int16 calculate_position_improved(void)
     pos = (int16)(filter_param * pos + (1-filter_param) * last_pos);
     
     // 如果信号强度高，增强滤波效果
-    if(signal_strength > 60.0f) {
-        // 应用三点平均滤波，进一步平滑
-        pos = (pos + last_pos + very_last_pos) / 3;
-    }
+    // if(signal_strength > 60.0f) {
+    //     // 应用三点平均滤波，进一步平滑
+    //     pos = (pos + last_pos + very_last_pos) / 3;
+    // }
 		
 		
 //		if (track_type == 0 && (pos <= 10 || pos >= -10))
@@ -619,7 +613,6 @@ int16 calculate_position_improved(void)
 		
     
     // 更新历史位置值
-    very_very_last_pos = very_last_pos;
     very_last_pos = last_pos;
     last_pos = pos;
     

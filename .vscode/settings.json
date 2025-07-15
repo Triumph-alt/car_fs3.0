@@ -15,6 +15,11 @@
         "zf_nvic.h": "c",
         "zf_adc.h": "c",
         "zf_exti.h": "c",
-        "zf_tim.h": "c"
+        "zf_tim.h": "c",
+        "seekfree_imu963ra.h": "c",
+        "filter.h": "c",
+        "windows.h": "c",
+        "fixed_point.h": "c",
+        "rpcndr.h": "c"
     }
 }

@@ -73,8 +73,8 @@ uint8 check_electromagnetic_protection(void);  // 电磁保护逻辑函数
 extern uint16 adc_fliter_data[SENSOR_COUNT][HISTORY_COUNT]; // 滤波后的值
 extern float result[SENSOR_COUNT];                // 电感结果数据
 extern float normalized_data[SENSOR_COUNT];       // 归一化后的电感数据，数组形式
-extern int16 position;                         // 位置偏差
-extern uint8 protection_flag;                  // 保护标志
+extern volatile int16 position;                         // 位置偏差
+extern volatile uint8 protection_flag;                  // 保护标志
 extern float signal_strength_value;            // 信号强度指标
 extern uint16 min_value[SENSOR_COUNT];
 extern uint16 max_value[SENSOR_COUNT];
@@ -90,8 +90,6 @@ extern uint8 track_type_zj;
 extern uint8 track_ten_flag;
 
 
-// 电磁保护逻辑变量
-extern uint8 protection_flag;
 extern uint8 track_ten_flag;
 extern uint8 ten_change_flag;
 
