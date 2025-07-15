@@ -71,24 +71,45 @@ void uart4_interrupt_callback(void)
 		{			
 			protection_flag = 1;
 		}
-		else if (strncmp(g_rxbuffer, "r_p", 3) == 0)
+		else if (strncmp(g_rxbuffer, "i_p", 3) == 0)
 		{
-			sscanf(g_rxbuffer, "r_p:%f", &temp);
-			r_position = (uint8_t)temp;
+			sscanf(g_rxbuffer, "i_p:%f", &temp);
+			intoisland_pos = (uint8_t)temp;
 			// sprintf(g_TxData, "r_p:%d\n", r_position);
 			// uart_putstr(UART_4, g_TxData);
 		}
-		else if (strncmp(g_rxbuffer, "r_d", 3) == 0)
+		else if (strncmp(g_rxbuffer, "o_p", 3) == 0)
 		{
-			sscanf(g_rxbuffer, "r_d:%f", &temp);
-			r_distance = (uint16_t)temp;
+			sscanf(g_rxbuffer, "o_p:%f", &temp);
+			outisland_pos = (uint8_t)temp;
+			// sprintf(g_TxData, "r_p:%d\n", r_position);
+			// uart_putstr(UART_4, g_TxData);
+		}
+		else if (strncmp(g_rxbuffer, "i_s_d", 5) == 0)
+		{
+			sscanf(g_rxbuffer, "i_s_d:%f", &temp);
+			intoisland_str_dist = (uint16_t)temp;
 			// sprintf(g_TxData, "r_d:%d\n", r_distance);
 			// uart_putstr(UART_4, g_TxData);
 		}
-		else if (strncmp(g_rxbuffer, "s_d", 3) == 0)
+		else if (strncmp(g_rxbuffer, "o_t_d", 5) == 0)
 		{
-			sscanf(g_rxbuffer, "s_d:%f", &temp);
-			s_distance = (uint16_t)temp;
+			sscanf(g_rxbuffer, "o_t_d:%f", &temp);
+			outisland_turn_dist = (uint16_t)temp;
+			// sprintf(g_TxData, "r_d:%d\n", r_distance);
+			// uart_putstr(UART_4, g_TxData);
+		}
+		else if (strncmp(g_rxbuffer, "i_a_d", 5) == 0)
+		{
+			sscanf(g_rxbuffer, "i_a_d:%f", &temp);
+			intoisland_all_dist = (uint16_t)temp;
+			// sprintf(g_TxData, "r_d:%d\n", r_distance);
+			// uart_putstr(UART_4, g_TxData);
+		}
+		else if (strncmp(g_rxbuffer, "o_a_d", 5) == 0)
+		{
+			sscanf(g_rxbuffer, "o_a_d:%f", &temp);
+			outisland_all_dist = (uint16_t)temp;
 			// sprintf(g_TxData, "r_d:%d\n", r_distance);
 			// uart_putstr(UART_4, g_TxData);
 		}

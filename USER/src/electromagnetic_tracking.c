@@ -38,7 +38,7 @@ float normalized_data[SENSOR_COUNT] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f}
 // uint16 max_value[SENSOR_COUNT] = {0, 0, 0, 0, 0, 0, 0};  // 每个电感的最大值
 uint16 min_value[SENSOR_COUNT] 
 = {0, 0, 0, 0, 0, 0, 0};  // 每个电感的最小值
-uint16 max_value[SENSOR_COUNT] = {2900, 3700, 3500, 3600, 3500, 3700, 2900};  // 每个电感的最大值
+uint16 max_value[SENSOR_COUNT] = {3200, 3700, 3500, 3600, 3500, 3700, 3200};  // 每个电感的最大值
 
 // 电感位置计算相关变量
 float signal_strength_value = 0;   // 信号强度指标
@@ -435,7 +435,7 @@ int16 calculate_position_improved(void)
 				((normalized_data[SENSOR_HL] + normalized_data[SENSOR_VL]) - (normalized_data[SENSOR_HR] + normalized_data[SENSOR_VR]) > 90.0f))  //左环岛
                  && signal_strength > 50.0f && track_island_flag == 1 )    
         {
-            track_type = WEIGHT_ROUNDABOUT;// 环岛
+            //track_type = WEIGHT_ROUNDABOUT;// 环岛
             track_island_flag = 0; //5s后才可以重新判断入环
             island_ch_flag = 1; //开始计时5s
         }

@@ -28,7 +28,7 @@ int32_t g_DutyLeft = 0, g_DutyRight = 0;         // 最后真正要给电机的P
 
 //pid控制相关变量
 float speed_pid = 0, turn_pid = 0;               //速度环和转向环pid的值
-int g_speedpoint = 50;
+int g_speedpoint = 60;
 int g_leftpoint = 0, g_rightpoint = 0;           //左右轮的目标速度
 int16_t positionReal = 0; 
 
@@ -36,11 +36,15 @@ int16_t positionReal = 0;
 uint8_t beep_flag = 0;                           // 蜂鸣器开启标志，1表示开启
 uint16_t beep_count = 0;                         // 蜂鸣器计时计数器
 uint8_t track_ten_cnt = 0;                       //出入环重复判定计时器
-uint16_t outisland_cnt = 0;                       //出入环岛重复判定计时器
+uint16_t outisland_cnt = 0;                      //出入环岛重复判定计时器
 
-volatile uint8_t r_position = 30;
-volatile uint16_t r_distance = 7400;
-volatile uint16_t s_distance = 5500;
+volatile uint8_t intoisland_pos = 65;            //入环岛的偏差
+volatile uint16_t intoisland_str_dist = 10500;   //入环岛直走距离
+volatile uint16_t intoisland_all_dist = 11500;   //入环岛总距离
+
+volatile uint8_t outisland_pos = 30;             //出环岛的偏差
+volatile uint16_t outisland_turn_dist = 5500;    //出环岛拐弯距离
+volatile uint16_t outisland_all_dist = 7400;     //出环岛总距离
 
 int count = 0, flag = 0;
 
@@ -323,7 +327,7 @@ void TM2_Isr() interrupt 12
 		{
 			g_intencoderALL += g_encoder_average;
 			
-			if(g_intencoderALL <= 10500)//第一阶段先直行
+			if(g_intencoderALL <= intoisland_str_dist)//第一阶段先直行
 			{
 				positionReal = 0;
 			}
@@ -331,14 +335,14 @@ void TM2_Isr() interrupt 12
 			{
 				if (track_route == 1)//左环
 				{
-					positionReal = 65;
+					positionReal = intoisland_pos;
 				}
 				else if (track_route == 2)//右环
 				{
-					positionReal = -65;
+					positionReal = -intoisland_pos;
 				}
 							
-				if (g_intencoderALL >= 11500)//入环完毕
+				if (g_intencoderALL >= intoisland_all_dist)//入环完毕
 				{
 					track_route_status = 2;
 					g_intencoderALL = 0;
@@ -349,34 +353,33 @@ void TM2_Isr() interrupt 12
 		{
 			positionReal = position;
 
-			g_intencoderALL += g_encoder_average;
+//			g_intencoderALL += g_encoder_average;
 
-			if (g_intencoderALL >= 28000)
-			{
-				g_intencoderALL = 0;
-			}
+//			if (g_intencoderALL >= 28000)
+//			{
+//				g_intencoderALL = 0;
+//			}
 		}
 		else if (track_type == 3 && track_route_status == 3)//圆环出环
 		{
 			g_intencoderALL += g_encoder_average;
 			
-			if (g_intencoderALL <= s_distance)//第一阶段打死出环
+			if (g_intencoderALL <= outisland_turn_dist)//第一阶段打死出环
 			{
 				if (track_route == 1)//左环
 				{
-					positionReal = r_position;
+					positionReal = outisland_pos;
 				}
 				else if (track_route == 2)//右环
 				{
-					positionReal = -r_position;
+					positionReal = -outisland_pos;
 				}
 			}
 			else//第二阶段直走
 			{
-//				P26 = 1;
 				positionReal = 0;
 				
-				if (g_intencoderALL >= r_distance)//出环完毕
+				if (g_intencoderALL >= outisland_all_dist)//出环完毕
 				{
 					track_type = 0;
 					track_route = 0;

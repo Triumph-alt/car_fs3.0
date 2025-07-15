@@ -41,8 +41,8 @@ void main(void)
 	pit_timer_ms(TIM_1, 10);
 	pit_timer_ms(TIM_2, 2);
 
-	pid_init(&SpeedPID, 50.0f, 0.2f, 0.0f, 5000.0f, 6000.0f);      //初始化速度PID
-	pid_init(&TurnPID, 70.0f, 0.0f, 7.5f, 0.0f, 6000.0f);          //初始化位置PID
+	pid_init(&SpeedPID, 100.0f, 0.25f, 0.0f, 5000.0f, 6000.0f);      //初始化速度PID
+	pid_init(&TurnPID, 70.0f, 0.0f, 8.0f, 0.0f, 6000.0f);          //初始化位置PID
 	lowpass_init(&leftSpeedFilt, 0.556);                          //初始化低通滤波器
 	lowpass_init(&rightSpeedFilt, 0.556);
 	kalman_init(&imu693_kf, 0.98, 0.02, imu693kf_Q, imu693kf_R, 0.0);
@@ -89,14 +89,13 @@ void main(void)
 		position = calculate_position_improved();
 		
 		// 检查电磁保护
-		if (!protection_flag)
-			protection_flag = check_electromagnetic_protection();
+//		if (!protection_flag)
+//			protection_flag = check_electromagnetic_protection();
 		
 		// 打印数据
 //		PrintNormalized17(); //原始数据和归一化
-//		PrintDebugData();	 //调试数据
-//		PrintNormalized17();
-		Printtest(); 		 //电感元素判别
+		PrintDebugData();	 //调试数据
+//		Printtest(); 		 //电感元素判别
     }
 }
 
@@ -181,7 +180,7 @@ void PrintFiltered7(void)
 void Printtest(void)
 {
     // 将归一化后的float数据打印，保留两位小数
-    sprintf(g_txbuffer, "%u,%u,%u,%u,%u,%u,%u,%u,%d,%u,%u,%u,%d\r\n",
+    sprintf(g_txbuffer, "%u,%u,%u,%u,%u,%u,%u,%u,%d,%u,%d,%d\r\n",
             (uint16)normalized_data[SENSOR_HL],
             (uint16)normalized_data[SENSOR_VL],
             (uint16)normalized_data[SENSOR_HML],
@@ -193,9 +192,11 @@ void Printtest(void)
 	        position,
 			track_type,
 //			track_type_zj
-			track_route,
-			track_route_status,
-			g_intencoderALL
+//			track_route,
+//			track_route_status,
+//			g_intencoderALL
+			(int)Gyro_Z,
+			(int)filtered_GyroZ
 			);
     uart_putstr(UART_4, g_txbuffer);
 }
@@ -228,7 +229,7 @@ void PrintDebugData(void)
 {
     if (uartSendFlag == 1)
 	{
-		sprintf(g_txbuffer, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n", 
+		sprintf(g_txbuffer, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u,%u,%u\n", 
 				g_speedpoint, 
 				g_encoder_average, 
 				EncoderL.encoder_final,
@@ -238,7 +239,10 @@ void PrintDebugData(void)
 				position,
 				(int)speed_pid,
 				(int)turn_pid,
-				(uint16)power_voltage);
+				(uint16)power_voltage,
+				track_type,
+				track_route,
+				track_route_status);
 		uart_putstr(UART_4, g_txbuffer);
 				
 		if (position >= 0)
