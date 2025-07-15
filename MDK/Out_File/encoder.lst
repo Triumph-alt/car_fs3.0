@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  encoder                                                            15/07/25  15:28:54  PAGE 1   
+C251 COMPILER V5.60.0,  encoder                                                            15/07/25  22:35:42  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE encoder
@@ -66,7 +66,7 @@ stmt  level    source
    55   1              {
    56   2                      encoder_right = ctimer_count_read(CTIM3_P04) * -1;
    57   2              }
-C251 COMPILER V5.60.0,  encoder                                                            15/07/25  15:28:54  PAGE 2   
+C251 COMPILER V5.60.0,  encoder                                                            15/07/25  22:35:42  PAGE 2   
 
    58   1              else
    59   1              {

@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  electromagnetic_tracking                                           15/07/25  16:01:12  PAGE 1   
+C251 COMPILER V5.60.0,  electromagnetic_tracking                                           16/07/25  01:48:06  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE electromagnetic_tracking
@@ -24,7 +24,7 @@ stmt  level    source
    13              {0.20f, 0.35, 0.00f, 0.20f, 0.70f, 30, "直道"},
    14              
    15              // 直角弯道
-   16              {0.20f, 0.30f, 0.00f, 0.40f, 1.00f, 50, "直角弯道"},
+   16              {0.0f, 0.45f, 0.00f, 0.60f, 1.00f, 50, "直角弯道"},
    17              
    18              // 十字圆环
    19              {0.35f, 0.25f, 0.00f, 0.15f, 0.90f, 40, "十字圆环"},
@@ -52,7 +52,7 @@ stmt  level    source
    38          // uint16 max_value[SENSOR_COUNT] = {0, 0, 0, 0, 0, 0, 0};  // 每个电感的最大值
    39          uint16 min_value[SENSOR_COUNT] 
    40          = {0, 0, 0, 0, 0, 0, 0};  // 每个电感的最小值
-   41          uint16 max_value[SENSOR_COUNT] = {2900, 3700, 3500, 3600, 3500, 3700, 2900};  // 每个电感的最大值
+   41          uint16 max_value[SENSOR_COUNT] = {3200, 3700, 3500, 3600, 3500, 3700, 3200};  // 每个电感的最大值
    42          
    43          // 电感位置计算相关变量
    44          float signal_strength_value = 0;   // 信号强度指标
@@ -66,7 +66,7 @@ stmt  level    source
              -�
    52          
    53          uint8 track_type_zj = 0;          //1-左直角，2-右直角
-C251 COMPILER V5.60.0,  electromagnetic_tracking                                           15/07/25  16:01:12  PAGE 2   
+C251 COMPILER V5.60.0,  electromagnetic_tracking                                           16/07/25  01:48:06  PAGE 2   
 
    54          uint8 track_route = 0;            //1-左环，2-右环
    55          uint8 track_route_status = 0; //1-入环，2-环中，3-出环
@@ -134,7 +134,7 @@ stmt  level    source
   114   2              uint16 value = ((uint16)DmaAdBuffer[dma_ch][2*ADC_TIMES + 2] << 8) |
   115   2                              (uint16)DmaAdBuffer[dma_ch][2*ADC_TIMES + 3];
   116   2      
-C251 COMPILER V5.60.0,  electromagnetic_tracking                                           15/07/25  16:01:12  PAGE 3   
+C251 COMPILER V5.60.0,  electromagnetic_tracking                                           16/07/25  01:48:06  PAGE 3   
 
   117   2              // 更新递推和：移除旧值，加入新值
   118   2              running_sum[i] -= adc_fliter_data[i][history_index];
@@ -202,7 +202,7 @@ stmt  level    source
   180   2              // 更新循环缓冲区索引
   181   2              sample_count = (sample_count + 1) % times;
   182   2              
-C251 COMPILER V5.60.0,  electromagnetic_tracking                                           15/07/25  16:01:12  PAGE 4   
+C251 COMPILER V5.60.0,  electromagnetic_tracking                                           16/07/25  01:48:06  PAGE 4   
 
   183   2              // 对每个电感通道进行处理
   184   2              for(a = 0; a < i_num; a++)
@@ -270,7 +270,7 @@ stmt  level    source
   246          //    for(i = 0; i < SENSOR_COUNT; i++)
   247          //    {
   248          //        // 异常值检测 - 如果读数异常大或异常小，可能是传感器故障，不更新
-C251 COMPILER V5.60.0,  electromagnetic_tracking                                           15/07/25  16:01:12  PAGE 5   
+C251 COMPILER V5.60.0,  electromagnetic_tracking                                           16/07/25  01:48:06  PAGE 5   
 
   249          //        if(result[i] > 1000 || result[i] < 5)
   250          //            continue;
@@ -338,7 +338,7 @@ stmt  level    source
   307   2              if(normalized_data[i] > 100.0f) normalized_data[i] = 100.0f;
   308   2              if(normalized_data[i] < 0.0f) normalized_data[i] = 0.0f;
   309   2          }
-C251 COMPILER V5.60.0,  electromagnetic_tracking                                           15/07/25  16:01:12  PAGE 6   
+C251 COMPILER V5.60.0,  electromagnetic_tracking                                           16/07/25  01:48:06  PAGE 6   
 
   310   1          
   311   1          for(i = 0; i < SENSOR_COUNT; i++)
@@ -406,7 +406,7 @@ stmt  level    source
   372   1          
   373   1          diff_vertical = normalized_data[SENSOR_VL] - normalized_data[SENSOR_VR];
   374   1          sum_vertical = normalized_data[SENSOR_VL] + normalized_data[SENSOR_VR];
-C251 COMPILER V5.60.0,  electromagnetic_tracking                                           15/07/25  16:01:12  PAGE 7   
+C251 COMPILER V5.60.0,  electromagnetic_tracking                                           16/07/25  01:48:06  PAGE 7   
 
   375   1          
   376   1          // 获取中间电感值
@@ -474,13 +474,13 @@ stmt  level    source
   433   2              // }
   434   2              else if(normalized_data[SENSOR_HC] > 90.0f && (((normalized_data[SENSOR_HR] + normalized_data[SEN
              -SOR_VR]) - (normalized_data[SENSOR_HL] + normalized_data[SENSOR_VL]) > 90.0f)||  //右环岛
-C251 COMPILER V5.60.0,  electromagnetic_tracking                                           15/07/25  16:01:12  PAGE 8   
+C251 COMPILER V5.60.0,  electromagnetic_tracking                                           16/07/25  01:48:06  PAGE 8   
 
   435   2                                      ((normalized_data[SENSOR_HL] + normalized_data[SENSOR_VL]) - (normalized_data[SENSOR_HR] + normalized
              -_data[SENSOR_VR]) > 90.0f))  //左环岛
   436   2                       && signal_strength > 50.0f && track_island_flag == 1 )    
   437   2              {
-  438   3                  track_type = WEIGHT_ROUNDABOUT;// 环岛
+  438   3                  //track_type = WEIGHT_ROUNDABOUT;// 环岛
   439   3                  track_island_flag = 0; //5s后才可以重新判断入环
   440   3                  island_ch_flag = 1; //开始计时5s
   441   3              }
@@ -542,7 +542,7 @@ stmt  level    source
   493   2              if(normalized_data[SENSOR_HR] > 70.0f && track_route == 0)
   494   2              {
   495   3                  // 右环岛
-C251 COMPILER V5.60.0,  electromagnetic_tracking                                           15/07/25  16:01:12  PAGE 9   
+C251 COMPILER V5.60.0,  electromagnetic_tracking                                           16/07/25  01:48:06  PAGE 9   
 
   496   3                  track_route = 2;
   497   3                              track_route_status = 1;
@@ -610,7 +610,7 @@ stmt  level    source
   557   2                 weight_middle = track_weights[WEIGHT_ROUNDABOUT].weight_middle;
   558   2                 weight_vertical = track_weights[WEIGHT_ROUNDABOUT].weight_vertical;
   559   2                 filter_param = track_weights[WEIGHT_ROUNDABOUT].filter_param;
-C251 COMPILER V5.60.0,  electromagnetic_tracking                                           15/07/25  16:01:12  PAGE 10  
+C251 COMPILER V5.60.0,  electromagnetic_tracking                                           16/07/25  01:48:06  PAGE 10  
 
   560   2                 max_change_rate = track_weights[WEIGHT_ROUNDABOUT].max_change_rate;
   561   2                 break;
@@ -678,7 +678,7 @@ stmt  level    source
   623   1      //                              {
   624   1      //                                              track_type = 4;
   625   1      //                                              speed_count = 0;
-C251 COMPILER V5.60.0,  electromagnetic_tracking                                           15/07/25  16:01:12  PAGE 11  
+C251 COMPILER V5.60.0,  electromagnetic_tracking                                           16/07/25  01:48:06  PAGE 11  
 
   626   1      //                              }
   627   1      //              }
@@ -746,7 +746,7 @@ stmt  level    source
   689   2                      trigger_reason = 2;
   690   2              }
   691   1              
-C251 COMPILER V5.60.0,  electromagnetic_tracking                                           15/07/25  16:01:12  PAGE 12  
+C251 COMPILER V5.60.0,  electromagnetic_tracking                                           16/07/25  01:48:06  PAGE 12  
 
   692   1              // 3. 位置偏差过大，说明可能偏离赛道太多
   693   1              if(position < -90 || position > 90)
@@ -800,7 +800,7 @@ stmt  level    source
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =      5671     ------
+  code size            =      5665     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
@@ -815,7 +815,7 @@ Module Information          Static   Overlayable
   far data size        =    ------     ------
   huge data size       =    ------     ------
   const size           =    ------     ------
-C251 COMPILER V5.60.0,  electromagnetic_tracking                                           15/07/25  16:01:12  PAGE 13  
+C251 COMPILER V5.60.0,  electromagnetic_tracking                                           16/07/25  01:48:06  PAGE 13  
 
   hconst size          =       739     ------
 End of Module Information.

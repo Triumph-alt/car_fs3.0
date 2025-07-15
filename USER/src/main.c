@@ -41,8 +41,8 @@ void main(void)
 	pit_timer_ms(TIM_1, 10);
 	pit_timer_ms(TIM_2, 2);
 
-	pid_init(&SpeedPID, 100.0f, 0.25f, 0.0f, 5000.0f, 6000.0f);      //初始化速度PID
-	pid_init(&TurnPID, 70.0f, 0.0f, 8.0f, 0.0f, 6000.0f);          //初始化位置PID
+	pid_init(&SpeedPID, 55.0f, 0.22f, 0.0f, 8000.0f, 9000.0f);      //初始化速度PID
+	pid_init(&TurnPID, 95.0f, 0.0f, 13.0f, 0.0f, 9000.0f);          //初始化位置PID
 	lowpass_init(&leftSpeedFilt, 0.556);                          //初始化低通滤波器
 	lowpass_init(&rightSpeedFilt, 0.556);
 	kalman_init(&imu693_kf, 0.98, 0.02, imu693kf_Q, imu693kf_R, 0.0);
@@ -89,12 +89,12 @@ void main(void)
 		position = calculate_position_improved();
 		
 		// 检查电磁保护
-//		if (!protection_flag)
-//			protection_flag = check_electromagnetic_protection();
+		if (!protection_flag)
+			protection_flag = check_electromagnetic_protection();
 		
 		// 打印数据
-//		PrintNormalized17(); //原始数据和归一化
-		PrintDebugData();	 //调试数据
+		PrintNormalized17(); //原始数据和归一化
+//		PrintDebugData();	 //调试数据
 //		Printtest(); 		 //电感元素判别
     }
 }
@@ -229,7 +229,7 @@ void PrintDebugData(void)
 {
     if (uartSendFlag == 1)
 	{
-		sprintf(g_txbuffer, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u,%u,%u\n", 
+		sprintf(g_txbuffer, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u,%u,%u,%d,%d\n", 
 				g_speedpoint, 
 				g_encoder_average, 
 				EncoderL.encoder_final,
@@ -242,7 +242,10 @@ void PrintDebugData(void)
 				(uint16)power_voltage,
 				track_type,
 				track_route,
-				track_route_status);
+				track_route_status,
+				(int)SpeedPID.p_out,
+				(int)SpeedPID.i_out
+				);
 		uart_putstr(UART_4, g_txbuffer);
 				
 		if (position >= 0)

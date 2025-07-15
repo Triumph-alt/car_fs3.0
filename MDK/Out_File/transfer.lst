@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  transfer                                                           15/07/25  15:28:53  PAGE 1   
+C251 COMPILER V5.60.0,  transfer                                                           15/07/25  22:35:41  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE transfer
@@ -66,7 +66,7 @@ stmt  level    source
    55   3                  case ELECT_PARA:
    56   3                      // 在电感参数界面，最多7个选项(max_value数组)
    57   3                      selected_item = (selected_item + 1) % 7;
-C251 COMPILER V5.60.0,  transfer                                                           15/07/25  15:28:53  PAGE 2   
+C251 COMPILER V5.60.0,  transfer                                                           15/07/25  22:35:41  PAGE 2   
 
    58   3                      break;
    59   3                      
@@ -134,7 +134,7 @@ stmt  level    source
   121   3                      else if (selected_item == 4 && TurnPID.ki >= 0.1f) TurnPID.ki -= 0.1f;
   122   3                      else if (selected_item == 5 && TurnPID.kd >= 0.1f) TurnPID.kd -= 0.1f;
   123   3                      break;
-C251 COMPILER V5.60.0,  transfer                                                           15/07/25  15:28:53  PAGE 3   
+C251 COMPILER V5.60.0,  transfer                                                           15/07/25  22:35:41  PAGE 3   
 
   124   3                      
   125   3                  default:
@@ -202,7 +202,7 @@ stmt  level    source
   187   2      
   188   2              case RUNNING:
   189   2                  {
-C251 COMPILER V5.60.0,  transfer                                                           15/07/25  15:28:53  PAGE 4   
+C251 COMPILER V5.60.0,  transfer                                                           15/07/25  22:35:41  PAGE 4   
 
   190   3                      oled_show_string(1, 1, "running");
   191   3                  }
