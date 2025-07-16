@@ -38,7 +38,7 @@ float normalized_data[SENSOR_COUNT] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f}
 // uint16 max_value[SENSOR_COUNT] = {0, 0, 0, 0, 0, 0, 0};  // 每个电感的最大值
 uint16 min_value[SENSOR_COUNT] 
 = {0, 0, 0, 0, 0, 0, 0};  // 每个电感的最小值
-uint16 max_value[SENSOR_COUNT] = {3200, 3700, 3500, 3600, 3500, 3700, 3200};  // 每个电感的最大值
+uint16 max_value[SENSOR_COUNT] = {3200, 3700, 3500, 3700, 3500, 3700, 3200};  // 每个电感的最大值
 
 // 电感位置计算相关变量
 float signal_strength_value = 0;   // 信号强度指标

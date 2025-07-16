@@ -28,7 +28,7 @@ int32_t g_DutyLeft = 0, g_DutyRight = 0;         // 最后真正要给电机的P
 
 //pid控制相关变量
 float speed_pid = 0, turn_pid = 0;               //速度环和转向环pid的值
-int g_speedpoint = 70;
+int g_speedpoint = SPEED_STRAIGHT;
 int g_leftpoint = 0, g_rightpoint = 0;           //左右轮的目标速度
 int16_t positionReal = 0; 
 
@@ -315,16 +315,32 @@ void TM2_Isr() interrupt 12
 		/* 对Gyro_Z进行卡尔曼滤波 */
 		filtered_GyroZ = kalman_update(&imu693_kf, Gyro_Z);
 		
+		SpeedPID.kp = g_speed_kp;
+		SpeedPID.ki = g_speed_ki;
+		
+		TurnPID.kp = g_turn_kp;
+		TurnPID.kd = g_turn_kd;
+		
 		if (track_type == 0)//普通直线
-		{		
+		{
+			g_speedpoint = SPEED_STRAIGHT;
 			positionReal = position;
 		}
 		else if (track_type == 1)//直角
-		{		
+		{
+			/* 直角地带的pid参数和速度均进行变化 */
+			SpeedPID.kp = ANGLE_SPEED_KP;
+			SpeedPID.ki = ANGLE_SPEED_KI;
+			
+			TurnPID.kp = ANGLE_TURN_KP;
+			TurnPID.kd = ANGLE_TURN_KD;
+
+			g_speedpoint = SPEED_ANGLE;
 			positionReal = position;
 		}
 		else if (track_type == 3 && track_route_status == 1)//圆环入环
 		{
+			g_speedpoint = SPEED_STRAIGHT;
 			g_intencoderALL += g_encoder_average;
 			
 			if(g_intencoderALL <= intoisland_str_dist)//第一阶段先直行
@@ -351,17 +367,12 @@ void TM2_Isr() interrupt 12
 		}
 		else if (track_type == 3 && track_route_status == 2)//环岛内部
 		{
+			g_speedpoint = SPEED_ISLAND;
 			positionReal = position;
-
-//			g_intencoderALL += g_encoder_average;
-
-//			if (g_intencoderALL >= 28000)
-//			{
-//				g_intencoderALL = 0;
-//			}
 		}
 		else if (track_type == 3 && track_route_status == 3)//圆环出环
 		{
+			g_speedpoint = SPEED_STRAIGHT;
 			g_intencoderALL += g_encoder_average;
 			
 			if (g_intencoderALL <= outisland_turn_dist)//第一阶段打死出环
