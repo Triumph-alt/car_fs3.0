@@ -10,8 +10,9 @@
 
 
 
-
 ## 完赛参数记录
+
+### 2ms
 
 1. 低速度55 = 0.5m/s
 
@@ -99,7 +100,7 @@ volatile uint16_t s_distance = 5500;
 4. 中速度70
 ```c
 	pid_init(&SpeedPID, 55.0f, 0.22f, 0.0f, 8000.0f, 9000.0f);      //初始化速度PID
-	pid_init(&TurnPID, 95.0f, 0.0f, 13.0f, 0.0f, 9000.0f);          //初始化位置PID
+	pid_init(&TurnPID, 90.0f, 0.0f, 12.5f, 0.0f, 9000.0f);          //初始化位置PID
 
 TrackWeights track_weights[4] = {
     // 普通直道
@@ -122,3 +123,60 @@ volatile uint16_t r_distance = 7400;
 volatile uint16_t s_distance = 5500;
 
 ```
+
+5.中速度75
+
+```C
+pid_init(&SpeedPID, 40.0f, 0.2f, 0.0f, 8000.0f, 9000.0f);      //初始化速度PID
+pid_init(&TurnPID, 90.0f, 0.0f, 12.5f, 0.0f, 9000.0f);       //初始化位置PID
+
+TrackWeights track_weights[4] = {
+    // 普通直道
+
+    {0.20f, 0.35, 0.00f, 0.20f, 0.70f, 30, "直道"},
+    
+    // 直角弯道
+    {0.0f, 0.45f, 0.00f, 0.60f, 1.00f, 50, "直角弯道"},
+    
+    // 十字圆环
+    {0.35f, 0.25f, 0.00f, 0.15f, 0.90f, 40, "十字圆环"},
+    
+    // 环岛
+    {0.20f, 0.35f, 0.00f, 0.20f, 1.00f, 50, "环岛"}
+};
+
+
+volatile uint8_t r_position = 30;
+volatile uint16_t r_distance = 7400;
+volatile uint16_t s_distance = 5500;
+```
+
+6.中速度80
+
+```C
+pid_init(&SpeedPID, 35.0f, 0.15f, 0.0f, 8000.0f, 9000.0f);      //初始化速度PID
+pid_init(&TurnPID, 120.0f, 0.0f, 16.0f, 0.0f, 9000.0f);       //初始化位置PID
+
+TrackWeights track_weights[4] = {
+    // 普通直道
+
+    {0.20f, 0.35, 0.00f, 0.20f, 0.70f, 30, "直道"},
+    
+    // 直角弯道
+    {0.0f, 0.45f, 0.00f, 0.60f, 1.00f, 50, "直角弯道"},
+    
+    // 十字圆环
+    {0.35f, 0.25f, 0.00f, 0.15f, 0.90f, 40, "十字圆环"},
+    
+    // 环岛
+    {0.20f, 0.35f, 0.00f, 0.20f, 1.00f, 50, "环岛"}
+};
+
+
+volatile uint8_t r_position = 30;
+volatile uint16_t r_distance = 7400;
+volatile uint16_t s_distance = 5500;
+```
+
+### 1ms
+
