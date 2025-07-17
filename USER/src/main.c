@@ -41,7 +41,7 @@ void main(void)
 	pit_timer_ms(TIM_1, 10);
 	pit_timer_ms(TIM_2, 1);
 
-	pid_init(&SpeedPID, 50.0f, 0.1f, 0.0f, 8000.0f, 9000.0f);      //初始化速度PID
+	pid_init(&SpeedPID, 30.0f, 0.07f, 0.0f, 8000.0f, 9000.0f);      //初始化速度PID
 	pid_init(&TurnPID, 0.0f, 0.0f, 0.0f, 0.0f, 9000.0f);          //初始化位置PID
 	lowpass_init(&leftSpeedFilt, 0.556);                          //初始化低通滤波器
 	lowpass_init(&rightSpeedFilt, 0.556);

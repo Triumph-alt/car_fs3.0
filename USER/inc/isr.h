@@ -20,8 +20,8 @@
 #ifndef __ISR_H_
 #define __ISR_H_
 
-#define SPEED_STRAIGHT     30
-#define SPEED_ANGLE        25
+#define SPEED_STRAIGHT     40
+#define SPEED_ANGLE        40
 #define SPEED_ISLAND       35
 
 // 直角地区pid参数进行微调，一般是对应速度的pid

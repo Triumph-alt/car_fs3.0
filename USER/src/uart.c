@@ -27,14 +27,14 @@ void uart4_interrupt_callback(void)
 	{
 		if (strncmp(g_rxbuffer, "speed_kp", 8) == 0)
 		{
-			sscanf(g_rxbuffer, "speed_kp:%f", &g_speed_kp);
+			sscanf(g_rxbuffer, "speed_kp:%f", &SpeedPID.kp);
 			
 //			sprintf(g_txbuffer, "speed_kp:%f\n", SpeedPID.kp);
 //			uart_putstr(UART_4, g_txbuffer);
 		}
 		else if (strncmp(g_rxbuffer, "speed_ki", 8) == 0)
 		{
-			sscanf(g_rxbuffer, "speed_ki:%f", &g_speed_ki);
+			sscanf(g_rxbuffer, "speed_ki:%f", &SpeedPID.ki);
 			
 //			sprintf(g_txbuffer, "speed_ki:%f\n", SpeedPID.ki);
 //			uart_putstr(UART_4, g_txbuffer);
@@ -48,7 +48,7 @@ void uart4_interrupt_callback(void)
 		}
 		else if (strncmp(g_rxbuffer, "turn_kp", 7) == 0)
 		{
-			sscanf(g_rxbuffer, "turn_kp:%f", &g_turn_kp);
+			sscanf(g_rxbuffer, "turn_kp:%f", &TurnPID.kp);
 			
 //			sprintf(g_txbuffer, "turn_kp:%f\n", TurnPID.kp);
 //			uart_putstr(UART_4, g_txbuffer);
@@ -62,7 +62,7 @@ void uart4_interrupt_callback(void)
 		}
 		else if (strncmp(g_rxbuffer, "turn_kd", 7) == 0)
 		{
-			sscanf(g_rxbuffer, "turn_kd:%f", &g_turn_kd);
+			sscanf(g_rxbuffer, "turn_kd:%f", &TurnPID.kd);
 			
 //			sprintf(g_txbuffer, "turn_kd:%f\n", TurnPID.kd);
 //			uart_putstr(UART_4, g_txbuffer);

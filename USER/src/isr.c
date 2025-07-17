@@ -315,12 +315,6 @@ void TM2_Isr() interrupt 12
 		/* 对Gyro_Z进行卡尔曼滤波 */
 		filtered_GyroZ = kalman_update(&imu693_kf, Gyro_Z);
 		
-		SpeedPID.kp = g_speed_kp;
-		SpeedPID.ki = g_speed_ki;
-		
-		TurnPID.kp = g_turn_kp;
-		TurnPID.kd = g_turn_kd;
-		
 		if (track_type == 0)//普通直线
 		{
 			g_speedpoint = SPEED_STRAIGHT;
@@ -328,13 +322,6 @@ void TM2_Isr() interrupt 12
 		}
 		else if (track_type == 1)//直角
 		{
-			/* 直角地带的pid参数和速度均进行变化 */
-			SpeedPID.kp = ANGLE_SPEED_KP;
-			SpeedPID.ki = ANGLE_SPEED_KI;
-			
-			TurnPID.kp = ANGLE_TURN_KP;
-			TurnPID.kd = ANGLE_TURN_KD;
-
 			g_speedpoint = SPEED_ANGLE;
 			positionReal = position;
 		}

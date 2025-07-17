@@ -66,7 +66,7 @@ int get_right_encoder(void)
 }
 
 int encoder_debounce(EncoderDebo_t* instance, int encoder)
-{
+{	
 	// 使用宏替换魔法数，代码意图一目了然
 	if (myabs(encoder - instance->encoderlast) > ENCODER_JUMP_THRESHOLD && instance->count >= MIN_STABILITY_COUNT)
 	{
@@ -75,6 +75,11 @@ int encoder_debounce(EncoderDebo_t* instance, int encoder)
 	}
 	else
 	{
+		if (myabs(encoder) >= 150)
+		{
+			encoder = 0;
+		}
+		
 		instance->encoderlast = encoder;
 		
 		instance->count++;
@@ -83,6 +88,11 @@ int encoder_debounce(EncoderDebo_t* instance, int encoder)
 			// 可以保持清零，或者设置为一个不会立即触发抖动判断的值
 			instance->count = MIN_STABILITY_COUNT; 
 		}
+	}
+	
+	if (myabs(encoder) >= 150)
+	{
+		encoder = 0;
 	}
 	
 	return encoder;
