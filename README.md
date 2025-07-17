@@ -180,3 +180,35 @@ volatile uint16_t s_distance = 5500;
 
 ### 1ms
 
+30速度
+
+```C
+pid_init(&SpeedPID, 50.0f, 0.1f, 0.0f, 8000.0f, 9000.0f);      //初始化速度PID
+pid_init(&TurnPID, 100.0f, 0.0f, 14.0f, 0.0f, 9000.0f);          //初始化位置PID
+
+TrackWeights track_weights[4] = {
+    // 普通直道
+
+    {0.20f, 0.35, 0.00f, 0.20f, 0.70f, 30, "直道"},
+    
+    // 直角弯道
+    {0.0f, 0.45f, 0.00f, 0.60f, 1.00f, 50, "直角弯道"},
+    
+    // 十字圆环
+    {0.35f, 0.25f, 0.00f, 0.15f, 0.90f, 40, "十字圆环"},
+    
+    // 环岛
+    {0.20f, 0.35f, 0.00f, 0.20f, 1.00f, 50, "环岛"}
+};
+
+
+volatile uint8_t r_position = 30;
+volatile uint16_t r_distance = 7400;
+volatile uint16_t s_distance = 5500;
+```
+
+40速度
+
+```C
+```
+
