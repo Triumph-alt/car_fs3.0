@@ -67,6 +67,14 @@ void uart4_interrupt_callback(void)
 //			sprintf(g_txbuffer, "turn_kd:%f\n", TurnPID.kd);
 //			uart_putstr(UART_4, g_txbuffer);
 		}
+		else if (strncmp(g_rxbuffer, "angle_kp", 8) == 0)
+		{
+			sscanf(g_rxbuffer, "angle_kp:%f", &angle_kp);
+		}
+		else if (strncmp(g_rxbuffer, "angle_kd", 8) == 0)
+		{
+			sscanf(g_rxbuffer, "angle_kd:%f", &angle_kd);
+		}
 		else if (strncmp(g_rxbuffer, "stop", 4) == 0)
 		{			
 			protection_flag = 1;

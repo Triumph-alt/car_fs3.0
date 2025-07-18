@@ -3,6 +3,8 @@
 PID_t SpeedPID; //速度PID
 PID_t TurnPID;  //位置PID
 
+float angle_kp = 80.0f, angle_kd = 18.0f;
+
 void pid_init(PID_t* pid, float kp, float ki, float kd, float i_limit, float o_limit)
 {
 	pid->kp = kp;

@@ -20,15 +20,9 @@
 #ifndef __ISR_H_
 #define __ISR_H_
 
-#define SPEED_STRAIGHT     40
-#define SPEED_ANGLE        40
+#define SPEED_STRAIGHT     35
+#define SPEED_ANGLE        35
 #define SPEED_ISLAND       35
-
-// 直角地区pid参数进行微调，一般是对应速度的pid
-#define ANGLE_SPEED_KP     60
-#define ANGLE_SPEED_KI     0.1
-#define ANGLE_TURN_KP      60
-#define ANGLE_TURN_KD      8.2
 
 extern int g_encoder_average;
 extern int32_t g_DutyLeft, g_DutyRight;
@@ -47,5 +41,8 @@ extern volatile uint16_t outisland_turn_dist;
 extern volatile uint16_t outisland_all_dist;
 
 extern int flag;
+
+extern volatile int16_t positionReal; 
+
 
 #endif

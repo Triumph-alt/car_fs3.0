@@ -75,7 +75,7 @@ int encoder_debounce(EncoderDebo_t* instance, int encoder)
 	}
 	else
 	{
-		if (myabs(encoder) >= 150)
+		if (myabs(encoder) >= 200)
 		{
 			encoder = 0;
 		}
@@ -90,7 +90,7 @@ int encoder_debounce(EncoderDebo_t* instance, int encoder)
 		}
 	}
 	
-	if (myabs(encoder) >= 150)
+	if (myabs(encoder) >= 200)
 	{
 		encoder = 0;
 	}

@@ -30,7 +30,7 @@ int32_t g_DutyLeft = 0, g_DutyRight = 0;         // 最后真正要给电机的P
 float speed_pid = 0, turn_pid = 0;               //速度环和转向环pid的值
 int g_speedpoint = SPEED_STRAIGHT;
 int g_leftpoint = 0, g_rightpoint = 0;           //左右轮的目标速度
-int16_t positionReal = 0; 
+volatile int16_t positionReal = 0; 
 
 // 蜂鸣器控制相关变量
 uint8_t beep_flag = 0;                           // 蜂鸣器开启标志，1表示开启
@@ -38,13 +38,13 @@ uint16_t beep_count = 0;                         // 蜂鸣器计时计数器
 uint8_t track_ten_cnt = 0;                       //出入环重复判定计时器
 uint16_t outisland_cnt = 0;                      //出入环岛重复判定计时器
 
-volatile uint8_t intoisland_pos = 65;            //入环岛的偏差
-volatile uint16_t intoisland_str_dist = 10500;   //入环岛直走距离
-volatile uint16_t intoisland_all_dist = 11500;   //入环岛总距离
+volatile uint8_t intoisland_pos = 92;            //入环岛的偏差
+volatile uint16_t intoisland_str_dist = 10200;   //入环岛直走距离
+volatile uint16_t intoisland_all_dist = 12800;   //入环岛总距离
 
-volatile uint8_t outisland_pos = 30;             //出环岛的偏差
-volatile uint16_t outisland_turn_dist = 5500;    //出环岛拐弯距离
-volatile uint16_t outisland_all_dist = 7400;     //出环岛总距离
+volatile uint8_t outisland_pos = 60;             //出环岛的偏差
+volatile uint16_t outisland_turn_dist = 5700;    //出环岛拐弯距离
+volatile uint16_t outisland_all_dist = 7500;     //出环岛总距离
 
 int count = 0, flag = 0;
 
@@ -315,6 +315,9 @@ void TM2_Isr() interrupt 12
 		/* 对Gyro_Z进行卡尔曼滤波 */
 		filtered_GyroZ = kalman_update(&imu693_kf, Gyro_Z);
 		
+		TurnPID.kp = 80;
+		TurnPID.kd = 16;
+		
 		if (track_type == 0)//普通直线
 		{
 			g_speedpoint = SPEED_STRAIGHT;
@@ -323,7 +326,20 @@ void TM2_Isr() interrupt 12
 		else if (track_type == 1)//直角
 		{
 			g_speedpoint = SPEED_ANGLE;
+			
 			positionReal = position;
+			
+			TurnPID.kp = angle_kp;
+			TurnPID.kd = angle_kd;
+			
+//			if (track_type_zj == 1)//左
+//			{
+//				positionReal = 80;
+//			}
+//			else if (track_type_zj == 2)//右
+//			{
+//				positionReal = -80;
+//			}
 		}
 		else if (track_type == 3 && track_route_status == 1)//圆环入环
 		{
