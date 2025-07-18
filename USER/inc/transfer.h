@@ -14,6 +14,7 @@ enum state//小车运行状态
 {
 	ELECT_PARA,   //调节电磁
 	PID_PARA,     //调节PID参数
+	ISLAND_PARA,  //调节环岛参数
 	CHARGE,       //无线充电中
 	RUNNING       //运行
 };

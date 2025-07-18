@@ -90,6 +90,8 @@ uint16_t at24c16_read_twobytes(uint8_t page, uint8_t addr)
  *          1. max_value[0..6]  (Page0  Addr0~13)
  *          2. SpeedPID kp,ki,kd (Page1  Addr0~11)
  *          3. TurnPID  kp,ki,kd (Page2  Addr0~11)
+ *          4. angle_kp,angle_kd (Page3  Addr0~7)
+ *          5. 环岛参数          (Page4  Addr0~11)
  *-------------------------------------------------------------*/
 
 /* 辅助函数: 读取4字节并转换为float */
@@ -125,12 +127,22 @@ void load_parameters_from_eeprom(void)
    /* 2. 读取 SpeedPID 参数 */
    SpeedPID.kp = eeprom_read_float(1, 0);
    SpeedPID.ki = eeprom_read_float(1, 4);
-   SpeedPID.kd = eeprom_read_float(1, 8);
 
    /* 3. 读取 TurnPID 参数 */
    TurnPID.kp = eeprom_read_float(2, 0);
-   TurnPID.ki = eeprom_read_float(2, 4);
-   TurnPID.kd = eeprom_read_float(2, 8);
+   TurnPID.kd = eeprom_read_float(2, 4);
+
+   /* 4. 读取 angle_kp 参数 */
+   angle_kp = eeprom_read_float(3, 0);
+   angle_kd = eeprom_read_float(3, 4);
+   
+   /* 5. 读取环岛参数 */
+   intoisland_pos = at24c16_read_byte(4, 0);                // 入环岛的偏差
+   intoisland_str_dist = at24c16_read_twobytes(4, 1);       // 入环岛直走距离
+   intoisland_all_dist = at24c16_read_twobytes(4, 3);       // 入环岛总距离
+   outisland_pos = at24c16_read_byte(4, 5);                 // 出环岛的偏差
+   outisland_turn_dist = at24c16_read_twobytes(4, 6);       // 出环岛拐弯距离
+   outisland_all_dist = at24c16_read_twobytes(4, 8);        // 出环岛总距离
 }
 
 //----------------------------------------------------------------------------- 
@@ -139,6 +151,8 @@ void load_parameters_from_eeprom(void)
 //           Page0  Addr0~13   -> max_value[0..6]   (每个 uint16 占 2 字节)
 //           Page1  Addr0~11   -> SpeedPID  kp,ki,kd (每个 float 占 4 字节)
 //           Page2  Addr0~11   -> TurnPID   kp,ki,kd (每个 float 占 4 字节)
+//           Page3  Addr0~7    -> angle_kp, angle_kd (每个 float 占 4 字节)
+//           Page4  Addr0~11   -> 环岛参数 (每个 uint16 占 2 字节)
 //           如需调整映射，请同步修改读取函数
 //-----------------------------------------------------------------------------
 void save_parameters_to_eeprom(void)
@@ -171,12 +185,22 @@ void save_parameters_to_eeprom(void)
    /* 2. 写入 SpeedPID 参数到 Page1 起始偏移 0 */
    WRITE_FLOAT_TO_EEPROM(1, 0, SpeedPID.kp);
    WRITE_FLOAT_TO_EEPROM(1, 4, SpeedPID.ki);
-   WRITE_FLOAT_TO_EEPROM(1, 8, SpeedPID.kd);
 
    /* 3. 写入 TurnPID 参数到 Page2 起始偏移 0 */
    WRITE_FLOAT_TO_EEPROM(2, 0, TurnPID.kp);
-   WRITE_FLOAT_TO_EEPROM(2, 4, TurnPID.ki);
-   WRITE_FLOAT_TO_EEPROM(2, 8, TurnPID.kd);
+   WRITE_FLOAT_TO_EEPROM(2, 4, TurnPID.kd);
+
+   /* 4. 写入 angle_kp 参数到 Page3 起始偏移 0 */
+   WRITE_FLOAT_TO_EEPROM(3, 0, angle_kp);
+   WRITE_FLOAT_TO_EEPROM(3, 4, angle_kd);
+   
+   /* 5. 写入环岛参数到 Page4 */
+   at24c16_write_byte(4, 0, intoisland_pos);               // 入环岛的偏差
+   at24c16_write_twobytes(4, 1, intoisland_str_dist);      // 入环岛直走距离
+   at24c16_write_twobytes(4, 3, intoisland_all_dist);      // 入环岛总距离
+   at24c16_write_byte(4, 5, outisland_pos);                // 出环岛的偏差
+   at24c16_write_twobytes(4, 6, outisland_turn_dist);      // 出环岛拐弯距离
+   at24c16_write_twobytes(4, 8, outisland_all_dist);       // 出环岛总距离
 
    #undef WRITE_FLOAT_TO_EEPROM
 }

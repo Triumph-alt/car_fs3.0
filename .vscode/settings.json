@@ -15,6 +15,7 @@
         "zf_nvic.h": "c",
         "zf_adc.h": "c",
         "zf_exti.h": "c",
-        "zf_tim.h": "c"
+        "zf_tim.h": "c",
+        "pid.h": "c"
     }
 }

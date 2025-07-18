@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  main                                                               16/07/25  01:11:18  PAGE 1   
+C251 COMPILER V5.60.0,  main                                                               18/07/25  22:43:52  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE main
@@ -50,26 +50,26 @@ stmt  level    source
    39   1              oled_init();
    40   1      
    41   1              pit_timer_ms(TIM_1, 10);
-   42   1              pit_timer_ms(TIM_2, 2);
+   42   1              pit_timer_ms(TIM_2, 1);
    43   1      
-   44   1              pid_init(&SpeedPID, 55.0f, 0.22f, 0.0f, 8000.0f, 9000.0f);      //初始化速度PID
-   45   1              pid_init(&TurnPID, 0.0f, 0.0f, 0.0f, 0.0f, 9000.0f);          //初始化位置PID
+   44   1              pid_init(&SpeedPID, 55.0f, 0.12f, 0.0f, 8000.0f, 9000.0f);      //初始化速度PID
+   45   1              pid_init(&TurnPID, 80.0f, 0.0f, 16.0f, 0.0f, 9000.0f);        //初始化位置PID
    46   1              lowpass_init(&leftSpeedFilt, 0.556);                          //初始化低通滤波器
    47   1              lowpass_init(&rightSpeedFilt, 0.556);
    48   1              kalman_init(&imu693_kf, 0.98, 0.02, imu693kf_Q, imu693kf_R, 0.0);
    49   1              
    50   1          /* 从EEPROM加载max_value及PID参数，覆盖默认值 */
-   51   1      //      load_parameters_from_eeprom();
-   52   1      //      save_parameters_to_eeprom();  //保存max_value及PID参数到EEPROM（初始化）
+   51   1              load_parameters_from_eeprom();
+   52   1              // save_parameters_to_eeprom();  //保存max_value及PID参数到EEPROM（初始化）
    53   1      
    54   1              /*************  主循环       **************/
    55   1          while(1)
    56   1              {
    57   2                      uart4_recv_task();  // 串口4接收任务
-C251 COMPILER V5.60.0,  main                                                               16/07/25  01:11:18  PAGE 2   
+C251 COMPILER V5.60.0,  main                                                               18/07/25  22:43:52  PAGE 2   
 
    58   2                      key_task();         // 处理按键任务
-   59   2      //              display_task();     // OLED显示任务
+   59   2                      display_task();     // OLED显示任务
    60   2                      
    61   2                      /*************   定时操作   **************/
    62   2                      if (flag == 1)
@@ -106,8 +106,8 @@ stmt  level    source
    93   2                              protection_flag = check_electromagnetic_protection();
    94   2                      
    95   2                      // 打印数据
-   96   2                      PrintNormalized17(); //原始数据和归一化
-   97   2      //              PrintDebugData();        //调试数据
+   96   2      //              PrintNormalized17(); //原始数据和归一化
+   97   2                      PrintDebugData();        //调试数据
    98   2      //              Printtest();             //电感元素判别
    99   2          }
   100   1      }
@@ -134,7 +134,7 @@ stmt  level    source
   121   1              ADC_InitStructure.ADC_SMPduty   = 31;           //ADC 模拟信号采样时间控制, 0~31（注意： SMPDUTY �
              -�定不能设置小于 10）
   122   1              ADC_InitStructure.ADC_CsSetup   = 0;            //ADC 通道选择时间控制 0(默认),1
-C251 COMPILER V5.60.0,  main                                                               16/07/25  01:11:18  PAGE 3   
+C251 COMPILER V5.60.0,  main                                                               18/07/25  22:43:52  PAGE 3   
 
   123   1              ADC_InitStructure.ADC_CsHold    = 1;            //ADC 通道选择保持时间控制 0,1(默认),2,3
   124   1              ADC_InitStructure.ADC_Speed     = ADC_SPEED_2X16T;              //设置 ADC 工作时钟频率 ADC_SPEED_2X1T~ADC_S
@@ -202,10 +202,10 @@ stmt  level    source
   179          /*************  打印电感元素判别数据  **************/
   180          void Printtest(void)
   181          {
-C251 COMPILER V5.60.0,  main                                                               16/07/25  01:11:18  PAGE 4   
+C251 COMPILER V5.60.0,  main                                                               18/07/25  22:43:52  PAGE 4   
 
   182   1          // 将归一化后的float数据打印，保留两位小数
-  183   1          sprintf(g_txbuffer, "%u,%u,%u,%u,%u,%u,%u,%u,%d,%u,%d,%d\r\n",
+  183   1          sprintf(g_txbuffer, "%u,%u,%u,%u,%u,%u,%u,%u,%d,%u,%u,%u\r\n",
   184   1                  (uint16)normalized_data[SENSOR_HL],
   185   1                  (uint16)normalized_data[SENSOR_VL],
   186   1                  (uint16)normalized_data[SENSOR_HML],
@@ -214,74 +214,72 @@ stmt  level    source
   189   1                  (uint16)normalized_data[SENSOR_VR],
   190   1                  (uint16)normalized_data[SENSOR_HR],
   191   1                              (uint16)signal_strength_value,
-  192   1                      position,
+  192   1                      positionReal,
   193   1                              track_type,
-  194   1      //                      track_type_zj
-  195   1      //                      track_route,
-  196   1      //                      track_route_status,
+  194   1      //                      track_type_zj,
+  195   1                              track_route,
+  196   1                              track_route_status
   197   1      //                      g_intencoderALL
-  198   1                              (int)Gyro_Z,
-  199   1                              (int)filtered_GyroZ
-  200   1                              );
-  201   1          uart_putstr(UART_4, g_txbuffer);
-  202   1      }
-  203          
-  204          /*************  打印原始和归一化数据  **************/
-  205          void PrintNormalized17(void)
-  206          {
-  207   1          // 将归一化后的float数据打印，保留两位小数
-  208   1          sprintf(g_txbuffer, "%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%d\r\n",
-  209   1                  (uint16)result[SENSOR_HL],
-  210   1                  (uint16)result[SENSOR_VL],
-  211   1                  (uint16)result[SENSOR_HML],
-  212   1                  (uint16)result[SENSOR_HC],
-  213   1                  (uint16)result[SENSOR_HMR],
-  214   1                  (uint16)result[SENSOR_VR],
-  215   1                  (uint16)result[SENSOR_HR],
-  216   1                  (uint16)normalized_data[SENSOR_HL],
-  217   1                  (uint16)normalized_data[SENSOR_VL],
-  218   1                  (uint16)normalized_data[SENSOR_HML],
-  219   1                  (uint16)normalized_data[SENSOR_HC],
-  220   1                  (uint16)normalized_data[SENSOR_HMR],
-  221   1                  (uint16)normalized_data[SENSOR_VR],
-  222   1                  (uint16)normalized_data[SENSOR_HR],
-  223   1                  position);
-  224   1          uart_putstr(UART_4, g_txbuffer);
-  225   1      }
-  226          
-  227          /*************  打印调试数据      **************/
-  228          void PrintDebugData(void)
-  229          {
-  230   1          if (uartSendFlag == 1)
-  231   1              {
-  232   2                      sprintf(g_txbuffer, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u,%u,%u,%d,%d\n", 
-  233   2                                      g_speedpoint, 
-  234   2                                      g_encoder_average, 
-  235   2                                      EncoderL.encoder_final,
-  236   2                                      EncoderR.encoder_final,
-  237   2                                      (int)g_DutyLeft,
-  238   2                                      (int)g_DutyRight,
-  239   2                                      position,
-  240   2                                      (int)speed_pid,
-  241   2                                      (int)turn_pid,
-  242   2                                      (uint16)power_voltage,
-  243   2                                      track_type,
-  244   2                                      track_route,
-  245   2                                      track_route_status,
-  246   2                                      (int)SpeedPID.p_out,
-  247   2                                      (int)SpeedPID.i_out
-C251 COMPILER V5.60.0,  main                                                               16/07/25  01:11:18  PAGE 5   
+  198   1                              );
+  199   1          uart_putstr(UART_4, g_txbuffer);
+  200   1      }
+  201          
+  202          /*************  打印原始和归一化数据  **************/
+  203          void PrintNormalized17(void)
+  204          {
+  205   1          // 将归一化后的float数据打印，保留两位小数
+  206   1          sprintf(g_txbuffer, "%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%d\r\n",
+  207   1                  (uint16)result[SENSOR_HL],
+  208   1                  (uint16)result[SENSOR_VL],
+  209   1                  (uint16)result[SENSOR_HML],
+  210   1                  (uint16)result[SENSOR_HC],
+  211   1                  (uint16)result[SENSOR_HMR],
+  212   1                  (uint16)result[SENSOR_VR],
+  213   1                  (uint16)result[SENSOR_HR],
+  214   1                  (uint16)normalized_data[SENSOR_HL],
+  215   1                  (uint16)normalized_data[SENSOR_VL],
+  216   1                  (uint16)normalized_data[SENSOR_HML],
+  217   1                  (uint16)normalized_data[SENSOR_HC],
+  218   1                  (uint16)normalized_data[SENSOR_HMR],
+  219   1                  (uint16)normalized_data[SENSOR_VR],
+  220   1                  (uint16)normalized_data[SENSOR_HR],
+  221   1                  positionReal);
+  222   1          uart_putstr(UART_4, g_txbuffer);
+  223   1      }
+  224          
+  225          /*************  打印调试数据      **************/
+  226          void PrintDebugData(void)
+  227          {
+  228   1          if (uartSendFlag == 1)
+  229   1              {
+  230   2                      sprintf(g_txbuffer, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u,%u,%u,%d,%d\n", 
+  231   2                                      g_speedpoint, 
+  232   2                                      g_encoder_average, 
+  233   2                                      EncoderL.encoder_final,
+  234   2                                      EncoderR.encoder_final,
+  235   2                                      (int)g_DutyLeft,
+  236   2                                      (int)g_DutyRight,
+  237   2                                      positionReal,
+  238   2                                      (int)speed_pid,
+  239   2                                      (int)turn_pid,
+  240   2                                      (uint16)power_voltage,
+  241   2                                      track_type,
+  242   2                                      track_route,
+  243   2                                      track_route_status,
+  244   2                                      (int)SpeedPID.p_out,
+  245   2                                      (int)SpeedPID.i_out
+  246   2                                      );
+  247   2                      uart_putstr(UART_4, g_txbuffer);
+C251 COMPILER V5.60.0,  main                                                               18/07/25  22:43:52  PAGE 5   
 
-  248   2                                      );
-  249   2                      uart_putstr(UART_4, g_txbuffer);
-  250   2                                      
-  251   2                      if (position >= 0)
-  252   2                              P52 = 1;
-  253   2                      else
-  254   2                              P52 = 0;
-  255   2              }
-  256   1      }
-  257          
+  248   2                                      
+  249   2                      if (position >= 0)
+  250   2                              P52 = 1;
+  251   2                      else
+  252   2                              P52 = 0;
+  253   2              }
+  254   1      }
+  255          
 
 
 Module Information          Static   Overlayable

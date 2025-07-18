@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  at24c16                                                            15/07/25  22:35:40  PAGE 1   
+C251 COMPILER V5.60.0,  at24c16                                                            18/07/25  22:42:54  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE at24c16
@@ -66,7 +66,7 @@ stmt  level    source
    55          void at24c16_write_twobytes(uint8_t page, uint8_t addr, uint16_t w_data)
    56          {
    57   1              uint8_t h_data = 0, l_data = 0;
-C251 COMPILER V5.60.0,  at24c16                                                            15/07/25  22:35:40  PAGE 2   
+C251 COMPILER V5.60.0,  at24c16                                                            18/07/25  22:42:54  PAGE 2   
 
    58   1              
    59   1              /* 拆成高低8位分别写入 */
@@ -103,108 +103,132 @@ stmt  level    source
    90           *          1. max_value[0..6]  (Page0  Addr0~13)
    91           *          2. SpeedPID kp,ki,kd (Page1  Addr0~11)
    92           *          3. TurnPID  kp,ki,kd (Page2  Addr0~11)
-   93           *-------------------------------------------------------------*/
-   94          
-   95          /* 辅助函数: 读取4字节并转换为float */
-   96          float eeprom_read_float(uint8_t base_page, uint8_t base_offset)
-   97          {
-   98   1          union { float f; uint8_t b[4]; } _u;
-   99   1      
-  100   1          uint8_t  k;
-  101   1          uint16_t off;
-  102   1          uint8_t  pg, ad;
-  103   1      
-  104   1          for(k = 0; k < 4; k++)
-  105   1          {
-  106   2              off = base_offset + k;
-  107   2              pg  = (uint8_t)(base_page + (off / 16));
-  108   2              ad  = (uint8_t)(off % 16);
-  109   2              _u.b[k] = at24c16_read_byte(pg, ad);
-  110   2          }
-  111   1      
-  112   1          return _u.f;
-  113   1      }
-  114          
-  115          void load_parameters_from_eeprom(void)
-  116          {
-  117   1         uint8_t i;
-  118   1      
-  119   1         /* 1. 读取 max_value 数组 */
-  120   1         for(i = 0; i < 7; i++)
-  121   1         {
-  122   2             max_value[i] = at24c16_read_twobytes(0, (uint8_t)(i * 2));
-  123   2         }
-C251 COMPILER V5.60.0,  at24c16                                                            15/07/25  22:35:40  PAGE 3   
+   93           *          4. angle_kp,angle_kd (Page3  Addr0~7)
+   94           *          5. 环岛参数          (Page4  Addr0~11)
+   95           *-------------------------------------------------------------*/
+   96          
+   97          /* 辅助函数: 读取4字节并转换为float */
+   98          float eeprom_read_float(uint8_t base_page, uint8_t base_offset)
+   99          {
+  100   1          union { float f; uint8_t b[4]; } _u;
+  101   1      
+  102   1          uint8_t  k;
+  103   1          uint16_t off;
+  104   1          uint8_t  pg, ad;
+  105   1      
+  106   1          for(k = 0; k < 4; k++)
+  107   1          {
+  108   2              off = base_offset + k;
+  109   2              pg  = (uint8_t)(base_page + (off / 16));
+  110   2              ad  = (uint8_t)(off % 16);
+  111   2              _u.b[k] = at24c16_read_byte(pg, ad);
+  112   2          }
+  113   1      
+  114   1          return _u.f;
+  115   1      }
+  116          
+  117          void load_parameters_from_eeprom(void)
+  118          {
+  119   1         uint8_t i;
+  120   1      
+  121   1         /* 1. 读取 max_value 数组 */
+  122   1         for(i = 0; i < 7; i++)
+  123   1         {
+C251 COMPILER V5.60.0,  at24c16                                                            18/07/25  22:42:54  PAGE 3   
 
-  124   1      
-  125   1         /* 2. 读取 SpeedPID 参数 */
-  126   1         SpeedPID.kp = eeprom_read_float(1, 0);
-  127   1         SpeedPID.ki = eeprom_read_float(1, 4);
-  128   1         SpeedPID.kd = eeprom_read_float(1, 8);
-  129   1      
-  130   1         /* 3. 读取 TurnPID 参数 */
-  131   1         TurnPID.kp = eeprom_read_float(2, 0);
-  132   1         TurnPID.ki = eeprom_read_float(2, 4);
-  133   1         TurnPID.kd = eeprom_read_float(2, 8);
-  134   1      }
-  135          
-  136          //----------------------------------------------------------------------------- 
-  137          // @brief    保存 max_value 数组与 PID 参数到 AT24C16 EEPROM
-  138          // @note     采用如下地址映射：
-  139          //           Page0  Addr0~13   -> max_value[0..6]   (每个 uint16 占 2 字节)
-  140          //           Page1  Addr0~11   -> SpeedPID  kp,ki,kd (每个 float 占 4 字节)
-  141          //           Page2  Addr0~11   -> TurnPID   kp,ki,kd (每个 float 占 4 字节)
-  142          //           如需调整映射，请同步修改读取函数
-  143          //-----------------------------------------------------------------------------
-  144          void save_parameters_to_eeprom(void)
-  145          {
-  146   1         uint8_t i;
-  147   1         /* 1. 写入 max_value (uint16) */
-  148   1         for(i = 0; i < 7; i++)
-  149   1         {
-  150   2             /* Page0 起始地址按 2*i */
-  151   2             at24c16_write_twobytes(0, (uint8_t)(i * 2), max_value[i]);
-  152   2         }
-  153   1      
-  154   1         /* 工具宏：将 float 拆分为 4 个字节并写入 */
-  155   1         #define WRITE_FLOAT_TO_EEPROM(base_page, base_offset, fval)                \
-  156   1             do{                                                                    \
-  157   1                 union { float f; uint8_t b[4]; } _u;                               \
-  158   1                 uint8_t  _k;                                                       \
-  159   1                 uint16_t _off;                                                     \
-  160   1                 uint8_t  _pg, _ad;                                                 \
-  161   1                 _u.f = (fval);                                                     \
-  162   1                 for(_k = 0; _k < 4; _k++)                                          \
-  163   1                 {                                                                  \
-  164   1                     _off = (base_offset) + _k;                                     \
-  165   1                     _pg  = (uint8_t)((base_page) + (_off / 16));                   \
-  166   1                     _ad  = (uint8_t)(_off % 16);                                   \
-  167   1                     at24c16_write_byte(_pg, _ad, _u.b[_k]);                        \
-  168   1                 }                                                                  \
-  169   1             }while(0)
-  170   1      
-  171   1         /* 2. 写入 SpeedPID 参数到 Page1 起始偏移 0 */
-  172   1         WRITE_FLOAT_TO_EEPROM(1, 0, SpeedPID.kp);
-  173   1         WRITE_FLOAT_TO_EEPROM(1, 4, SpeedPID.ki);
-  174   1         WRITE_FLOAT_TO_EEPROM(1, 8, SpeedPID.kd);
-  175   1      
-  176   1         /* 3. 写入 TurnPID 参数到 Page2 起始偏移 0 */
-  177   1         WRITE_FLOAT_TO_EEPROM(2, 0, TurnPID.kp);
-  178   1         WRITE_FLOAT_TO_EEPROM(2, 4, TurnPID.ki);
-  179   1         WRITE_FLOAT_TO_EEPROM(2, 8, TurnPID.kd);
-  180   1      
-  181   1         #undef WRITE_FLOAT_TO_EEPROM
-  182   1      }
+  124   2             max_value[i] = at24c16_read_twobytes(0, (uint8_t)(i * 2));
+  125   2         }
+  126   1      
+  127   1         /* 2. 读取 SpeedPID 参数 */
+  128   1         SpeedPID.kp = eeprom_read_float(1, 0);
+  129   1         SpeedPID.ki = eeprom_read_float(1, 4);
+  130   1      
+  131   1         /* 3. 读取 TurnPID 参数 */
+  132   1         TurnPID.kp = eeprom_read_float(2, 0);
+  133   1         TurnPID.kd = eeprom_read_float(2, 4);
+  134   1      
+  135   1         /* 4. 读取 angle_kp 参数 */
+  136   1         angle_kp = eeprom_read_float(3, 0);
+  137   1         angle_kd = eeprom_read_float(3, 4);
+  138   1         
+  139   1         /* 5. 读取环岛参数 */
+  140   1         intoisland_pos = at24c16_read_byte(4, 0);                // 入环岛的偏差
+  141   1         intoisland_str_dist = at24c16_read_twobytes(4, 1);       // 入环岛直走距离
+  142   1         intoisland_all_dist = at24c16_read_twobytes(4, 3);       // 入环岛总距离
+  143   1         outisland_pos = at24c16_read_byte(4, 5);                 // 出环岛的偏差
+  144   1         outisland_turn_dist = at24c16_read_twobytes(4, 6);       // 出环岛拐弯距离
+  145   1         outisland_all_dist = at24c16_read_twobytes(4, 8);        // 出环岛总距离
+  146   1      }
+  147          
+  148          //----------------------------------------------------------------------------- 
+  149          // @brief    保存 max_value 数组与 PID 参数到 AT24C16 EEPROM
+  150          // @note     采用如下地址映射：
+  151          //           Page0  Addr0~13   -> max_value[0..6]   (每个 uint16 占 2 字节)
+  152          //           Page1  Addr0~11   -> SpeedPID  kp,ki,kd (每个 float 占 4 字节)
+  153          //           Page2  Addr0~11   -> TurnPID   kp,ki,kd (每个 float 占 4 字节)
+  154          //           Page3  Addr0~7    -> angle_kp, angle_kd (每个 float 占 4 字节)
+  155          //           Page4  Addr0~11   -> 环岛参数 (每个 uint16 占 2 字节)
+  156          //           如需调整映射，请同步修改读取函数
+  157          //-----------------------------------------------------------------------------
+  158          void save_parameters_to_eeprom(void)
+  159          {
+  160   1         uint8_t i;
+  161   1         /* 1. 写入 max_value (uint16) */
+  162   1         for(i = 0; i < 7; i++)
+  163   1         {
+  164   2             /* Page0 起始地址按 2*i */
+  165   2             at24c16_write_twobytes(0, (uint8_t)(i * 2), max_value[i]);
+  166   2         }
+  167   1      
+  168   1         /* 工具宏：将 float 拆分为 4 个字节并写入 */
+  169   1         #define WRITE_FLOAT_TO_EEPROM(base_page, base_offset, fval)                \
+  170   1             do{                                                                    \
+  171   1                 union { float f; uint8_t b[4]; } _u;                               \
+  172   1                 uint8_t  _k;                                                       \
+  173   1                 uint16_t _off;                                                     \
+  174   1                 uint8_t  _pg, _ad;                                                 \
+  175   1                 _u.f = (fval);                                                     \
+  176   1                 for(_k = 0; _k < 4; _k++)                                          \
+  177   1                 {                                                                  \
+  178   1                     _off = (base_offset) + _k;                                     \
+  179   1                     _pg  = (uint8_t)((base_page) + (_off / 16));                   \
+  180   1                     _ad  = (uint8_t)(_off % 16);                                   \
+  181   1                     at24c16_write_byte(_pg, _ad, _u.b[_k]);                        \
+  182   1                 }                                                                  \
+  183   1             }while(0)
+  184   1      
+  185   1         /* 2. 写入 SpeedPID 参数到 Page1 起始偏移 0 */
+  186   1         WRITE_FLOAT_TO_EEPROM(1, 0, SpeedPID.kp);
+  187   1         WRITE_FLOAT_TO_EEPROM(1, 4, SpeedPID.ki);
+  188   1      
+  189   1         /* 3. 写入 TurnPID 参数到 Page2 起始偏移 0 */
+C251 COMPILER V5.60.0,  at24c16                                                            18/07/25  22:42:54  PAGE 4   
+
+  190   1         WRITE_FLOAT_TO_EEPROM(2, 0, TurnPID.kp);
+  191   1         WRITE_FLOAT_TO_EEPROM(2, 4, TurnPID.kd);
+  192   1      
+  193   1         /* 4. 写入 angle_kp 参数到 Page3 起始偏移 0 */
+  194   1         WRITE_FLOAT_TO_EEPROM(3, 0, angle_kp);
+  195   1         WRITE_FLOAT_TO_EEPROM(3, 4, angle_kd);
+  196   1         
+  197   1         /* 5. 写入环岛参数到 Page4 */
+  198   1         at24c16_write_byte(4, 0, intoisland_pos);               // 入环岛的偏差
+  199   1         at24c16_write_twobytes(4, 1, intoisland_str_dist);      // 入环岛直走距离
+  200   1         at24c16_write_twobytes(4, 3, intoisland_all_dist);      // 入环岛总距离
+  201   1         at24c16_write_byte(4, 5, outisland_pos);                // 出环岛的偏差
+  202   1         at24c16_write_twobytes(4, 6, outisland_turn_dist);      // 出环岛拐弯距离
+  203   1         at24c16_write_twobytes(4, 8, outisland_all_dist);       // 出环岛总距离
+  204   1      
+  205   1         #undef WRITE_FLOAT_TO_EEPROM
+  206   1      }
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =      1674     ------
+  code size            =      1829     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
-C251 COMPILER V5.60.0,  at24c16                                                            15/07/25  22:35:40  PAGE 4   
-
   pdata size           =    ------     ------
   xdata size           =        46     ------
   xdata-const size     =    ------     ------

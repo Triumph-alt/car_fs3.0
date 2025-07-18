@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  encoder                                                            15/07/25  22:35:42  PAGE 1   
+C251 COMPILER V5.60.0,  encoder                                                            18/07/25  22:42:55  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE encoder
@@ -66,7 +66,7 @@ stmt  level    source
    55   1              {
    56   2                      encoder_right = ctimer_count_read(CTIM3_P04) * -1;
    57   2              }
-C251 COMPILER V5.60.0,  encoder                                                            15/07/25  22:35:42  PAGE 2   
+C251 COMPILER V5.60.0,  encoder                                                            18/07/25  22:42:55  PAGE 2   
 
    58   1              else
    59   1              {
@@ -79,7 +79,7 @@ stmt  level    source
    66   1      }
    67          
    68          int encoder_debounce(EncoderDebo_t* instance, int encoder)
-   69          {
+   69          {       
    70   1              // 使用宏替换魔法数，代码意图一目了然
    71   1              if (myabs(encoder - instance->encoderlast) > ENCODER_JUMP_THRESHOLD && instance->count >= MIN_STABILITY_
              -COUNT)
@@ -89,23 +89,33 @@ stmt  level    source
    75   2              }
    76   1              else
    77   1              {
-   78   2                      instance->encoderlast = encoder;
-   79   2                      
-   80   2                      instance->count++;
-   81   2                      if (instance->count >= COUNTER_SAFETY_RESET)
-   82   2                      {
-   83   3                              // 可以保持清零，或者设置为一个不会立即触发抖动判断的值
-   84   3                              instance->count = MIN_STABILITY_COUNT; 
-   85   3                      }
-   86   2              }
-   87   1              
-   88   1              return encoder;
-   89   1      }
+   78   2                      if (myabs(encoder) >= 200)
+   79   2                      {
+   80   3                              encoder = 0;
+   81   3                      }
+   82   2                      
+   83   2                      instance->encoderlast = encoder;
+   84   2                      
+   85   2                      instance->count++;
+   86   2                      if (instance->count >= COUNTER_SAFETY_RESET)
+   87   2                      {
+   88   3                              // 可以保持清零，或者设置为一个不会立即触发抖动判断的值
+   89   3                              instance->count = MIN_STABILITY_COUNT; 
+   90   3                      }
+   91   2              }
+   92   1              
+   93   1              if (myabs(encoder) >= 200)
+   94   1              {
+   95   2                      encoder = 0;
+   96   2              }
+   97   1              
+   98   1              return encoder;
+   99   1      }
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =       398     ------
+  code size            =       448     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------

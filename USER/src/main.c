@@ -48,15 +48,15 @@ void main(void)
 	kalman_init(&imu693_kf, 0.98, 0.02, imu693kf_Q, imu693kf_R, 0.0);
 	
     /* 从EEPROM加载max_value及PID参数，覆盖默认值 */
-//	load_parameters_from_eeprom();
-//	save_parameters_to_eeprom();  //保存max_value及PID参数到EEPROM（初始化）
+	load_parameters_from_eeprom();
+	// save_parameters_to_eeprom();  //保存max_value及PID参数到EEPROM（初始化）
 
 	/*************	主循环	**************/
     while(1)
 	{
 		uart4_recv_task();  // 串口4接收任务
 		key_task();         // 处理按键任务
-//		display_task();     // OLED显示任务
+		display_task();     // OLED显示任务
 		
 		/*************	 定时操作	**************/
 		if (flag == 1)
