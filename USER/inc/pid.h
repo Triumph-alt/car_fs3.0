@@ -24,6 +24,9 @@ typedef struct
 } PID_t;
 
 extern PID_t SpeedPID, TurnPID;
+
+extern float speed_kp, speed_ki;
+extern float turn_kp, turn_kd;
 extern float angle_kp, angle_kd;
 
 void pid_init(PID_t* pid, float kp, float ki, float kd, float i_limit, float o_limit);

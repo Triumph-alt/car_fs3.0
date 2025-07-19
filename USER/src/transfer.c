@@ -15,51 +15,57 @@ extern volatile uint16_t outisland_all_dist;       // 出环岛总距离
 
 extern uint32 power_voltage; // 电池电压（毫伏）
 
-Key_t key[4] = {0, 0, 0, 0};
-enum state car_state, prev_state; 
+Key_t key[4] = {0, 0, 0, 0, 0};
+enum state car_state = CHARGE, prev_state; 
 uint8 selected_item = 0; // 当前选中的项目索引
 
 uint8_t startKeyFlag = 0, uartSendFlag = 1;
 
 void key_task(void)
 {
-	if (key[0].flag == 1)
+	if (key[0].short_flag == 1)
 	{
-       prev_state = car_state;   // 记录切换前状态
-       if (car_state < CHARGE)
-       {
-           car_state++;
-           oled_clear();
-           selected_item = 0; // 切换状态时重置选中项
-
-           /* 若从 ISLAND_PARA 切换到 CHARGE，保存参数 */
-           if(prev_state == ISLAND_PARA && car_state == CHARGE)
-           {
-               save_parameters_to_eeprom();
-           }
-       }
+#if NORMALRUN
+		prev_state = car_state;   // 记录切换前状态
 		
-		// if (startKeyFlag == 1)
-		// {
-		// 	set_motor_pwm(0, 0);
-
-		// 	pid_clean(&SpeedPID);
-		// 	pid_clean(&TurnPID);
-			
-		// 	uartSendFlag = startKeyFlag = 0;
-		// }
-		// else
-		// {
-		// 	delay_ms(2000);
-		// 	uartSendFlag = startKeyFlag = 1;
-		// }
+		car_state++;
+		if (car_state == STRAIGHT)
+		{
+		   car_state = CHARGE;
+		}
 		
-		key[0].flag = 0;
+		oled_clear();
+		selected_item = 0; // 切换状态时重置选中项
+
+		/* 若从 ISLAND_PARA 切换到 CHARGE，保存参数 */
+//		if(prev_state == ISLAND_PARA && car_state == CHARGE)
+//		{
+		save_parameters_to_eeprom();
+//		}
+#else
+		if (startKeyFlag == 1)
+		{
+			set_motor_pwm(0, 0);
+
+			pid_clean(&SpeedPID);
+			pid_clean(&TurnPID);
+		
+			uartSendFlag = startKeyFlag = 0;
+		}
+		else
+		{
+			delay_ms(2000);
+			uartSendFlag = startKeyFlag = 1;
+		}
+#endif
+
+		key[0].short_flag = 0;
 	}
 
-	if (key[1].flag == 1)
+	/* 按键2短按 */
+	if (key[1].short_flag == 1)
 	{
-        // 按键1作为选择按键
+        // 按键2作为选择按键
         switch (car_state)
         {
             case ELECT_PARA:
@@ -81,12 +87,13 @@ void key_task(void)
                 break;
         }
 		
-		key[1].flag = 0;
+		key[1].short_flag = 0;
 	}
-
-	if (key[2].flag == 1)
+	
+	/* 按键3短按和长按 */
+	if (key[2].long_flag == 1 || key[2].short_flag == 1)
 	{
-        // 按键2作为增加值的按键
+        // 按键3作为增加值的按键
         switch (car_state)
         {
             case ELECT_PARA:
@@ -99,11 +106,11 @@ void key_task(void)
                 
             case PID_PARA:
                 // 增加选中的PID参数
-                if (selected_item == 0) SpeedPID.kp += 0.1f;
-                else if (selected_item == 1) SpeedPID.ki += 0.1f;
-                else if (selected_item == 2) TurnPID.kp += 0.1f;
-                else if (selected_item == 3) TurnPID.kd += 0.1f;
-                else if (selected_item == 4) angle_kp += 0.1f;
+                if (selected_item == 0) speed_kp += 1.0f;
+                else if (selected_item == 1) speed_ki += 0.01f;
+                else if (selected_item == 2) turn_kp += 1.0f;
+                else if (selected_item == 3) turn_kd += 0.1f;
+                else if (selected_item == 4) angle_kp += 1.0f;
                 else if (selected_item == 5) angle_kd += 0.1f;
                 break;
                 
@@ -121,12 +128,20 @@ void key_task(void)
                 break;
         }
 		
-		key[2].flag = 0;
+		if (key[2].long_flag == 1)
+		{
+			key[2].long_flag = 0;
+		}
+		else if (key[2].short_flag == 1)
+		{
+			key[2].short_flag = 0;
+		}
 	}
 
-	if (key[3].flag == 1)
+	/* 按键4短按和长按 */
+	if (key[3].short_flag == 1 || key[3].long_flag == 1)
 	{
-        // 按键3作为减少值的按键
+        // 按键4作为减少值的按键
         switch (car_state)
         {
             case ELECT_PARA:
@@ -139,11 +154,11 @@ void key_task(void)
                 
             case PID_PARA:
                 // 减少选中的PID参数
-                if (selected_item == 0 && SpeedPID.kp >= 0.1f) SpeedPID.kp -= 0.1f;
-                else if (selected_item == 1 && SpeedPID.ki >= 0.1f) SpeedPID.ki -= 0.1f;
-                else if (selected_item == 2 && TurnPID.kp >= 0.1f) TurnPID.kp -= 0.1f;
-                else if (selected_item == 3 && TurnPID.kd >= 0.1f) TurnPID.kd -= 0.1f;
-                else if (selected_item == 4 && angle_kp >= 0.1f) angle_kp -= 0.1f;
+                if (selected_item == 0 && speed_kp >= 1.0f) speed_kp -= 1.0f;
+                else if (selected_item == 1 && speed_ki >= 0.1f) speed_ki -= 0.01f;
+                else if (selected_item == 2 && turn_kp >= 1.0f) turn_kp -= 1.0f;
+                else if (selected_item == 3 && turn_kd >= 0.1f) turn_kd -= 0.1f;
+                else if (selected_item == 4 && angle_kp >= 1.0f) angle_kp -= 1.0f;
                 else if (selected_item == 5 && angle_kd >= 0.1f) angle_kd -= 0.1f;
                 break;
                 
@@ -161,7 +176,14 @@ void key_task(void)
                 break;
         }
 		
-		key[3].flag = 0;
+		if (key[3].long_flag == 1)
+		{
+			key[3].long_flag = 0;
+		}
+		else if (key[3].short_flag == 1)
+		{
+			key[3].short_flag = 0;
+		}
 	}
 }
 
@@ -215,10 +237,10 @@ void display_task(void)
                 oled_show_string(6, 1, selected_item == 4 ? ">A_Kp:" : "A_Kp: ");
                 oled_show_string(7, 1, selected_item == 5 ? ">A_Kd:" : "A_Kd: ");
 
-                oled_show_float(2, 8, SpeedPID.kp);
-                oled_show_float(3, 8, SpeedPID.ki);
-                oled_show_float(4, 8, TurnPID.kp);
-                oled_show_float(5, 8, TurnPID.kd);
+                oled_show_float(2, 8, speed_kp);
+                oled_show_float(3, 8, speed_ki);
+                oled_show_float(4, 8, turn_kp);
+                oled_show_float(5, 8, turn_kd);
                 oled_show_float(6, 8, angle_kp);
                 oled_show_float(7, 8, angle_kd);
             }
@@ -253,11 +275,10 @@ void display_task(void)
 
                 if (power_voltage > 1300)
                 {
-                    startKeyFlag = 1; // 充电完成
                     selected_item = 0;
                     oled_clear();
                     prev_state = CHARGE;
-                    car_state = RUNNING;
+                    car_state = STRAIGHT;
                 }
             }
             break;

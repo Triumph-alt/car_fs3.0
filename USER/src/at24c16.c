@@ -125,12 +125,12 @@ void load_parameters_from_eeprom(void)
    }
 
    /* 2. 读取 SpeedPID 参数 */
-   SpeedPID.kp = eeprom_read_float(1, 0);
-   SpeedPID.ki = eeprom_read_float(1, 4);
+   speed_kp = eeprom_read_float(1, 0);
+   speed_ki = eeprom_read_float(1, 4);
 
    /* 3. 读取 TurnPID 参数 */
-   TurnPID.kp = eeprom_read_float(2, 0);
-   TurnPID.kd = eeprom_read_float(2, 4);
+   turn_kp = eeprom_read_float(2, 0);
+   turn_kd = eeprom_read_float(2, 4);
 
    /* 4. 读取 angle_kp 参数 */
    angle_kp = eeprom_read_float(3, 0);
@@ -183,12 +183,12 @@ void save_parameters_to_eeprom(void)
        }while(0)
 
    /* 2. 写入 SpeedPID 参数到 Page1 起始偏移 0 */
-   WRITE_FLOAT_TO_EEPROM(1, 0, SpeedPID.kp);
-   WRITE_FLOAT_TO_EEPROM(1, 4, SpeedPID.ki);
+   WRITE_FLOAT_TO_EEPROM(1, 0, speed_kp);
+   WRITE_FLOAT_TO_EEPROM(1, 4, speed_ki);
 
    /* 3. 写入 TurnPID 参数到 Page2 起始偏移 0 */
-   WRITE_FLOAT_TO_EEPROM(2, 0, TurnPID.kp);
-   WRITE_FLOAT_TO_EEPROM(2, 4, TurnPID.kd);
+   WRITE_FLOAT_TO_EEPROM(2, 0, turn_kp);
+   WRITE_FLOAT_TO_EEPROM(2, 4, turn_kd);
 
    /* 4. 写入 angle_kp 参数到 Page3 起始偏移 0 */
    WRITE_FLOAT_TO_EEPROM(3, 0, angle_kp);

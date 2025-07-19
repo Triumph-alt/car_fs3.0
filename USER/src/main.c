@@ -41,23 +41,27 @@ void main(void)
 	pit_timer_ms(TIM_1, 10);
 	pit_timer_ms(TIM_2, 1);
 
-	pid_init(&SpeedPID, 55.0f, 0.12f, 0.0f, 8000.0f, 9000.0f);      //初始化速度PID
-	pid_init(&TurnPID, 80.0f, 0.0f, 16.0f, 0.0f, 9000.0f);        //初始化位置PID
+	pid_init(&SpeedPID, speed_kp, speed_ki, 0.0f, 8000.0f, 9000.0f);      //初始化速度PID
+	pid_init(&TurnPID, turn_kp, 0.0f, turn_kd, 0.0f, 9000.0f);        //初始化位置PID
 	lowpass_init(&leftSpeedFilt, 0.556);                          //初始化低通滤波器
 	lowpass_init(&rightSpeedFilt, 0.556);
 	kalman_init(&imu693_kf, 0.98, 0.02, imu693kf_Q, imu693kf_R, 0.0);
 	
     /* 从EEPROM加载max_value及PID参数，覆盖默认值 */
+#if NORMALRUN
 	load_parameters_from_eeprom();
-	// save_parameters_to_eeprom();  //保存max_value及PID参数到EEPROM（初始化）
+#endif
+//	save_parameters_to_eeprom();  //保存max_value及PID参数到EEPROM（初始化）
 
 	/*************	主循环	**************/
     while(1)
 	{
 		uart4_recv_task();  // 串口4接收任务
 		key_task();         // 处理按键任务
+#if NORMALRUN
 		display_task();     // OLED显示任务
-		
+#endif
+				
 		/*************	 定时操作	**************/
 		if (flag == 1)
 		{
@@ -82,6 +86,23 @@ void main(void)
 			DMA_ADC_TRIG();
 		}
 		
+#if NORMALRUN
+		/*************	充完电直走一段进赛道	**************/
+		if (car_state == STRAIGHT)
+		{
+			set_motor_pwm(1500, 1500);
+			
+			if(signal_strength_value > 30.0f)
+			{
+				prev_state = STRAIGHT;
+                car_state = RUNNING;
+				
+				startKeyFlag = 1; // 充电完成
+			}
+			
+		}
+#endif
+		
 		//归一化电感数组
 		normalize_sensors();
 	
@@ -89,7 +110,7 @@ void main(void)
 		position = calculate_position_improved();
 		
 		// 检查电磁保护
-		if (!protection_flag)
+		if (!protection_flag && startKeyFlag == 1)
 			protection_flag = check_electromagnetic_protection();
 		
 		// 打印数据

@@ -184,6 +184,7 @@ void TM1_Isr() interrupt 3
 				if (key[i].state == 0)
 				{
 					key[i].step = 1;
+					key[i].key_time = 0;
 				}
 			}
 			break;
@@ -193,7 +194,6 @@ void TM1_Isr() interrupt 3
 				if (key[i].state == 0)
 				{
 					key[i].step = 2;
-					key[i].flag = 1;
 				}
 				else
 				{
@@ -204,9 +204,23 @@ void TM1_Isr() interrupt 3
 			
 			case 2:
 			{
-				if (key[i].state == 1)
+				if (key[i].state == 1)//松开
 				{
 					key[i].step = 0;
+					
+					if (key[i].key_time <= 80)//短按
+					{
+						key[i].short_flag = 1;
+					}
+				}
+				else
+				{
+					key[i].key_time++;
+					
+					if (key[i].key_time > 80)//长按
+					{
+						key[i].long_flag = 1;
+					}
 				}
 			}
 			break;
@@ -291,48 +305,45 @@ void TM2_Isr() interrupt 12
 {
 	TIM2_CLEAR_FLAG;  //清除中断标志
 	
-	if (startKeyFlag == 1)
+	/* 初步读取并清除编码器的值 */
+	EncoderL.encoder_original = get_left_encoder();
+	EncoderR.encoder_original = get_right_encoder();
+
+	/* 对编码器的值进行滤波 */
+	EncoderL.encoder_final = lowpass_filter(&leftSpeedFilt, EncoderL.encoder_original);
+	EncoderR.encoder_final = lowpass_filter(&rightSpeedFilt, EncoderR.encoder_original);
+
+	/* 对编码器的值进行异常消除 */
+	EncoderL.encoder_final = encoder_debounce(&EncoderDeboL, EncoderL.encoder_final);
+	EncoderR.encoder_final = encoder_debounce(&EncoderDeboR, EncoderR.encoder_final);
+
+	/* 取左右编码器平均值 */
+	g_encoder_average = (EncoderL.encoder_final + EncoderR.encoder_final) / 2;
+
+	/* 读取陀螺仪原始数据并将其转化为物理数据 */
+	imu963ra_get_gyro();
+	Gyro_Z = imu963ra_gyro_transition(imu963ra_gyro_z);
+	
+	SpeedPID.kp = speed_kp;
+	SpeedPID.ki = speed_ki;
+	TurnPID.kp = turn_kp;
+	TurnPID.kd = turn_kd;
+	
+	if (track_type == 0)//普通直线
 	{
-		/* 初步读取并清除编码器的值 */
-		EncoderL.encoder_original = get_left_encoder();
-		EncoderR.encoder_original = get_right_encoder();
-
-		/* 对编码器的值进行滤波 */
-		EncoderL.encoder_final = lowpass_filter(&leftSpeedFilt, EncoderL.encoder_original);
-		EncoderR.encoder_final = lowpass_filter(&rightSpeedFilt, EncoderR.encoder_original);
-
-		/* 对编码器的值进行异常消除 */
-		EncoderL.encoder_final = encoder_debounce(&EncoderDeboL, EncoderL.encoder_final);
-		EncoderR.encoder_final = encoder_debounce(&EncoderDeboR, EncoderR.encoder_final);
-
-		/* 取左右编码器平均值 */
-		g_encoder_average = (EncoderL.encoder_final + EncoderR.encoder_final) / 2;
-
-		/* 读取陀螺仪原始数据并将其转化为物理数据 */
-		imu963ra_get_gyro();
-		Gyro_Z = imu963ra_gyro_transition(imu963ra_gyro_z);
-
-		/* 对Gyro_Z进行卡尔曼滤波 */
-		filtered_GyroZ = kalman_update(&imu693_kf, Gyro_Z);
+		g_speedpoint = SPEED_STRAIGHT;
+		positionReal = position;
+	}
+	else if (track_type == 1)//直角
+	{
+		g_speedpoint = SPEED_STRAIGHT;
 		
-		TurnPID.kp = 80;
-		TurnPID.kd = 16;
+		positionReal = position;
 		
-		if (track_type == 0)//普通直线
-		{
-			g_speedpoint = SPEED_STRAIGHT;
-			positionReal = position;
-		}
-		else if (track_type == 1)//直角
-		{
-			g_speedpoint = SPEED_ANGLE;
-			
-			positionReal = position;
-			
-			TurnPID.kp = angle_kp;
-			TurnPID.kd = angle_kd;
-			
-//			if (track_type_zj == 1)//左
+		TurnPID.kp = angle_kp;
+		TurnPID.kd = angle_kd;
+		
+		//			if (track_type_zj == 1)//左   写死效果不好
 //			{
 //				positionReal = 80;
 //			}
@@ -340,69 +351,74 @@ void TM2_Isr() interrupt 12
 //			{
 //				positionReal = -80;
 //			}
-		}
-		else if (track_type == 3 && track_route_status == 1)//圆环入环
+	}
+	else if (track_type == 3 && track_route_status == 1)//圆环入环
+	{
+		g_speedpoint = SPEED_STRAIGHT;
+		g_intencoderALL += g_encoder_average;
+		
+		if(g_intencoderALL <= intoisland_str_dist)//第一阶段先直行
 		{
-			g_speedpoint = SPEED_STRAIGHT;
-			g_intencoderALL += g_encoder_average;
+			positionReal = 0;
+		}
+		else//进入第二阶段打死进环
+		{
+			if (track_route == 1)//左环
+			{
+				positionReal = intoisland_pos;
+			}
+			else if (track_route == 2)//右环
+			{
+				positionReal = -intoisland_pos;
+			}
+						
+			if (g_intencoderALL >= intoisland_all_dist)//入环完毕
+			{
+				track_route_status = 2;
+				g_intencoderALL = 0;
+			}
+		}
+	}
+	else if (track_type == 3 && track_route_status == 2)//环岛内部
+	{
+		g_speedpoint = SPEED_ISLAND;
+		positionReal = position;
+	}
+	else if (track_type == 3 && track_route_status == 3)//圆环出环
+	{
+		g_speedpoint = SPEED_STRAIGHT;
+		g_intencoderALL += g_encoder_average;
+		
+		if (g_intencoderALL <= outisland_turn_dist)//第一阶段打死出环
+		{
+			if (track_route == 1)//左环
+			{
+				positionReal = outisland_pos;
+			}
+			else if (track_route == 2)//右环
+			{
+				positionReal = -outisland_pos;
+			}
+		}
+		else//第二阶段直走
+		{
+			positionReal = 0;
 			
-			if(g_intencoderALL <= intoisland_str_dist)//第一阶段先直行
+			if (g_intencoderALL >= outisland_all_dist)//出环完毕
 			{
-				positionReal = 0;
-			}
-			else//进入第二阶段打死进环
-			{
-				if (track_route == 1)//左环
-				{
-					positionReal = intoisland_pos;
-				}
-				else if (track_route == 2)//右环
-				{
-					positionReal = -intoisland_pos;
-				}
-							
-				if (g_intencoderALL >= intoisland_all_dist)//入环完毕
-				{
-					track_route_status = 2;
-					g_intencoderALL = 0;
-				}
-			}
-		}
-		else if (track_type == 3 && track_route_status == 2)//环岛内部
-		{
-			g_speedpoint = SPEED_ISLAND;
-			positionReal = position;
-		}
-		else if (track_type == 3 && track_route_status == 3)//圆环出环
-		{
-			g_speedpoint = SPEED_STRAIGHT;
-			g_intencoderALL += g_encoder_average;
-			
-			if (g_intencoderALL <= outisland_turn_dist)//第一阶段打死出环
-			{
-				if (track_route == 1)//左环
-				{
-					positionReal = outisland_pos;
-				}
-				else if (track_route == 2)//右环
-				{
-					positionReal = -outisland_pos;
-				}
-			}
-			else//第二阶段直走
-			{
-				positionReal = 0;
+				track_type = 0;
+				track_route = 0;
+				track_route_status = 0;
 				
-				if (g_intencoderALL >= outisland_all_dist)//出环完毕
-				{
-					track_type = 0;
-					track_route = 0;
-					track_route_status = 0;
-					
-					g_intencoderALL = 0;
-				}
+				g_intencoderALL = 0;
 			}
 		}
+	}
+	
+	if (startKeyFlag == 1)
+	{
+		/* 对Gyro_Z进行卡尔曼滤波 */
+		filtered_GyroZ = kalman_update(&imu693_kf, Gyro_Z);
 		
 		/* 转向环PID控制 */
 		turn_pid = pid_poisitional_turnning(&TurnPID, positionReal, filtered_GyroZ);

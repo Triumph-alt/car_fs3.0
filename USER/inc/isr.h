@@ -20,8 +20,9 @@
 #ifndef __ISR_H_
 #define __ISR_H_
 
+#define NORMALRUN          1
+
 #define SPEED_STRAIGHT     35
-#define SPEED_ANGLE        35
 #define SPEED_ISLAND       35
 
 extern int g_encoder_average;
