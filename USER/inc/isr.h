@@ -22,8 +22,9 @@
 
 #define NORMALRUN          1
 
-#define SPEED_STRAIGHT     35
-#define SPEED_ISLAND       35
+// #define SPEED_STRAIGHT     35
+// #define SPEED_ISLAND       35
+extern uint8_t SPEED_STRAIGHT, SPEED_ISLAND; //速度环目标速度
 
 extern int g_encoder_average;
 extern int32_t g_DutyLeft, g_DutyRight;

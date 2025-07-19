@@ -22,13 +22,15 @@
 #include "zf_uart.h"
 #include "zf_tim.h"
 
+uint8_t SPEED_STRAIGHT = 35, SPEED_ISLAND = 35; //速度环目标速度
+
 int g_encoder_average = 0;                       //左右编码器的平均值
 float Gyro_Z = 0, filtered_GyroZ = 0;            // 陀螺仪角速度的原始值和卡尔曼滤波之后的值
 int32_t g_DutyLeft = 0, g_DutyRight = 0;         // 最后真正要给电机的PWM值
 
 //pid控制相关变量
 float speed_pid = 0, turn_pid = 0;               //速度环和转向环pid的值
-int g_speedpoint = SPEED_STRAIGHT;
+int g_speedpoint = 0;
 int g_leftpoint = 0, g_rightpoint = 0;           //左右轮的目标速度
 volatile int16_t positionReal = 0; 
 
@@ -331,12 +333,12 @@ void TM2_Isr() interrupt 12
 	
 	if (track_type == 0)//普通直线
 	{
-		g_speedpoint = SPEED_STRAIGHT;
+		g_speedpoint = (int)SPEED_STRAIGHT;
 		positionReal = position;
 	}
 	else if (track_type == 1)//直角
 	{
-		g_speedpoint = SPEED_STRAIGHT;
+		g_speedpoint = (int)SPEED_STRAIGHT;
 		
 		positionReal = position;
 		
@@ -354,7 +356,7 @@ void TM2_Isr() interrupt 12
 	}
 	else if (track_type == 3 && track_route_status == 1)//圆环入环
 	{
-		g_speedpoint = SPEED_STRAIGHT;
+		g_speedpoint = (int)SPEED_ISLAND;
 		g_intencoderALL += g_encoder_average;
 		
 		if(g_intencoderALL <= intoisland_str_dist)//第一阶段先直行
@@ -381,12 +383,12 @@ void TM2_Isr() interrupt 12
 	}
 	else if (track_type == 3 && track_route_status == 2)//环岛内部
 	{
-		g_speedpoint = SPEED_ISLAND;
+		g_speedpoint = (int)SPEED_ISLAND;
 		positionReal = position;
 	}
 	else if (track_type == 3 && track_route_status == 3)//圆环出环
 	{
-		g_speedpoint = SPEED_STRAIGHT;
+		g_speedpoint = (int)SPEED_ISLAND;
 		g_intencoderALL += g_encoder_average;
 		
 		if (g_intencoderALL <= outisland_turn_dist)//第一阶段打死出环

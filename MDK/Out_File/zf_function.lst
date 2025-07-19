@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  zf_function                                                        15/07/25  14:13:24  PAGE 1   
+C251 COMPILER V5.60.0,  zf_function                                                        19/07/25  22:33:53  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE zf_function
@@ -66,7 +66,7 @@ stmt  level    source
    47          // 备注信息     
    48          //-------------------------------------------------------------------------------------------------------
              -------------
-C251 COMPILER V5.60.0,  zf_function                                                        15/07/25  14:13:24  PAGE 2   
+C251 COMPILER V5.60.0,  zf_function                                                        19/07/25  22:33:53  PAGE 2   
 
    49          uint32 func_get_greatest_common_divisor (uint32 num1, uint32 num2)
    50          {
@@ -134,7 +134,7 @@ stmt  level    source
   105   2      
   106   2              while(('0' <= *str) && ('9' >= *str))                                   // 确定这是个数字
   107   2              {
-C251 COMPILER V5.60.0,  zf_function                                                        15/07/25  14:13:24  PAGE 3   
+C251 COMPILER V5.60.0,  zf_function                                                        19/07/25  22:33:53  PAGE 3   
 
   108   3                  temp = temp * 10 + ((uint8)(*str) - 0x30);                          // 计算数值
   109   3                  str ++;
@@ -202,7 +202,7 @@ stmt  level    source
   164   1      }
   165          
   166          //-------------------------------------------------------------------------------------------------------
-C251 COMPILER V5.60.0,  zf_function                                                        15/07/25  14:13:24  PAGE 4   
+C251 COMPILER V5.60.0,  zf_function                                                        19/07/25  22:33:53  PAGE 4   
 
              -------------
   167          // 函数简介     字符串转整形数字 数据范围是 [0,65535]
@@ -270,7 +270,7 @@ stmt  level    source
   225   3                  data_temp[temp_bit ++] = (number % 10);                                  // 倒序将数值�
              -�取出来
   226   3                  number /= 10;                                                       // 削减被提取的个�
-C251 COMPILER V5.60.0,  zf_function                                                        15/07/25  14:13:24  PAGE 5   
+C251 COMPILER V5.60.0,  zf_function                                                        19/07/25  22:33:53  PAGE 5   
 
              -��数
   227   3              }
@@ -338,7 +338,7 @@ stmt  level    source
   280   4                      temp_point = temp_point * 10 + ((uint8)(*str) - 0x30);          // 提取小数部分数�
              -��
   281   4                      point_bit *= 10;                                                // 计算这部分小数�
-C251 COMPILER V5.60.0,  zf_function                                                        15/07/25  14:13:24  PAGE 6   
+C251 COMPILER V5.60.0,  zf_function                                                        19/07/25  22:33:53  PAGE 6   
 
              -��除数
   282   4                      str ++;
@@ -406,7 +406,7 @@ stmt  level    source
              -��
   338   2              while(temp_bit --)
   339   2              {
-C251 COMPILER V5.60.0,  zf_function                                                        15/07/25  14:13:24  PAGE 7   
+C251 COMPILER V5.60.0,  zf_function                                                        19/07/25  22:33:53  PAGE 7   
 
   340   3                  number = number * 10;                                               // 将需要的小数位�
              -��提取到整数部分
@@ -474,7 +474,7 @@ stmt  level    source
              -数部分
   395   1          double temp_point = 0.0;                                                    // 临时计算变量 小
              -数部分
-C251 COMPILER V5.60.0,  zf_function                                                        15/07/25  14:13:24  PAGE 8   
+C251 COMPILER V5.60.0,  zf_function                                                        19/07/25  22:33:53  PAGE 8   
 
   396   1          double point_bit = 1;                                                       // 小数累计除数
   397   1          
@@ -542,7 +542,7 @@ stmt  level    source
   453          //-------------------------------------------------------------------------------------------------------
              -------------
   454          void func_double_to_str (char *str, double number, uint8 point_bit)
-C251 COMPILER V5.60.0,  zf_function                                                        15/07/25  14:13:24  PAGE 9   
+C251 COMPILER V5.60.0,  zf_function                                                        19/07/25  22:33:53  PAGE 9   
 
   455          {
   456   1          int32 data_int = 0;                                                           // 整数部分
@@ -610,7 +610,7 @@ stmt  level    source
   510   3                  *str ++ = '.';
   511   3                  if(0 == data_float)
   512   3                      *str = '0';
-C251 COMPILER V5.60.0,  zf_function                                                        15/07/25  14:13:24  PAGE 10  
+C251 COMPILER V5.60.0,  zf_function                                                        19/07/25  22:33:53  PAGE 10  
 
   513   3                  else
   514   3                  {
@@ -678,7 +678,7 @@ stmt  level    source
   572   3                  result_data = ((result_data << 4) | (temp & 0x0F));
   573   3              }
   574   2              else
-C251 COMPILER V5.60.0,  zf_function                                                        15/07/25  14:13:24  PAGE 11  
+C251 COMPILER V5.60.0,  zf_function                                                        19/07/25  22:33:53  PAGE 11  
 
   575   2              {
   576   3      //            if(strncmp("0x", str, 2))
@@ -746,7 +746,7 @@ stmt  level    source
   631   3                  *str ++ = hex_index[data_temp[temp_bit - 1]];                            // 将数字从倒�
              -�数组中倒序取出 变成正序放入字符串
   632   3                  temp_bit --;
-C251 COMPILER V5.60.0,  zf_function                                                        15/07/25  14:13:24  PAGE 12  
+C251 COMPILER V5.60.0,  zf_function                                                        19/07/25  22:33:53  PAGE 12  
 
   633   3              }
   634   2          }while(0);
@@ -814,7 +814,7 @@ stmt  level    source
   694          //            if(!pos_dat)
   695          //            {
   696          //                break;
-C251 COMPILER V5.60.0,  zf_function                                                        15/07/25  14:13:24  PAGE 13  
+C251 COMPILER V5.60.0,  zf_function                                                        19/07/25  22:33:53  PAGE 13  
 
   697          //            }
   698          //            p ++;
@@ -882,7 +882,7 @@ stmt  level    source
   756          //                        buff_len ++;
   757          //                    }
   758          //                    break;
-C251 COMPILER V5.60.0,  zf_function                                                        15/07/25  14:13:24  PAGE 14  
+C251 COMPILER V5.60.0,  zf_function                                                        19/07/25  22:33:53  PAGE 14  
 
   759          
   760          //                case 'd':
@@ -950,7 +950,7 @@ stmt  level    source
   822          
   823          //                case 'u':// 无符号十进制整数
   824          //                    {
-C251 COMPILER V5.60.0,  zf_function                                                        15/07/25  14:13:24  PAGE 15  
+C251 COMPILER V5.60.0,  zf_function                                                        19/07/25  22:33:53  PAGE 15  
 
   825          //                        int8 vstr[33];
   826          //                        uint32 ival = (uint32)va_arg(arg, uint32);
@@ -1018,7 +1018,7 @@ stmt  level    source
   888          //                    break;
   889          
   890          //                case '%':// 输出字符% 
-C251 COMPILER V5.60.0,  zf_function                                                        15/07/25  14:13:24  PAGE 16  
+C251 COMPILER V5.60.0,  zf_function                                                        19/07/25  22:33:53  PAGE 16  
 
   891          //                    {
   892          //                        *buff = '%';

@@ -75,7 +75,7 @@ void key_task(void)
                 
             case PID_PARA:
                 // 在PID参数界面，最多6个选项(SpeedPID和TurnPID的kp,ki,kd)
-                selected_item = (selected_item + 1) % 6;
+                selected_item = (selected_item + 1) % 8;
                 break;
                 
             case ISLAND_PARA:
@@ -112,6 +112,8 @@ void key_task(void)
                 else if (selected_item == 3) turn_kd += 0.1f;
                 else if (selected_item == 4) angle_kp += 1.0f;
                 else if (selected_item == 5) angle_kd += 0.1f;
+                else if (selected_item == 6) SPEED_STRAIGHT += 1;
+                else if (selected_item == 7) SPEED_ISLAND += 1;
                 break;
                 
             case ISLAND_PARA:
@@ -160,6 +162,8 @@ void key_task(void)
                 else if (selected_item == 3 && turn_kd >= 0.1f) turn_kd -= 0.1f;
                 else if (selected_item == 4 && angle_kp >= 1.0f) angle_kp -= 1.0f;
                 else if (selected_item == 5 && angle_kd >= 0.1f) angle_kd -= 0.1f;
+                else if (selected_item == 6 && SPEED_STRAIGHT > 0) SPEED_STRAIGHT -= 1;
+                else if (selected_item == 7 && SPEED_ISLAND > 0) SPEED_ISLAND -= 1;
                 break;
                 
             case ISLAND_PARA:
@@ -236,6 +240,9 @@ void display_task(void)
                 oled_show_string(5, 1, selected_item == 3 ? ">T_Kd:" : "T_Kd: ");
                 oled_show_string(6, 1, selected_item == 4 ? ">A_Kp:" : "A_Kp: ");
                 oled_show_string(7, 1, selected_item == 5 ? ">A_Kd:" : "A_Kd: ");
+                oled_show_string(8, 1, selected_item == 6 ? ">SP:" : "SP: ");
+                oled_show_string(8, 8, selected_item == 7 ? ">IP:" : "IP: ");
+
 
                 oled_show_float(2, 8, speed_kp);
                 oled_show_float(3, 8, speed_ki);
@@ -243,6 +250,8 @@ void display_task(void)
                 oled_show_float(5, 8, turn_kd);
                 oled_show_float(6, 8, angle_kp);
                 oled_show_float(7, 8, angle_kd);
+                oled_show_num(8, 5, SPEED_STRAIGHT, 2);
+                oled_show_num(8, 13, SPEED_ISLAND, 2);
             }
             break;
 

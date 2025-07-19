@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  transfer                                                           18/07/25  23:03:16  PAGE 1   
+C251 COMPILER V5.60.0,  transfer                                                           19/07/25  22:33:43  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE transfer
@@ -26,275 +26,305 @@ stmt  level    source
    15          
    16          extern uint32 power_voltage; // 电池电压（毫伏）
    17          
-   18          Key_t key[4] = {0, 0, 0, 0};
-   19          enum state car_state, prev_state; 
+   18          Key_t key[4] = {0, 0, 0, 0, 0};
+   19          enum state car_state = CHARGE, prev_state; 
    20          uint8 selected_item = 0; // 当前选中的项目索引
    21          
    22          uint8_t startKeyFlag = 0, uartSendFlag = 1;
    23          
    24          void key_task(void)
    25          {
-   26   1              if (key[0].flag == 1)
+   26   1              if (key[0].short_flag == 1)
    27   1              {
-   28   2             prev_state = car_state;   // 记录切换前状态
-   29   2             if (car_state < CHARGE)
-   30   2             {
-   31   3                 car_state++;
-   32   3                 oled_clear();
-   33   3                 selected_item = 0; // 切换状态时重置选中项
-   34   3      
-   35   3                 /* 若从 ISLAND_PARA 切换到 CHARGE，保存参数 */
-   36   3                 if(prev_state == ISLAND_PARA && car_state == CHARGE)
-   37   3                 {
-   38   4                     save_parameters_to_eeprom();
-   39   4                 }
-   40   3             }
-   41   2                      
-   42   2                      // if (startKeyFlag == 1)
-   43   2                      // {
-   44   2                      //      set_motor_pwm(0, 0);
-   45   2      
-   46   2                      //      pid_clean(&SpeedPID);
-   47   2                      //      pid_clean(&TurnPID);
-   48   2                              
-   49   2                      //      uartSendFlag = startKeyFlag = 0;
-   50   2                      // }
-   51   2                      // else
-   52   2                      // {
-   53   2                      //      delay_ms(2000);
-   54   2                      //      uartSendFlag = startKeyFlag = 1;
-   55   2                      // }
-   56   2                      
-   57   2                      key[0].flag = 0;
-C251 COMPILER V5.60.0,  transfer                                                           18/07/25  23:03:16  PAGE 2   
+   28   2      #if NORMALRUN
+   29   2                      prev_state = car_state;   // 记录切换前状态
+   30   2                      
+   31   2                      car_state++;
+   32   2                      if (car_state == STRAIGHT)
+   33   2                      {
+   34   3                         car_state = CHARGE;
+   35   3                      }
+   36   2                      
+   37   2                      oled_clear();
+   38   2                      selected_item = 0; // 切换状态时重置选中项
+   39   2      
+   40   2                      /* 若从 ISLAND_PARA 切换到 CHARGE，保存参数 */
+   41   2      //              if(prev_state == ISLAND_PARA && car_state == CHARGE)
+   42   2      //              {
+   43   2                      save_parameters_to_eeprom();
+   44   2      //              }
+   45   2      #else
+                               if (startKeyFlag == 1)
+                               {
+                                       set_motor_pwm(0, 0);
+               
+                                       pid_clean(&SpeedPID);
+                                       pid_clean(&TurnPID);
+                               
+                                       uartSendFlag = startKeyFlag = 0;
+                               }
+                               else
+                               {
+                                       delay_ms(2000);
+C251 COMPILER V5.60.0,  transfer                                                           19/07/25  22:33:43  PAGE 2   
 
-   58   2              }
-   59   1      
-   60   1              if (key[1].flag == 1)
-   61   1              {
-   62   2              // 按键1作为选择按键
-   63   2              switch (car_state)
-   64   2              {
-   65   3                  case ELECT_PARA:
-   66   3                      // 在电感参数界面，最多7个选项(max_value数组)
-   67   3                      selected_item = (selected_item + 1) % 7;
-   68   3                      break;
-   69   3                      
-   70   3                  case PID_PARA:
-   71   3                      // 在PID参数界面，最多6个选项(SpeedPID和TurnPID的kp,ki,kd)
-   72   3                      selected_item = (selected_item + 1) % 6;
-   73   3                      break;
-   74   3                      
-   75   3                  case ISLAND_PARA:
-   76   3                      // 在环岛参数界面，最多6个选项
-   77   3                      selected_item = (selected_item + 1) % 6;
-   78   3                      break;
-   79   3                      
-   80   3                  default:
-   81   3                      break;
-   82   3              }
-   83   2                      
-   84   2                      key[1].flag = 0;
-   85   2              }
-   86   1      
-   87   1              if (key[2].flag == 1)
-   88   1              {
-   89   2              // 按键2作为增加值的按键
-   90   2              switch (car_state)
-   91   2              {
-   92   3                  case ELECT_PARA:
-   93   3                      // 增加选中的max_value值
-   94   3                      if (selected_item < 7)
-   95   3                      {
-   96   4                          max_value[selected_item] += 10; // 每次增加10
-   97   4                      }
-   98   3                      break;
-   99   3                      
-  100   3                  case PID_PARA:
-  101   3                      // 增加选中的PID参数
-  102   3                      if (selected_item == 0) SpeedPID.kp += 0.1f;
-  103   3                      else if (selected_item == 1) SpeedPID.ki += 0.1f;
-  104   3                      else if (selected_item == 2) TurnPID.kp += 0.1f;
-  105   3                      else if (selected_item == 3) TurnPID.kd += 0.1f;
-  106   3                      else if (selected_item == 4) angle_kp += 0.1f;
-  107   3                      else if (selected_item == 5) angle_kd += 0.1f;
-  108   3                      break;
-  109   3                      
-  110   3                  case ISLAND_PARA:
-  111   3                      // 增加环岛参数
-  112   3                      if (selected_item == 0) intoisland_pos += 1;
-  113   3                      else if (selected_item == 1) intoisland_str_dist += 100;
-  114   3                      else if (selected_item == 2) intoisland_all_dist += 100;
-  115   3                      else if (selected_item == 3) outisland_pos += 1;
-  116   3                      else if (selected_item == 4) outisland_turn_dist += 100;
-  117   3                      else if (selected_item == 5) outisland_all_dist += 100;
-  118   3                      break;
-  119   3                      
-  120   3                  default:
-  121   3                      break;
-  122   3              }
-  123   2                      
-C251 COMPILER V5.60.0,  transfer                                                           18/07/25  23:03:16  PAGE 3   
+                                       uartSendFlag = startKeyFlag = 1;
+                               }
+               #endif
+   61   2      
+   62   2                      key[0].short_flag = 0;
+   63   2              }
+   64   1      
+   65   1              /* 按键2短按 */
+   66   1              if (key[1].short_flag == 1)
+   67   1              {
+   68   2              // 按键2作为选择按键
+   69   2              switch (car_state)
+   70   2              {
+   71   3                  case ELECT_PARA:
+   72   3                      // 在电感参数界面，最多7个选项(max_value数组)
+   73   3                      selected_item = (selected_item + 1) % 7;
+   74   3                      break;
+   75   3                      
+   76   3                  case PID_PARA:
+   77   3                      // 在PID参数界面，最多6个选项(SpeedPID和TurnPID的kp,ki,kd)
+   78   3                      selected_item = (selected_item + 1) % 8;
+   79   3                      break;
+   80   3                      
+   81   3                  case ISLAND_PARA:
+   82   3                      // 在环岛参数界面，最多6个选项
+   83   3                      selected_item = (selected_item + 1) % 6;
+   84   3                      break;
+   85   3                      
+   86   3                  default:
+   87   3                      break;
+   88   3              }
+   89   2                      
+   90   2                      key[1].short_flag = 0;
+   91   2              }
+   92   1              
+   93   1              /* 按键3短按和长按 */
+   94   1              if (key[2].long_flag == 1 || key[2].short_flag == 1)
+   95   1              {
+   96   2              // 按键3作为增加值的按键
+   97   2              switch (car_state)
+   98   2              {
+   99   3                  case ELECT_PARA:
+  100   3                      // 增加选中的max_value值
+  101   3                      if (selected_item < 7)
+  102   3                      {
+  103   4                          max_value[selected_item] += 10; // 每次增加10
+  104   4                      }
+  105   3                      break;
+  106   3                      
+  107   3                  case PID_PARA:
+  108   3                      // 增加选中的PID参数
+  109   3                      if (selected_item == 0) speed_kp += 1.0f;
+  110   3                      else if (selected_item == 1) speed_ki += 0.01f;
+  111   3                      else if (selected_item == 2) turn_kp += 1.0f;
+  112   3                      else if (selected_item == 3) turn_kd += 0.1f;
+  113   3                      else if (selected_item == 4) angle_kp += 1.0f;
+  114   3                      else if (selected_item == 5) angle_kd += 0.1f;
+  115   3                      else if (selected_item == 6) SPEED_STRAIGHT += 1;
+  116   3                      else if (selected_item == 7) SPEED_ISLAND += 1;
+  117   3                      break;
+  118   3                      
+  119   3                  case ISLAND_PARA:
+  120   3                      // 增加环岛参数
+  121   3                      if (selected_item == 0) intoisland_pos += 1;
+  122   3                      else if (selected_item == 1) intoisland_str_dist += 100;
+  123   3                      else if (selected_item == 2) intoisland_all_dist += 100;
+C251 COMPILER V5.60.0,  transfer                                                           19/07/25  22:33:43  PAGE 3   
 
-  124   2                      key[2].flag = 0;
-  125   2              }
-  126   1      
-  127   1              if (key[3].flag == 1)
-  128   1              {
-  129   2              // 按键3作为减少值的按键
-  130   2              switch (car_state)
-  131   2              {
-  132   3                  case ELECT_PARA:
-  133   3                      // 减少选中的max_value值
-  134   3                      if (selected_item < 7 && max_value[selected_item] >= 10)
-  135   3                      {
-  136   4                          max_value[selected_item] -= 10; // 每次减少10
-  137   4                      }
-  138   3                      break;
-  139   3                      
-  140   3                  case PID_PARA:
-  141   3                      // 减少选中的PID参数
-  142   3                      if (selected_item == 0 && SpeedPID.kp >= 0.1f) SpeedPID.kp -= 0.1f;
-  143   3                      else if (selected_item == 1 && SpeedPID.ki >= 0.1f) SpeedPID.ki -= 0.1f;
-  144   3                      else if (selected_item == 2 && TurnPID.kp >= 0.1f) TurnPID.kp -= 0.1f;
-  145   3                      else if (selected_item == 3 && TurnPID.kd >= 0.1f) TurnPID.kd -= 0.1f;
-  146   3                      else if (selected_item == 4 && angle_kp >= 0.1f) angle_kp -= 0.1f;
-  147   3                      else if (selected_item == 5 && angle_kd >= 0.1f) angle_kd -= 0.1f;
-  148   3                      break;
-  149   3                      
-  150   3                  case ISLAND_PARA:
-  151   3                      // 减少环岛参数
-  152   3                      if (selected_item == 0 && intoisland_pos > 1) intoisland_pos -= 1;
-  153   3                      else if (selected_item == 1 && intoisland_str_dist >= 100) intoisland_str_dist -= 100;
-  154   3                      else if (selected_item == 2 && intoisland_all_dist >= 100) intoisland_all_dist -= 100;
-  155   3                      else if (selected_item == 3 && outisland_pos > 1) outisland_pos -= 1;
-  156   3                      else if (selected_item == 4 && outisland_turn_dist >= 100) outisland_turn_dist -= 100;
-  157   3                      else if (selected_item == 5 && outisland_all_dist >= 100) outisland_all_dist -= 100;
-  158   3                      break;
-  159   3                      
-  160   3                  default:
-  161   3                      break;
-  162   3              }
-  163   2                      
-  164   2                      key[3].flag = 0;
-  165   2              }
-  166   1      }
-  167          
-  168          /* 8行，21列*/
-  169          void display_task(void)
-  170          {
-  171   1          switch (car_state)
-  172   1          {
-  173   2              case ELECT_PARA:
-  174   2                  {
-  175   3                      oled_show_string(1, 8, "max_v");
-  176   3                      oled_show_string(1, 14, "real_v");
-  177   3                      
-  178   3                      // 显示电感名称，选中项前添加'>'标记
-  179   3                      oled_show_string(2, 1, selected_item == 0 ? ">HL:" : "HL: ");
-  180   3                      oled_show_string(3, 1, selected_item == 1 ? ">VL:" : "VL: ");
-  181   3                      oled_show_string(4, 1, selected_item == 2 ? ">HML:" : "HML: ");
-  182   3                      oled_show_string(5, 1, selected_item == 3 ? ">HC:" : "HC: ");
-  183   3                      oled_show_string(6, 1, selected_item == 4 ? ">HMR:" : "HMR: ");
-  184   3                      oled_show_string(7, 1, selected_item == 5 ? ">VR:" : "VR: ");
-  185   3                      oled_show_string(8, 1, selected_item == 6 ? ">HR:" : "HR: ");
-  186   3      
-  187   3                      oled_show_num(2, 8, max_value[0], 4);
-  188   3                      oled_show_num(3, 8, max_value[1], 4);
-  189   3                      oled_show_num(4, 8, max_value[2], 4);
-C251 COMPILER V5.60.0,  transfer                                                           18/07/25  23:03:16  PAGE 4   
+  124   3                      else if (selected_item == 3) outisland_pos += 1;
+  125   3                      else if (selected_item == 4) outisland_turn_dist += 100;
+  126   3                      else if (selected_item == 5) outisland_all_dist += 100;
+  127   3                      break;
+  128   3                      
+  129   3                  default:
+  130   3                      break;
+  131   3              }
+  132   2                      
+  133   2                      if (key[2].long_flag == 1)
+  134   2                      {
+  135   3                              key[2].long_flag = 0;
+  136   3                      }
+  137   2                      else if (key[2].short_flag == 1)
+  138   2                      {
+  139   3                              key[2].short_flag = 0;
+  140   3                      }
+  141   2              }
+  142   1      
+  143   1              /* 按键4短按和长按 */
+  144   1              if (key[3].short_flag == 1 || key[3].long_flag == 1)
+  145   1              {
+  146   2              // 按键4作为减少值的按键
+  147   2              switch (car_state)
+  148   2              {
+  149   3                  case ELECT_PARA:
+  150   3                      // 减少选中的max_value值
+  151   3                      if (selected_item < 7 && max_value[selected_item] >= 10)
+  152   3                      {
+  153   4                          max_value[selected_item] -= 10; // 每次减少10
+  154   4                      }
+  155   3                      break;
+  156   3                      
+  157   3                  case PID_PARA:
+  158   3                      // 减少选中的PID参数
+  159   3                      if (selected_item == 0 && speed_kp >= 1.0f) speed_kp -= 1.0f;
+  160   3                      else if (selected_item == 1 && speed_ki >= 0.1f) speed_ki -= 0.01f;
+  161   3                      else if (selected_item == 2 && turn_kp >= 1.0f) turn_kp -= 1.0f;
+  162   3                      else if (selected_item == 3 && turn_kd >= 0.1f) turn_kd -= 0.1f;
+  163   3                      else if (selected_item == 4 && angle_kp >= 1.0f) angle_kp -= 1.0f;
+  164   3                      else if (selected_item == 5 && angle_kd >= 0.1f) angle_kd -= 0.1f;
+  165   3                      else if (selected_item == 6 && SPEED_STRAIGHT > 0) SPEED_STRAIGHT -= 1;
+  166   3                      else if (selected_item == 7 && SPEED_ISLAND > 0) SPEED_ISLAND -= 1;
+  167   3                      break;
+  168   3                      
+  169   3                  case ISLAND_PARA:
+  170   3                      // 减少环岛参数
+  171   3                      if (selected_item == 0 && intoisland_pos > 1) intoisland_pos -= 1;
+  172   3                      else if (selected_item == 1 && intoisland_str_dist >= 100) intoisland_str_dist -= 100;
+  173   3                      else if (selected_item == 2 && intoisland_all_dist >= 100) intoisland_all_dist -= 100;
+  174   3                      else if (selected_item == 3 && outisland_pos > 1) outisland_pos -= 1;
+  175   3                      else if (selected_item == 4 && outisland_turn_dist >= 100) outisland_turn_dist -= 100;
+  176   3                      else if (selected_item == 5 && outisland_all_dist >= 100) outisland_all_dist -= 100;
+  177   3                      break;
+  178   3                      
+  179   3                  default:
+  180   3                      break;
+  181   3              }
+  182   2                      
+  183   2                      if (key[3].long_flag == 1)
+  184   2                      {
+  185   3                              key[3].long_flag = 0;
+  186   3                      }
+  187   2                      else if (key[3].short_flag == 1)
+  188   2                      {
+  189   3                              key[3].short_flag = 0;
+C251 COMPILER V5.60.0,  transfer                                                           19/07/25  22:33:43  PAGE 4   
 
-  190   3                      oled_show_num(5, 8, max_value[3], 4);
-  191   3                      oled_show_num(6, 8, max_value[4], 4);
-  192   3                      oled_show_num(7, 8, max_value[5], 4);
-  193   3                      oled_show_num(8, 8, max_value[6], 4);
-  194   3                                      
-  195   3                                      // 根据标签显示对应的实时电感值
-  196   3                      oled_show_num(2, 14, (uint16)result[0], 4); // HL
-  197   3                      oled_show_num(3, 14, (uint16)result[1], 4); // VL
-  198   3                      oled_show_num(4, 14, (uint16)result[2], 4); // HML
-  199   3                      oled_show_num(5, 14, (uint16)result[3], 4); // HC
-  200   3                      oled_show_num(6, 14, (uint16)result[4], 4); // HMR
-  201   3                      oled_show_num(7, 14, (uint16)result[5], 4); // VR
-  202   3                      oled_show_num(8, 14, (uint16)result[6], 4); // HR
-  203   3                  }
-  204   2                  break;
-  205   2      
-  206   2              case PID_PARA:
-  207   2                  {
-  208   3                      oled_show_string(1, 8, "pidpara");
-  209   3                      
-  210   3                      // 显示PID参数名称，选中项前添加'>'标记
-  211   3                      oled_show_string(2, 1, selected_item == 0 ? ">S_Kp:" : "S_Kp: ");
-  212   3                      oled_show_string(3, 1, selected_item == 1 ? ">S_Ki:" : "S_Ki: ");
-  213   3                      oled_show_string(4, 1, selected_item == 2 ? ">T_Kp:" : "T_Kp: ");
-  214   3                      oled_show_string(5, 1, selected_item == 3 ? ">T_Kd:" : "T_Kd: ");
-  215   3                      oled_show_string(6, 1, selected_item == 4 ? ">A_Kp:" : "A_Kp: ");
-  216   3                      oled_show_string(7, 1, selected_item == 5 ? ">A_Kd:" : "A_Kd: ");
-  217   3      
-  218   3                      oled_show_float(2, 8, SpeedPID.kp);
-  219   3                      oled_show_float(3, 8, SpeedPID.ki);
-  220   3                      oled_show_float(4, 8, TurnPID.kp);
-  221   3                      oled_show_float(5, 8, TurnPID.kd);
-  222   3                      oled_show_float(6, 8, angle_kp);
-  223   3                      oled_show_float(7, 8, angle_kd);
-  224   3                  }
-  225   2                  break;
-  226   2      
-  227   2              case ISLAND_PARA:
-  228   2                  {
-  229   3                      // 显示入环岛参数
-  230   3                      oled_show_string(1, 10, "In Island");
-  231   3                      oled_show_string(2, 1, selected_item == 0 ? ">ipos:" : "ipos: ");
-  232   3                      oled_show_num(2, 10, intoisland_pos, 3);
-  233   3                      oled_show_string(3, 1, selected_item == 1 ? ">istr_d:" : "istr_d: ");
-  234   3                      oled_show_num(3, 10, intoisland_str_dist, 5);
-  235   3                      oled_show_string(4, 1, selected_item == 2 ? ">iall_d:" : "iall_d: ");
-  236   3                      oled_show_num(4, 10, intoisland_all_dist, 5);
-  237   3                      
-  238   3                      // 显示出环岛参数
-  239   3                      oled_show_string(5, 10, "Out Island");
-  240   3                      oled_show_string(6, 1, selected_item == 3 ? ">opos:" : "opos: ");
-  241   3                      oled_show_num(6, 10, outisland_pos, 3);
-  242   3                      oled_show_string(7, 1, selected_item == 4 ? ">oturn_d:" : "oturn_d: ");
-  243   3                      oled_show_num(7, 10, outisland_turn_dist, 5);
-  244   3                      oled_show_string(8, 1, selected_item == 5 ? ">oall_d:" : "oall_d: ");
-  245   3                      oled_show_num(8, 10, outisland_all_dist, 5);
-  246   3                  }
-  247   2                  break;
-  248   2              case CHARGE:
-  249   2                  {
-  250   3                      oled_show_string(1, 1, "charge");
-  251   3                      oled_show_string(2, 1, "power:");
-  252   3                      oled_show_num(2, 8, power_voltage, 4);
-  253   3      
-  254   3                      if (power_voltage > 1300)
-  255   3                      {
-C251 COMPILER V5.60.0,  transfer                                                           18/07/25  23:03:16  PAGE 5   
+  190   3                      }
+  191   2              }
+  192   1      }
+  193          
+  194          /* 8行，21列*/
+  195          void display_task(void)
+  196          {
+  197   1          switch (car_state)
+  198   1          {
+  199   2              case ELECT_PARA:
+  200   2                  {
+  201   3                      oled_show_string(1, 8, "max_v");
+  202   3                      oled_show_string(1, 14, "real_v");
+  203   3                      
+  204   3                      // 显示电感名称，选中项前添加'>'标记
+  205   3                      oled_show_string(2, 1, selected_item == 0 ? ">HL:" : "HL: ");
+  206   3                      oled_show_string(3, 1, selected_item == 1 ? ">VL:" : "VL: ");
+  207   3                      oled_show_string(4, 1, selected_item == 2 ? ">HML:" : "HML: ");
+  208   3                      oled_show_string(5, 1, selected_item == 3 ? ">HC:" : "HC: ");
+  209   3                      oled_show_string(6, 1, selected_item == 4 ? ">HMR:" : "HMR: ");
+  210   3                      oled_show_string(7, 1, selected_item == 5 ? ">VR:" : "VR: ");
+  211   3                      oled_show_string(8, 1, selected_item == 6 ? ">HR:" : "HR: ");
+  212   3      
+  213   3                      oled_show_num(2, 8, max_value[0], 4);
+  214   3                      oled_show_num(3, 8, max_value[1], 4);
+  215   3                      oled_show_num(4, 8, max_value[2], 4);
+  216   3                      oled_show_num(5, 8, max_value[3], 4);
+  217   3                      oled_show_num(6, 8, max_value[4], 4);
+  218   3                      oled_show_num(7, 8, max_value[5], 4);
+  219   3                      oled_show_num(8, 8, max_value[6], 4);
+  220   3                                      
+  221   3                                      // 根据标签显示对应的实时电感值
+  222   3                      oled_show_num(2, 14, (uint16)result[0], 4); // HL
+  223   3                      oled_show_num(3, 14, (uint16)result[1], 4); // VL
+  224   3                      oled_show_num(4, 14, (uint16)result[2], 4); // HML
+  225   3                      oled_show_num(5, 14, (uint16)result[3], 4); // HC
+  226   3                      oled_show_num(6, 14, (uint16)result[4], 4); // HMR
+  227   3                      oled_show_num(7, 14, (uint16)result[5], 4); // VR
+  228   3                      oled_show_num(8, 14, (uint16)result[6], 4); // HR
+  229   3                  }
+  230   2                  break;
+  231   2      
+  232   2              case PID_PARA:
+  233   2                  {
+  234   3                      oled_show_string(1, 8, "pidpara");
+  235   3                      
+  236   3                      // 显示PID参数名称，选中项前添加'>'标记
+  237   3                      oled_show_string(2, 1, selected_item == 0 ? ">S_Kp:" : "S_Kp: ");
+  238   3                      oled_show_string(3, 1, selected_item == 1 ? ">S_Ki:" : "S_Ki: ");
+  239   3                      oled_show_string(4, 1, selected_item == 2 ? ">T_Kp:" : "T_Kp: ");
+  240   3                      oled_show_string(5, 1, selected_item == 3 ? ">T_Kd:" : "T_Kd: ");
+  241   3                      oled_show_string(6, 1, selected_item == 4 ? ">A_Kp:" : "A_Kp: ");
+  242   3                      oled_show_string(7, 1, selected_item == 5 ? ">A_Kd:" : "A_Kd: ");
+  243   3                      oled_show_string(8, 1, selected_item == 6 ? ">SP:" : "SP: ");
+  244   3                      oled_show_string(8, 8, selected_item == 7 ? ">IP:" : "IP: ");
+  245   3      
+  246   3      
+  247   3                      oled_show_float(2, 8, speed_kp);
+  248   3                      oled_show_float(3, 8, speed_ki);
+  249   3                      oled_show_float(4, 8, turn_kp);
+  250   3                      oled_show_float(5, 8, turn_kd);
+  251   3                      oled_show_float(6, 8, angle_kp);
+  252   3                      oled_show_float(7, 8, angle_kd);
+  253   3                      oled_show_num(8, 5, SPEED_STRAIGHT, 2);
+  254   3                      oled_show_num(8, 13, SPEED_ISLAND, 2);
+  255   3                  }
+C251 COMPILER V5.60.0,  transfer                                                           19/07/25  22:33:43  PAGE 5   
 
-  256   4                          startKeyFlag = 1; // 充电完成
-  257   4                          selected_item = 0;
-  258   4                          oled_clear();
-  259   4                          prev_state = CHARGE;
-  260   4                          car_state = RUNNING;
-  261   4                      }
-  262   3                  }
-  263   2                  break;
-  264   2              
-  265   2              default:
-  266   2                  break;
-  267   2          }
-  268   1      }
+  256   2                  break;
+  257   2      
+  258   2              case ISLAND_PARA:
+  259   2                  {
+  260   3                      // 显示入环岛参数
+  261   3                      oled_show_string(1, 10, "In Island");
+  262   3                      oled_show_string(2, 1, selected_item == 0 ? ">ipos:" : "ipos: ");
+  263   3                      oled_show_num(2, 10, intoisland_pos, 3);
+  264   3                      oled_show_string(3, 1, selected_item == 1 ? ">istr_d:" : "istr_d: ");
+  265   3                      oled_show_num(3, 10, intoisland_str_dist, 5);
+  266   3                      oled_show_string(4, 1, selected_item == 2 ? ">iall_d:" : "iall_d: ");
+  267   3                      oled_show_num(4, 10, intoisland_all_dist, 5);
+  268   3                      
+  269   3                      // 显示出环岛参数
+  270   3                      oled_show_string(5, 10, "Out Island");
+  271   3                      oled_show_string(6, 1, selected_item == 3 ? ">opos:" : "opos: ");
+  272   3                      oled_show_num(6, 10, outisland_pos, 3);
+  273   3                      oled_show_string(7, 1, selected_item == 4 ? ">oturn_d:" : "oturn_d: ");
+  274   3                      oled_show_num(7, 10, outisland_turn_dist, 5);
+  275   3                      oled_show_string(8, 1, selected_item == 5 ? ">oall_d:" : "oall_d: ");
+  276   3                      oled_show_num(8, 10, outisland_all_dist, 5);
+  277   3                  }
+  278   2                  break;
+  279   2              case CHARGE:
+  280   2                  {
+  281   3                      oled_show_string(1, 1, "charge");
+  282   3                      oled_show_string(2, 1, "power:");
+  283   3                      oled_show_num(2, 8, power_voltage, 4);
+  284   3      
+  285   3                      if (power_voltage > 1300)
+  286   3                      {
+  287   4                          selected_item = 0;
+  288   4                          oled_clear();
+  289   4                          prev_state = CHARGE;
+  290   4                          car_state = STRAIGHT;
+  291   4                      }
+  292   3                  }
+  293   2                  break;
+  294   2              
+  295   2              default:
+  296   2                  break;
+  297   2          }
+  298   1      }
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =      2979     ------
+  code size            =      3225     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
   pdata size           =    ------     ------
-  xdata size           =        19     ------
+  xdata size           =        31     ------
   xdata-const size     =    ------     ------
   edata size           =    ------     ------
   bit size             =    ------     ------
@@ -304,7 +334,7 @@ Module Information          Static   Overlayable
   far data size        =    ------     ------
   huge data size       =    ------     ------
   const size           =    ------     ------
-  hconst size          =       351     ------
+  hconst size          =       390     ------
 End of Module Information.
 
 
